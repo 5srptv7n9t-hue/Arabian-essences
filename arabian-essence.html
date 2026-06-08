@@ -257,10 +257,15 @@ nav.solid{background:rgba(8,8,8,.72);backdrop-filter:blur(16px);-webkit-backdrop
 .card:hover .bottle,.card.touch-active .bottle{transform:translateY(-6px) scale(1.04)}
 .card-media .bottle::before{content:"";position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:34px;height:26px;background:linear-gradient(160deg,var(--gold-light),var(--gold-dim));border-radius:4px}
 .card-media .fam{position:absolute;top:16px;left:16px;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:6px 12px;background:rgba(8,8,8,.4)}
+.card-media .badge{position:absolute;top:16px;right:16px;z-index:2;font-size:.54rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:5px 10px}
 .card-body{padding:24px;display:flex;flex-direction:column;gap:6px;flex:1}
 .card-body .casa{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--white-muted)}
 .card-body h3{font-size:1.7rem;font-weight:500}
 .card-body .desc{color:var(--white-dim);font-size:.88rem;font-weight:300;line-height:1.55;flex:1}
+.card-body .notes{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.card-body .note{font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--white-muted);border:1px solid var(--black-border);padding:4px 9px}
+.card-body .dur{font-size:.68rem;letter-spacing:.06em;color:var(--white-muted);margin-top:10px}
+.card-body .dur span{color:var(--gold)}
 .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:12px}
 .card-foot .precio{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--gold-light)}
 .card-foot button{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);border:1px solid var(--gold);padding:11px 20px;position:relative;overflow:hidden;z-index:1;transition:color .45s var(--ease)}
@@ -518,7 +523,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
     <div class="section-head rv">
       <p class="eyebrow cen">La colección</p>
       <h2>Fragancias que <span class="gold-txt italic">hablan</span> por vos</h2>
-      <p>Presentación 100 ml · Eau de Parfum de alta concentración</p>
+      <p>Originales certificados · Eau de Parfum de alta concentración y larga duración</p>
     </div>
     <div class="products" id="productGrid"><!-- generado por JS desde PRODUCTS --></div>
   </div>
@@ -641,20 +646,23 @@ const WHATSAPP   = "5491170204450";                 // número de Arabian Essenc
 const INSTAGRAM  = "https://instagram.com/arabian_essencess";
 const MP_ENDPOINT = "/.netlify/functions/crear-preferencia"; // función serverless (token oculto)
 
-/* Catálogo · precio numérico para calcular totales (ARS) */
+/* Catálogo real · precio numérico para calcular totales (ARS) */
 const PRODUCTS = [
-  { name:"Khamrah",       casa:"Lattafa",          fam:"Amaderado", price:38900, glow:"#b5731f",
-    desc:"Dátiles maduros, canela y vainilla envueltos en benjuí. Cálido, dulce y adictivo desde la primera gota." },
-  { name:"9PM",           casa:"Afnan",            fam:"Oriental",  price:34500, glow:"#9a6ad0",
-    desc:"La noche hecha perfume. Manzana y lavanda que caen en una base de vainilla y ámbar sensual." },
-  { name:"Amber Oud",     casa:"Al Haramain",      fam:"Oud",       price:52000, glow:"#c24a20",
-    desc:"El oud en su máxima expresión. Azafrán, cuero y pachulí sobre una madera profunda inolvidable." },
-  { name:"Jardín Royale", casa:"Maison Alhambra",  fam:"Floral",    price:31900, glow:"#ff9ec2",
-    desc:"Jazmín y pera sobre almizcle y sándalo. Fresco, luminoso y profundamente femenino." },
-  { name:"Yara",          casa:"Lattafa",          fam:"Floral",    price:36500, glow:"#e8a0c0",
-    desc:"Orquídea, heliotropo y frutas tropicales con almizcle y vainilla. Femenina y luminosa." },
-  { name:"Turathi Gold",  casa:"Ard Al Zaafaran",  fam:"Dulce",     price:36200, glow:"#ffd97a",
-    desc:"Oro líquido: miel y rosa envuelven un corazón de oud y vainilla. Opulento e inolvidable." },
+  { name:"Oud for Glory",   casa:"Lattafa",         fam:"Amaderado", price:14990, glow:"#b5731f",
+    badge:"Más Vendido", dur:"12–14 hs", notes:["Oud","Sándalo","Ámbar","Especias"],
+    desc:"Una oda al oud más preciado. Masculino, profundo y con una presencia inconfundible que permanece." },
+  { name:"Exclusif Rose",   casa:"Maison Alhambra", fam:"Floral",    price:12990, glow:"#e8a0c0",
+    badge:"Nuevo", dur:"10–12 hs", notes:["Rosa","Vainilla","Almizcle","Cedro"],
+    desc:"Rosa de Turquía fusionada con almizcle blanco y vainilla. Femenino, sofisticado e irresistible." },
+  { name:"Dirham Gold",     casa:"Ard Al Zaafaran", fam:"Oud",       price:16990, glow:"#c98a3a",
+    badge:"Unisex", dur:"13–15 hs", notes:["Oud","Bergamota","Pachulí","Cuero"],
+    desc:"Icónico e inconfundible. Oud ahumado con notas cítricas que crean un contraste perfecto y adictivo." },
+  { name:"Amber Oud Gold",  casa:"Al Haramain",     fam:"Oriental",  price:18990, glow:"#ffd97a",
+    badge:"", dur:"14–16 hs", notes:["Ámbar","Oud","Madera","Resina"],
+    desc:"El lujo hecho fragancia. Ámbar puro con toques de oud y madera que evolucionan durante todo el día." },
+  { name:"Faqat Lil Banat", casa:"Rasasi",          fam:"Floral",    price:13490, glow:"#ff9ec2",
+    badge:"Para Ella", dur:"10–12 hs", notes:["Jazmín","Gardenia","Almizcle","Vainilla"],
+    desc:"Delicadeza floral con fondo oriental. Una fragancia femenina que conquista desde el primer spray." },
 ];
 
 const ARS = (n) => "$" + n.toLocaleString("es-AR");
@@ -677,6 +685,7 @@ PRODUCTS.forEach((p, i) => {
   el.style.setProperty("--cardglow", p.glow + "99");
   el.innerHTML = `
     <div class="card-media">
+      ${p.badge ? `<span class="badge">${p.badge}</span>` : ""}
       <span class="fam">${p.fam}</span>
       <div class="bottle" style="background:linear-gradient(160deg,${p.glow}66,${p.glow}22);border:1px solid var(--line)"></div>
     </div>
@@ -684,6 +693,8 @@ PRODUCTS.forEach((p, i) => {
       <span class="casa">${p.casa}</span>
       <h3>${p.name}</h3>
       <p class="desc">${p.desc}</p>
+      <div class="notes">${p.notes.map((n) => `<span class="note">${n}</span>`).join("")}</div>
+      <div class="dur">Duración: <span>${p.dur}</span></div>
       <div class="card-foot">
         <span class="precio">${ARS(p.price)}</span>
         <button data-order="${i}">Pedir</button>
@@ -712,7 +723,7 @@ function openOrder(index) {
   const p = PRODUCTS[index];
   document.getElementById("mCasa").textContent = p.casa;
   document.getElementById("mName").textContent = p.name;
-  document.getElementById("mUnit").textContent = ARS(p.price) + " · 100 ml";
+  document.getElementById("mUnit").textContent = ARS(p.price) + " · Duración " + p.dur;
   renderTotal();
   modal.classList.add("open");
   if (window.lenis) window.lenis.stop();           // bloquea scroll de fondo
