@@ -415,9 +415,9 @@ body{background:#040404}
 /* el contenido va por encima del fondo */
 nav,#ui,header,section,footer,.marquee{position:relative;z-index:2}
 /* dejamos ver las estrellas a través de las bandas, con un velo para legibilidad */
-.marquee{background-color:rgba(10,10,10,.5)!important}
-#benefits,#why,#cats,footer{background-color:rgba(9,9,9,.55)!important}
-#products{background-color:rgba(6,6,6,.4)!important}
+.marquee{background-color:rgba(10,10,10,.38)!important}
+#benefits,#why,#cats,footer{background-color:rgba(9,9,9,.42)!important}
+#products{background-color:rgba(6,6,6,.28)!important}
 #cta{background-color:transparent!important}
 /* sacamos el frasco 3D del hero: queda el fondo de estrellas + el texto */
 #hero-canvas,#hero-fallback{display:none!important}
@@ -1256,7 +1256,7 @@ async function initHero3D() {
   let w, h, dpr, parts, cx, cy;
 
   // densidad adaptada al dispositivo (menos en mobile = más fluido)
-  const COUNT = isMobile ? 90 : 180;
+  const COUNT = isMobile ? 150 : 280;
 
   function build() {
     dpr = Math.min(devicePixelRatio || 1, 2);
@@ -1269,7 +1269,7 @@ async function initHero3D() {
   }
 
   function spawn(anywhere) {
-    const r = (0.6 + Math.random() * 1.8) * dpr;         // tamaño
+    const r = (0.9 + Math.random() * 2.4) * dpr;         // tamaño
     return {
       x: Math.random() * w,
       y: anywhere ? Math.random() * h : h + 20 * dpr,
@@ -1291,8 +1291,8 @@ async function initHero3D() {
 
     // brillo cálido central (como el video)
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.5);
-    g.addColorStop(0, "rgba(201,168,76,0.10)");
-    g.addColorStop(0.4, "rgba(201,168,76,0.03)");
+    g.addColorStop(0, "rgba(201,168,76,0.18)");
+    g.addColorStop(0.4, "rgba(201,168,76,0.06)");
     g.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
