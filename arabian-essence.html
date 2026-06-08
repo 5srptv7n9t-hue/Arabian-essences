@@ -776,7 +776,7 @@ async function pagarConMP() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        items: [{ title: `${p.casa} ${p.name} 100ml`, quantity: state.qty, unit_price: p.price }],
+        items: [{ title: `${p.casa} ${p.name}`, quantity: state.qty, unit_price: p.price }],
         payer: { name: document.getElementById("mNombre").value.trim() },
         nota: document.getElementById("mNota").value.trim(),
       }),
