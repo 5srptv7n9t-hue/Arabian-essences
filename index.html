@@ -404,6 +404,25 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .pay-opts{grid-template-columns:1fr}
   .fbot{flex-direction:column}
 }
+
+/* ============================================================
+   FONDO DE ESTRELLAS  ·  canvas animado detrás de todo
+   - Las secciones se vuelven semi-transparentes para que se vea siempre.
+   - El velo oscuro (rgba) mantiene el texto legible sobre las estrellas.
+============================================================ */
+body{background:#040404}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;display:block}
+/* el contenido va por encima del fondo */
+nav,#ui,header,section,footer,.marquee{position:relative;z-index:2}
+/* dejamos ver las estrellas a través de las bandas, con un velo para legibilidad */
+.marquee{background-color:rgba(10,10,10,.5)!important}
+#benefits,#why,#cats,footer{background-color:rgba(9,9,9,.55)!important}
+#products{background-color:rgba(6,6,6,.4)!important}
+#cta{background-color:transparent!important}
+/* sacamos el frasco 3D del hero: queda el fondo de estrellas + el texto */
+#hero-canvas,#hero-fallback{display:none!important}
+#hero::before{opacity:.7}
+@media(prefers-reduced-motion:reduce){#stars{opacity:.5}}
 </style>
 <!-- Failsafe: si el JS no corre, el contenido igual se ve (sin animaciones) -->
 <noscript><style>.rv{opacity:1!important;transform:none!important}#hero-canvas{display:none}#hero-fallback{display:flex}</style></noscript>
@@ -416,6 +435,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <div id="intro" aria-hidden="true">
   <div class="intro-mk"><span>Arabian</span><span class="it gold-txt">Essence</span></div>
 </div>
+
+<!-- ===== Fondo de estrellas/partículas doradas (animado, siempre) ===== -->
+<canvas id="stars" aria-hidden="true"></canvas>
 
 <!-- ===== Atmósfera global ===== -->
 <div class="grain" aria-hidden="true"></div>
@@ -1218,7 +1240,94 @@ async function initHero3D() {
   heroIO.observe(document.getElementById("hero"));
 }
 
-initHero3D();
+/* El frasco 3D quedó desactivado (pedido del cliente): el hero usa el fondo
+   de estrellas. Si querés volver a activarlo, descomentá la línea de abajo. */
+// initHero3D();
+
+/* ============================================================
+   FONDO DE ESTRELLAS / PARTÍCULAS DORADAS  (canvas 2D, liviano)
+   Recrea el look del video: puntos dorados/blancos flotando sobre negro,
+   con un brillo cálido al centro. Loop infinito, suave en mobile.
+============================================================ */
+(function initStars() {
+  const cv = document.getElementById("stars");
+  if (!cv) return;
+  const ctx = cv.getContext("2d");
+  let w, h, dpr, parts, cx, cy;
+
+  // densidad adaptada al dispositivo (menos en mobile = más fluido)
+  const COUNT = isMobile ? 90 : 180;
+
+  function build() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    w = cv.width = Math.floor(innerWidth * dpr);
+    h = cv.height = Math.floor(innerHeight * dpr);
+    cv.style.width = innerWidth + "px";
+    cv.style.height = innerHeight + "px";
+    cx = w / 2; cy = h / 2;
+    parts = Array.from({ length: COUNT }, () => spawn(true));
+  }
+
+  function spawn(anywhere) {
+    const r = (0.6 + Math.random() * 1.8) * dpr;         // tamaño
+    return {
+      x: Math.random() * w,
+      y: anywhere ? Math.random() * h : h + 20 * dpr,
+      r,
+      vx: (Math.random() - 0.5) * 0.12 * dpr,            // deriva lateral suave
+      vy: -(0.05 + Math.random() * 0.25) * dpr,          // suben lento
+      a: 0.2 + Math.random() * 0.7,                       // opacidad base
+      tw: Math.random() * Math.PI * 2,                    // fase de titileo
+      tws: 0.01 + Math.random() * 0.03,                   // velocidad de titileo
+      gold: Math.random() < 0.6,                          // dorada o blanca
+    };
+  }
+
+  let raf, t = 0;
+  function frame() {
+    raf = requestAnimationFrame(frame);
+    t += 1;
+    ctx.clearRect(0, 0, w, h);
+
+    // brillo cálido central (como el video)
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.5);
+    g.addColorStop(0, "rgba(201,168,76,0.10)");
+    g.addColorStop(0.4, "rgba(201,168,76,0.03)");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+
+    for (const p of parts) {
+      p.x += p.vx; p.y += p.vy; p.tw += p.tws;
+      if (p.y < -20 * dpr || p.x < -20 * dpr || p.x > w + 20 * dpr) Object.assign(p, spawn(false));
+      const alpha = p.a * (0.55 + 0.45 * Math.sin(p.tw));   // titileo
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.gold
+        ? `rgba(232,204,122,${alpha})`
+        : `rgba(250,250,248,${alpha * 0.8})`;
+      ctx.shadowBlur = 6 * dpr;
+      ctx.shadowColor = p.gold ? "rgba(201,168,76,0.8)" : "rgba(255,255,255,0.6)";
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  build();
+  addEventListener("resize", build);
+
+  if (reduceMotion) {
+    // movimiento reducido: dibujamos un campo estático una sola vez
+    requestAnimationFrame(() => { frame(); cancelAnimationFrame(raf); });
+  } else {
+    frame();
+    // pausa si la pestaña no está visible (ahorra batería)
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) { cancelAnimationFrame(raf); raf = null; }
+      else if (!raf) frame();
+    });
+  }
+})();
 </script>
 </body>
 </html>
