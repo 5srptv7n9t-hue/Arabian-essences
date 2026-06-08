@@ -417,7 +417,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
   <div id="hero-fallback" aria-hidden="true"><div class="flacon"></div></div>
   <div class="wrap hero-grid">
-    <p class="eyebrow cen rv">Perfumería Árabe · Edición 100 ml</p>
+    <p class="eyebrow cen rv">Perfumería Árabe · Originales Certificados</p>
     <h1 class="rv d1">Más allá de la <span class="gold-txt italic">colección</span></h1>
     <p class="lead rv d2">Fragancias árabes de alta concentración —Lattafa, Maison Alhambra, Afnan— intensas, duraderas y con envío a toda la Argentina.</p>
     <div class="hero-acts rv d3">
@@ -756,7 +756,7 @@ function sendOrder() {
   const nombre = document.getElementById("mNombre").value.trim();
   const nota = document.getElementById("mNota").value.trim();
   let msg = `Hola Arabian Essence! Quiero hacer un pedido:\n\n`;
-  msg += `• ${p.casa} ${p.name} (100 ml)\n`;
+  msg += `• ${p.casa} ${p.name}\n`;
   msg += `• Cantidad: ${state.qty}\n`;
   msg += `• Total: ${ARS(p.price * state.qty)}\n`;
   if (nombre) msg += `• Nombre: ${nombre}\n`;
