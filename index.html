@@ -174,11 +174,16 @@ nav.solid{background:rgba(8,8,8,.72);backdrop-filter:blur(16px);-webkit-backdrop
   position:absolute;inset:0;z-index:1;display:none;align-items:center;justify-content:center;pointer-events:none;
 }
 #hero-fallback .flacon{
-  width:120px;height:260px;border-radius:14px 14px 18px 18px;
-  background:linear-gradient(160deg,rgba(201,168,76,.28),rgba(139,105,20,.12));
-  border:1px solid var(--line);box-shadow:0 0 90px -10px rgba(201,168,76,.5);position:relative;
+  width:130px;height:280px;border-radius:16px 16px 20px 20px;
+  background:linear-gradient(160deg,rgba(232,204,122,.5),rgba(201,168,76,.25) 45%,rgba(139,105,20,.18));
+  border:1px solid rgba(201,168,76,.5);box-shadow:0 0 120px -8px rgba(201,168,76,.65),inset 0 0 40px rgba(232,204,122,.25);
+  position:relative;animation:flaconFloat 5s ease-in-out infinite;
 }
-#hero-fallback .flacon::before{content:"";position:absolute;top:-26px;left:50%;transform:translateX(-50%);width:42px;height:30px;background:linear-gradient(160deg,var(--gold-light),var(--gold-dim));border-radius:5px}
+#hero-fallback .flacon::before{content:"";position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:46px;height:34px;background:linear-gradient(160deg,var(--gold-light),var(--gold-dim));border-radius:6px;box-shadow:0 0 24px -2px rgba(232,204,122,.7)}
+/* reflejo que recorre el vidrio */
+#hero-fallback .flacon::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.28) 48%,transparent 60%);background-size:240% 100%;animation:flaconSheen 5s linear infinite}
+@keyframes flaconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes flaconSheen{to{background-position:240% 0}}
 .scrollcue{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:12px;font-size:.58rem;letter-spacing:.34em;text-transform:uppercase;color:var(--white-muted)}
 .scrollcue .l{width:1px;height:46px;background:rgba(201,168,76,.3);position:relative;overflow:hidden}
 .scrollcue .l::after{content:"";position:absolute;inset:0;top:-100%;background:var(--gold);animation:cue 2.2s infinite}
@@ -754,7 +759,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 ============================================================ */
 const WHATSAPP   = "5491170204450";                 // número de Arabian Essence
 const INSTAGRAM  = "https://instagram.com/arabian_essencess";
-const MP_ENDPOINT = "/.netlify/functions/crear-preferencia"; // función serverless (token oculto)
+const MP_ENDPOINT = "/.netlify/functions/crear-preferencia"; // función serverless (token oculto) si existe
+// Token directo de Mercado Pago: necesario cuando subís SOLO el index.html (sin la función).
+// ⚠️ Queda visible en el código. Recomendación: renovalo en el panel de MP cuando puedas.
+const MP_ACCESS_TOKEN = "APP_USR-903463759801516-060214-f86937ba5b5bbbb439971477856cceed-500748477";
 
 /* Catálogo real · precio numérico para calcular totales (ARS) */
 const PRODUCTS = [
@@ -853,7 +861,26 @@ function sendOrder() {
   window.open(waGeneral(msg), "_blank");
 }
 
-/* Mercado Pago: pide la preferencia a la función serverless y redirige */
+/* Crea la preferencia llamando directo a Mercado Pago con el token.
+   Funciona cuando subís solo el index.html (sin función serverless). */
+async function crearPreferenciaDirecto(p) {
+  const res = await fetch("https://api.mercadopago.com/checkout/preferences", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${MP_ACCESS_TOKEN}` },
+    body: JSON.stringify({
+      items: [{ title: `${p.casa} ${p.name}`, quantity: state.qty, unit_price: p.price, currency_id: "ARS" }],
+      payer: { name: document.getElementById("mNombre").value.trim() },
+      back_urls: { success: location.href, failure: location.href, pending: location.href },
+      statement_descriptor: "Arabian Essence",
+      external_reference: `${p.name.replace(/\s/g, "-")}-${Date.now()}`,
+    }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Error de Mercado Pago");
+  return data.init_point || data.sandbox_init_point;
+}
+
+/* Mercado Pago: intenta la función serverless (segura) y si no está, usa el token directo. */
 async function pagarConMP() {
   const p = PRODUCTS[state.index];
   const go = document.getElementById("mGo");
@@ -861,22 +888,28 @@ async function pagarConMP() {
   go.firstChild.textContent = "Generando pago… ";
   go.style.pointerEvents = "none";
   try {
-    const res = await fetch(MP_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: [{ title: `${p.casa} ${p.name}`, quantity: state.qty, unit_price: p.price }],
-        payer: { name: document.getElementById("mNombre").value.trim() },
-        nota: document.getElementById("mNota").value.trim(),
-      }),
-    });
-    const data = await res.json();
-    const url = data.init_point || data.sandbox_init_point;
-    if (!res.ok || !url) throw new Error(data.error || "MP no disponible");
+    let url;
+    // 1) Función serverless (si subiste el proyecto completo): el token queda oculto.
+    try {
+      const res = await fetch(MP_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: [{ title: `${p.casa} ${p.name}`, quantity: state.qty, unit_price: p.price }],
+          payer: { name: document.getElementById("mNombre").value.trim() },
+          nota: document.getElementById("mNota").value.trim(),
+        }),
+      });
+      if (res.ok) { const d = await res.json(); url = d.init_point || d.sandbox_init_point; }
+    } catch (_) { /* no hay función → seguimos con el token directo */ }
+
+    // 2) Fallback: token directo (deploy de archivo único).
+    if (!url) url = await crearPreferenciaDirecto(p);
+    if (!url) throw new Error("Sin link de pago");
     window.location.href = url;                      // redirige a Checkout Pro
   } catch (err) {
     // Degradación elegante: si MP falla, ofrecemos WhatsApp.
-    toast("Pago online no disponible · seguimos por WhatsApp");
+    toast("No se pudo generar el pago · seguimos por WhatsApp");
     go.firstChild.textContent = original;
     go.style.pointerEvents = "";
     sendOrder();
@@ -1032,7 +1065,7 @@ function showFallback() {
 }
 
 async function initHero3D() {
-  if (reduceMotion || !hasGSAP) return showFallback();
+  if (reduceMotion) return showFallback();           // respetamos "reducir movimiento"
   // Test rápido de WebGL
   try {
     const test = document.createElement("canvas").getContext("webgl") ||
@@ -1042,9 +1075,9 @@ async function initHero3D() {
 
   let THREE;
   try {
-    // Carrera contra un timeout: en conexiones lentas no dejamos el hero colgado.
+    // Carrera contra un timeout amplio: en datos móviles lentos no colgamos el hero.
     const load = import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");
-    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 6000));
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 12000));
     THREE = await Promise.race([load, timeout]);
   } catch { return showFallback(); }
 
@@ -1133,17 +1166,18 @@ async function initHero3D() {
   resize();
   window.addEventListener("resize", resize);
 
-  /* --- Entrada cinematográfica con GSAP --- */
-  bottle.position.y = -1.2; bottle.scale.multiplyScalar(0.8);
-  gsap.to(bottle.position, { y: 0, duration: 1.6, ease: "power3.out", delay: 0.2 });
-  gsap.to(bottle.scale, { x: bottle.scale.x / 0.8, y: bottle.scale.y / 0.8, z: bottle.scale.z / 0.8, duration: 1.6, ease: "power3.out", delay: 0.2 });
-
-  /* --- El frasco se va con el scroll (parallax de salida) --- */
+  /* --- Entrada cinematográfica (con GSAP si está disponible) --- */
   const scrollObj = { y: 0, rot: 0 };
-  window.ScrollTrigger.create({
-    trigger: "#hero", start: "top top", end: "bottom top", scrub: true,
-    onUpdate: (self) => { scrollObj.y = -self.progress * 3; scrollObj.rot = self.progress * 1.2; },
-  });
+  if (hasGSAP) {
+    bottle.position.y = -1.2; bottle.scale.multiplyScalar(0.8);
+    gsap.to(bottle.position, { y: 0, duration: 1.6, ease: "power3.out", delay: 0.2 });
+    gsap.to(bottle.scale, { x: bottle.scale.x / 0.8, y: bottle.scale.y / 0.8, z: bottle.scale.z / 0.8, duration: 1.6, ease: "power3.out", delay: 0.2 });
+    // El frasco se va con el scroll (parallax de salida)
+    ST.create({
+      trigger: "#hero", start: "top top", end: "bottom top", scrub: true,
+      onUpdate: (self) => { scrollObj.y = -self.progress * 3; scrollObj.rot = self.progress * 1.2; },
+    });
+  }
 
   /* --- Loop de render --- */
   const clock = new THREE.Clock();
