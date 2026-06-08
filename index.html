@@ -270,10 +270,10 @@ nav.solid{background:rgba(8,8,8,.72);backdrop-filter:blur(16px);-webkit-backdrop
 .card-body .dur span{color:var(--gold)}
 .card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:12px}
 .card-foot .precio{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--gold-light)}
-.card-foot button{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);border:1px solid var(--gold);padding:11px 20px;position:relative;overflow:hidden;z-index:1;transition:color .45s var(--ease)}
-.card-foot button::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--gold);transform:translateY(101%);transition:transform .45s var(--ease-io)}
-.card-foot button:hover{color:var(--black)}
-.card-foot button:hover::after{transform:translateY(0)}
+.card-foot .buybtn{display:inline-block;text-decoration:none;cursor:pointer;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);border:1px solid var(--gold);padding:11px 20px;position:relative;overflow:hidden;z-index:1;transition:color .45s var(--ease)}
+.card-foot .buybtn::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--gold);transform:translateY(101%);transition:transform .45s var(--ease-io)}
+.card-foot .buybtn:hover{color:var(--black)}
+.card-foot .buybtn:hover::after{transform:translateY(0)}
 
 /* ============================================================
    CTA + FOOTER
@@ -547,7 +547,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">Una oda al oud más preciado. Masculino, profundo y con una presencia inconfundible que permanece.</p>
           <div class="notes"><span class="note">Oud</span><span class="note">Sándalo</span><span class="note">Ámbar</span><span class="note">Especias</span></div>
           <div class="dur">Duración: <span>12–14 hs</span></div>
-          <div class="card-foot"><span class="precio">$14.990</span><button data-order="0">Comprar Ahora</button></div>
+          <div class="card-foot"><span class="precio">$14.990</span><a class="buybtn" data-order="0" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Lattafa%20Oud%20for%20Glory%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -563,7 +563,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">Rosa de Turquía fusionada con almizcle blanco y vainilla. Femenino, sofisticado e irresistible.</p>
           <div class="notes"><span class="note">Rosa</span><span class="note">Vainilla</span><span class="note">Almizcle</span><span class="note">Cedro</span></div>
           <div class="dur">Duración: <span>10–12 hs</span></div>
-          <div class="card-foot"><span class="precio">$12.990</span><button data-order="1">Comprar Ahora</button></div>
+          <div class="card-foot"><span class="precio">$12.990</span><a class="buybtn" data-order="1" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Maison%20Alhambra%20Exclusif%20Rose%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -579,7 +579,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">Icónico e inconfundible. Oud ahumado con notas cítricas que crean un contraste perfecto y adictivo.</p>
           <div class="notes"><span class="note">Oud</span><span class="note">Bergamota</span><span class="note">Pachulí</span><span class="note">Cuero</span></div>
           <div class="dur">Duración: <span>13–15 hs</span></div>
-          <div class="card-foot"><span class="precio">$16.990</span><button data-order="2">Comprar Ahora</button></div>
+          <div class="card-foot"><span class="precio">$16.990</span><a class="buybtn" data-order="2" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Ard%20Al%20Zaafaran%20Dirham%20Gold%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -594,7 +594,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">El lujo hecho fragancia. Ámbar puro con toques de oud y madera que evolucionan durante todo el día.</p>
           <div class="notes"><span class="note">Ámbar</span><span class="note">Oud</span><span class="note">Madera</span><span class="note">Resina</span></div>
           <div class="dur">Duración: <span>14–16 hs</span></div>
-          <div class="card-foot"><span class="precio">$18.990</span><button data-order="3">Comprar Ahora</button></div>
+          <div class="card-foot"><span class="precio">$18.990</span><a class="buybtn" data-order="3" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Al%20Haramain%20Amber%20Oud%20Gold%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -610,7 +610,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">Delicadeza floral con fondo oriental. Una fragancia femenina que conquista desde el primer spray.</p>
           <div class="notes"><span class="note">Jazmín</span><span class="note">Gardenia</span><span class="note">Almizcle</span><span class="note">Vainilla</span></div>
           <div class="dur">Duración: <span>10–12 hs</span></div>
-          <div class="card-foot"><span class="precio">$13.490</span><button data-order="4">Comprar Ahora</button></div>
+          <div class="card-foot"><span class="precio">$13.490</span><a class="buybtn" data-order="4" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Rasasi%20Faqat%20Lil%20Banat%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -878,10 +878,12 @@ document.querySelectorAll(".pay-opt").forEach((o) => {
   o.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectPayment(o.dataset.method); } });
 });
 
-/* Disparadores: botones "Pedir" de cada card */
+/* Disparadores: "Comprar Ahora" de cada card.
+   Son links reales a WhatsApp (funcionan sin JS). Con JS activo interceptamos
+   el click y abrimos el modal de pedido con cantidad + Mercado Pago. */
 grid.addEventListener("click", (e) => {
   const b = e.target.closest("[data-order]");
-  if (b) openOrder(+b.dataset.order);
+  if (b) { e.preventDefault(); openOrder(+b.dataset.order); }
 });
 
 /* Cierre del modal */
