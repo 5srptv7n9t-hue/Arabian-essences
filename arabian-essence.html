@@ -527,7 +527,90 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
       <h2>Fragancias que <span class="gold-txt italic">hablan</span> por vos</h2>
       <p>Originales certificados · Eau de Parfum de alta concentración y larga duración</p>
     </div>
-    <div class="products" id="productGrid"><!-- generado por JS desde PRODUCTS --></div>
+    <!-- Productos estáticos: siempre visibles (no dependen del JS). El índice
+         data-order coincide con el array PRODUCTS del script para abrir el modal. -->
+    <div class="products" id="productGrid">
+
+      <article class="card rv d1" style="--cardglow:#b5731f99">
+        <div class="card-media">
+          <span class="badge">Más Vendido</span>
+          <span class="fam">Amaderado</span>
+          <div class="bottle" style="background:linear-gradient(160deg,#b5731f66,#b5731f22);border:1px solid var(--line)"></div>
+        </div>
+        <div class="card-body">
+          <span class="casa">Lattafa</span>
+          <h3>Oud for Glory</h3>
+          <p class="desc">Una oda al oud más preciado. Masculino, profundo y con una presencia inconfundible que permanece.</p>
+          <div class="notes"><span class="note">Oud</span><span class="note">Sándalo</span><span class="note">Ámbar</span><span class="note">Especias</span></div>
+          <div class="dur">Duración: <span>12–14 hs</span></div>
+          <div class="card-foot"><span class="precio">$14.990</span><button data-order="0">Pedir</button></div>
+        </div>
+      </article>
+
+      <article class="card rv d2" style="--cardglow:#e8a0c099">
+        <div class="card-media">
+          <span class="badge">Nuevo</span>
+          <span class="fam">Floral</span>
+          <div class="bottle" style="background:linear-gradient(160deg,#e8a0c066,#e8a0c022);border:1px solid var(--line)"></div>
+        </div>
+        <div class="card-body">
+          <span class="casa">Maison Alhambra</span>
+          <h3>Exclusif Rose</h3>
+          <p class="desc">Rosa de Turquía fusionada con almizcle blanco y vainilla. Femenino, sofisticado e irresistible.</p>
+          <div class="notes"><span class="note">Rosa</span><span class="note">Vainilla</span><span class="note">Almizcle</span><span class="note">Cedro</span></div>
+          <div class="dur">Duración: <span>10–12 hs</span></div>
+          <div class="card-foot"><span class="precio">$12.990</span><button data-order="1">Pedir</button></div>
+        </div>
+      </article>
+
+      <article class="card rv d3" style="--cardglow:#c98a3a99">
+        <div class="card-media">
+          <span class="badge">Unisex</span>
+          <span class="fam">Oud</span>
+          <div class="bottle" style="background:linear-gradient(160deg,#c98a3a66,#c98a3a22);border:1px solid var(--line)"></div>
+        </div>
+        <div class="card-body">
+          <span class="casa">Ard Al Zaafaran</span>
+          <h3>Dirham Gold</h3>
+          <p class="desc">Icónico e inconfundible. Oud ahumado con notas cítricas que crean un contraste perfecto y adictivo.</p>
+          <div class="notes"><span class="note">Oud</span><span class="note">Bergamota</span><span class="note">Pachulí</span><span class="note">Cuero</span></div>
+          <div class="dur">Duración: <span>13–15 hs</span></div>
+          <div class="card-foot"><span class="precio">$16.990</span><button data-order="2">Pedir</button></div>
+        </div>
+      </article>
+
+      <article class="card rv d1" style="--cardglow:#ffd97a99">
+        <div class="card-media">
+          <span class="fam">Oriental</span>
+          <div class="bottle" style="background:linear-gradient(160deg,#ffd97a66,#ffd97a22);border:1px solid var(--line)"></div>
+        </div>
+        <div class="card-body">
+          <span class="casa">Al Haramain</span>
+          <h3>Amber Oud Gold</h3>
+          <p class="desc">El lujo hecho fragancia. Ámbar puro con toques de oud y madera que evolucionan durante todo el día.</p>
+          <div class="notes"><span class="note">Ámbar</span><span class="note">Oud</span><span class="note">Madera</span><span class="note">Resina</span></div>
+          <div class="dur">Duración: <span>14–16 hs</span></div>
+          <div class="card-foot"><span class="precio">$18.990</span><button data-order="3">Pedir</button></div>
+        </div>
+      </article>
+
+      <article class="card rv d2" style="--cardglow:#ff9ec299">
+        <div class="card-media">
+          <span class="badge">Para Ella</span>
+          <span class="fam">Floral</span>
+          <div class="bottle" style="background:linear-gradient(160deg,#ff9ec266,#ff9ec222);border:1px solid var(--line)"></div>
+        </div>
+        <div class="card-body">
+          <span class="casa">Rasasi</span>
+          <h3>Faqat Lil Banat</h3>
+          <p class="desc">Delicadeza floral con fondo oriental. Una fragancia femenina que conquista desde el primer spray.</p>
+          <div class="notes"><span class="note">Jazmín</span><span class="note">Gardenia</span><span class="note">Almizcle</span><span class="note">Vainilla</span></div>
+          <div class="dur">Duración: <span>10–12 hs</span></div>
+          <div class="card-foot"><span class="precio">$13.490</span><button data-order="4">Pedir</button></div>
+        </div>
+      </article>
+
+    </div>
   </div>
 </section>
 
@@ -640,7 +723,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 <!-- SDK de Mercado Pago (para el redirect a Checkout Pro) -->
 <script src="https://sdk.mercadopago.com/js/v2"></script>
 
-<script type="module">
+<script>
 /* ============================================================
    CONFIGURACIÓN E INTEGRACIONES
 ============================================================ */
@@ -678,32 +761,11 @@ document.getElementById("ctaWa").href   = waGeneral("Hola! Quiero asesoría para
 document.getElementById("footWa").href  = waGeneral("Hola! Quiero consultar por Arabian Essence");
 
 /* ============================================================
-   RENDER DE PRODUCTOS
+   PRODUCTOS
+   Las cards ya están en el HTML (estáticas, siempre visibles).
+   El array PRODUCTS de arriba alimenta el modal vía data-order.
 ============================================================ */
 const grid = document.getElementById("productGrid");
-PRODUCTS.forEach((p, i) => {
-  const el = document.createElement("article");
-  el.className = "card rv d" + ((i % 3) + 1);
-  el.style.setProperty("--cardglow", p.glow + "99");
-  el.innerHTML = `
-    <div class="card-media">
-      ${p.badge ? `<span class="badge">${p.badge}</span>` : ""}
-      <span class="fam">${p.fam}</span>
-      <div class="bottle" style="background:linear-gradient(160deg,${p.glow}66,${p.glow}22);border:1px solid var(--line)"></div>
-    </div>
-    <div class="card-body">
-      <span class="casa">${p.casa}</span>
-      <h3>${p.name}</h3>
-      <p class="desc">${p.desc}</p>
-      <div class="notes">${p.notes.map((n) => `<span class="note">${n}</span>`).join("")}</div>
-      <div class="dur">Duración: <span>${p.dur}</span></div>
-      <div class="card-foot">
-        <span class="precio">${ARS(p.price)}</span>
-        <button data-order="${i}">Pedir</button>
-      </div>
-    </div>`;
-  grid.appendChild(el);
-});
 
 /* ============================================================
    MODAL DE PEDIDO  ·  openOrder / selectPayment / sendOrder / pagarConMP
