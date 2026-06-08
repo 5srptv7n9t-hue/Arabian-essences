@@ -185,7 +185,9 @@ nav.solid{background:rgba(8,8,8,.72);backdrop-filter:blur(16px);-webkit-backdrop
 /* ============================================================
    REVEALS (scroll-driven con GSAP, con fallback CSS)
 ============================================================ */
-.rv{opacity:0;transform:translateY(42px)}
+/* El contenido SOLO se oculta para animar cuando el JS está activo (.has-js).
+   Sin JS / en un preview estático, .rv queda visible y nada desaparece. */
+.has-js .rv{opacity:0;transform:translateY(42px)}
 .rv.in{opacity:1;transform:none;transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
 .rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}.rv.d4{transition-delay:.48s}
 
@@ -384,6 +386,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 </style>
 <!-- Failsafe: si el JS no corre, el contenido igual se ve (sin animaciones) -->
 <noscript><style>.rv{opacity:1!important;transform:none!important}#hero-canvas{display:none}#hero-fallback{display:flex}</style></noscript>
+<!-- Marca que el JS está activo: solo entonces ocultamos para animar -->
+<script>document.documentElement.classList.add('has-js')</script>
 </head>
 <body>
 
@@ -543,7 +547,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">Una oda al oud más preciado. Masculino, profundo y con una presencia inconfundible que permanece.</p>
           <div class="notes"><span class="note">Oud</span><span class="note">Sándalo</span><span class="note">Ámbar</span><span class="note">Especias</span></div>
           <div class="dur">Duración: <span>12–14 hs</span></div>
-          <div class="card-foot"><span class="precio">$14.990</span><button data-order="0">Pedir</button></div>
+          <div class="card-foot"><span class="precio">$14.990</span><button data-order="0">Comprar Ahora</button></div>
         </div>
       </article>
 
@@ -559,7 +563,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">Rosa de Turquía fusionada con almizcle blanco y vainilla. Femenino, sofisticado e irresistible.</p>
           <div class="notes"><span class="note">Rosa</span><span class="note">Vainilla</span><span class="note">Almizcle</span><span class="note">Cedro</span></div>
           <div class="dur">Duración: <span>10–12 hs</span></div>
-          <div class="card-foot"><span class="precio">$12.990</span><button data-order="1">Pedir</button></div>
+          <div class="card-foot"><span class="precio">$12.990</span><button data-order="1">Comprar Ahora</button></div>
         </div>
       </article>
 
@@ -575,7 +579,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">Icónico e inconfundible. Oud ahumado con notas cítricas que crean un contraste perfecto y adictivo.</p>
           <div class="notes"><span class="note">Oud</span><span class="note">Bergamota</span><span class="note">Pachulí</span><span class="note">Cuero</span></div>
           <div class="dur">Duración: <span>13–15 hs</span></div>
-          <div class="card-foot"><span class="precio">$16.990</span><button data-order="2">Pedir</button></div>
+          <div class="card-foot"><span class="precio">$16.990</span><button data-order="2">Comprar Ahora</button></div>
         </div>
       </article>
 
@@ -590,7 +594,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">El lujo hecho fragancia. Ámbar puro con toques de oud y madera que evolucionan durante todo el día.</p>
           <div class="notes"><span class="note">Ámbar</span><span class="note">Oud</span><span class="note">Madera</span><span class="note">Resina</span></div>
           <div class="dur">Duración: <span>14–16 hs</span></div>
-          <div class="card-foot"><span class="precio">$18.990</span><button data-order="3">Pedir</button></div>
+          <div class="card-foot"><span class="precio">$18.990</span><button data-order="3">Comprar Ahora</button></div>
         </div>
       </article>
 
@@ -606,7 +610,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
           <p class="desc">Delicadeza floral con fondo oriental. Una fragancia femenina que conquista desde el primer spray.</p>
           <div class="notes"><span class="note">Jazmín</span><span class="note">Gardenia</span><span class="note">Almizcle</span><span class="note">Vainilla</span></div>
           <div class="dur">Duración: <span>10–12 hs</span></div>
-          <div class="card-foot"><span class="precio">$13.490</span><button data-order="4">Pedir</button></div>
+          <div class="card-foot"><span class="precio">$13.490</span><button data-order="4">Comprar Ahora</button></div>
         </div>
       </article>
 
