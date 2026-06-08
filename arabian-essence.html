@@ -382,6 +382,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .fbot{flex-direction:column}
 }
 </style>
+<!-- Failsafe: si el JS no corre, el contenido igual se ve (sin animaciones) -->
+<noscript><style>.rv{opacity:1!important;transform:none!important}#hero-canvas{display:none}#hero-fallback{display:flex}</style></noscript>
 </head>
 <body>
 
@@ -847,15 +849,30 @@ track.innerHTML += track.innerHTML;
 
 /* ============================================================
    SMOOTH SCROLL (Lenis) + REVEALS / PARALLAX (GSAP ScrollTrigger)
+   ------------------------------------------------------------
+   FAILSAFE: si algún CDN (GSAP/Lenis) no carga, la página NO debe
+   quedar invisible. Detectamos qué hay disponible y degradamos.
 ============================================================ */
 const gsap = window.gsap;
-gsap.registerPlugin(window.ScrollTrigger);
+const ST = window.ScrollTrigger;
+const hasGSAP = !!(gsap && ST);                 // ¿se cargó GSAP?
+const animate = hasGSAP && !reduceMotion;        // ¿corremos animaciones?
 
-if (!reduceMotion) {
+if (hasGSAP) gsap.registerPlugin(ST);
+
+/* Red de seguridad nº1: mostrá TODO el contenido pase lo que pase.
+   - Sin animaciones → se ve directo.
+   - Con animaciones → un timeout revela lo que ScrollTrigger no haya
+     alcanzado a disparar (CDN lento, error puntual, etc.). */
+const showAll = () => document.querySelectorAll(".rv:not(.in)").forEach((el) => el.classList.add("in"));
+if (!animate) showAll();
+else setTimeout(showAll, 2600);
+
+if (animate && window.Lenis) {
   // Lenis para scroll suave; lo conectamos al ticker de GSAP.
   const lenis = new window.Lenis({ duration: 1.1, smoothWheel: true });
   window.lenis = lenis;
-  lenis.on("scroll", () => { window.ScrollTrigger.update(); onScrollNav(); });
+  lenis.on("scroll", () => { ST.update(); onScrollNav(); });
   gsap.ticker.add((t) => lenis.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
 } else {
@@ -875,27 +892,23 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
   });
 });
 
-/* Reveals: cada .rv aparece al entrar en viewport */
-if (reduceMotion) {
-  document.querySelectorAll(".rv").forEach((el) => el.classList.add("in"));
-} else {
+/* Reveals: cada .rv aparece al entrar en viewport (solo si hay animación) */
+if (animate) {
   gsap.utils.toArray(".rv").forEach((el) => {
-    window.ScrollTrigger.create({
-      trigger: el, start: "top 86%",
-      onEnter: () => el.classList.add("in"),
-    });
+    ST.create({ trigger: el, start: "top 86%", onEnter: () => el.classList.add("in") });
   });
 }
 
 /* Cifras que cuentan al entrar en vista */
-gsap.utils.toArray("[data-count]").forEach((el) => {
+document.querySelectorAll("[data-count]").forEach((el) => {
   const end = +el.dataset.count;
   const suffix = el.dataset.suffix || "";
   const fmt = (v) => Math.round(v).toLocaleString("es-AR") + suffix;
-  if (reduceMotion) { el.textContent = (end >= 1000 ? "+" : "") + fmt(end); return; }
   const prefix = el.textContent.trim().startsWith("+") ? "+" : "";
+  // Sin animación: dejamos el valor final ya escrito.
+  if (!animate) { el.textContent = prefix + fmt(end); return; }
   const obj = { v: 0 };
-  window.ScrollTrigger.create({
+  ST.create({
     trigger: el, start: "top 88%", once: true,
     onEnter: () => gsap.to(obj, { v: end, duration: 1.6, ease: "power2.out",
       onUpdate: () => { el.textContent = prefix + fmt(obj.v); } }),
@@ -930,7 +943,7 @@ function showFallback() {
 }
 
 async function initHero3D() {
-  if (reduceMotion) return showFallback();
+  if (reduceMotion || !hasGSAP) return showFallback();
   // Test rápido de WebGL
   try {
     const test = document.createElement("canvas").getContext("webgl") ||
@@ -940,7 +953,10 @@ async function initHero3D() {
 
   let THREE;
   try {
-    THREE = await import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");
+    // Carrera contra un timeout: en conexiones lentas no dejamos el hero colgado.
+    const load = import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 6000));
+    THREE = await Promise.race([load, timeout]);
   } catch { return showFallback(); }
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
