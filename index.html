@@ -90,7 +90,7 @@ section{position:relative;z-index:2}
    INTRO  ·  cortina que revela la página (estilo Unseen Studio)
    100% CSS: se va sola aunque no corra el JS. Respeta reduced-motion.
 ============================================================ */
-#intro{position:fixed;inset:0;z-index:9999;background:var(--black);display:flex;align-items:center;justify-content:center;animation:introOut 1s var(--ease-io) 2s forwards}
+#intro{position:fixed;inset:0;z-index:9999;background:var(--black);display:flex;align-items:center;justify-content:center;pointer-events:none;animation:introOut 1s var(--ease-io) 2s forwards}
 #intro .intro-mk{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,9vw,5rem);line-height:1;display:flex;gap:.28em;opacity:0;animation:introIn 1.1s var(--ease) .15s forwards}
 #intro .intro-mk .it{font-style:italic}
 #intro::after{content:"";position:absolute;left:50%;bottom:24%;transform:translateX(-50%);width:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:introLine 1s var(--ease) .6s forwards}
@@ -435,6 +435,8 @@ nav,#ui,header,section,footer,.marquee{position:relative;z-index:2}
 <div id="intro" aria-hidden="true">
   <div class="intro-mk"><span>Arabian</span><span class="it gold-txt">Essence</span></div>
 </div>
+<script>/* respaldo: sacamos la intro sí o sí, nunca debe bloquear la página */
+setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3300);</script>
 
 <!-- ===== Fondo de estrellas/partículas doradas (animado, siempre) ===== -->
 <canvas id="stars" aria-hidden="true"></canvas>
@@ -845,12 +847,14 @@ function openOrder(index) {
   document.getElementById("mUnit").textContent = ARS(p.price) + " · Duración " + p.dur;
   renderTotal();
   modal.classList.add("open");
-  if (window.lenis) window.lenis.stop();           // bloquea scroll de fondo
+  document.body.style.overflow = "hidden";          // bloquea scroll de fondo (mobile)
+  if (window.lenis) window.lenis.stop();
   document.getElementById("mNombre").focus({ preventScroll: true });
 }
 
 function closeOrder() {
   modal.classList.remove("open");
+  document.body.style.overflow = "";
   if (window.lenis) window.lenis.start();
 }
 
@@ -1012,8 +1016,8 @@ const showAll = () => document.querySelectorAll(".rv:not(.in)").forEach((el) => 
 if (!animate) showAll();
 else setTimeout(showAll, 2600);
 
-if (animate && window.Lenis) {
-  // Lenis para scroll suave; lo conectamos al ticker de GSAP.
+if (animate && window.Lenis && !isMobile) {
+  // Lenis SOLO en escritorio. En celular usamos el scroll nativo (nunca se traba).
   const lenis = new window.Lenis({ duration: 1.1, smoothWheel: true });
   window.lenis = lenis;
   lenis.on("scroll", () => { ST.update(); onScrollNav(); });
