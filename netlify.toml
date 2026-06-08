@@ -11,10 +11,5 @@
 [functions]
   node_bundler = "esbuild"
 
-# La home apunta a la landing nueva.
-# (Si preferís servirla en /, podés renombrar el archivo a index.html
-#  o dejar esta redirección.)
-[[redirects]]
-  from   = "/"
-  to     = "/arabian-essence.html"
-  status = 200
+# La landing es index.html → Netlify la sirve en la raíz automáticamente,
+# no hace falta ninguna redirección.
