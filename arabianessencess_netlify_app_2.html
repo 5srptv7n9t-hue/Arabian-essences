@@ -326,11 +326,8 @@ nav.solid{background:rgba(12,9,7,.72);backdrop-filter:blur(16px);-webkit-backdro
 .bottle3d .bf.left{transform:rotateY(-90deg) translateZ(42px)}
 .bottle3d .b-cap{position:absolute;top:-22px;left:50%;width:34px;height:26px;margin-left:-17px;border-radius:4px;background:linear-gradient(160deg,var(--gold-light),var(--gold-dim))}
 @keyframes spinBottle{to{transform:rotateY(360deg)}}
-/* Mobile/iOS: solo gira la card que está en pantalla (ahorra batería) */
-@media(max-width:760px){
-  .bottle3d{animation-play-state:paused}
-  .card.touch-active .bottle3d{animation-play-state:running}
-}
+/* El giro es CSS puro y corre en todos los dispositivos (también iPhone),
+   sin depender de JS ni de que la card esté centrada. */
 .card-media .fam{position:absolute;top:16px;left:16px;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:6px 12px;background:rgba(12,9,7,.4)}
 .card-media .badge{position:absolute;top:16px;right:16px;z-index:2;font-size:.54rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:5px 10px}
 .card-body{padding:24px;display:flex;flex-direction:column;gap:6px;flex:1}
@@ -505,12 +502,15 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
   <div id="dune-fallback" aria-hidden="true"></div>
   <!-- Aves sobrevolando las dunas (vuelan y aletean de verdad, CSS puro) -->
   <div class="birds" aria-hidden="true">
-    <span class="bird" style="top:30%;animation-duration:21s;animation-delay:-2s"><span class="bird-s" style="transform:scale(.55)"><span class="wing l" style="animation-duration:.46s"></span><span class="wing r" style="animation-duration:.46s"></span></span></span>
-    <span class="bird" style="top:36%;animation-duration:18s;animation-delay:-7s"><span class="bird-s" style="transform:scale(.8)"><span class="wing l" style="animation-duration:.4s"></span><span class="wing r" style="animation-duration:.4s"></span></span></span>
-    <span class="bird" style="top:33%;animation-duration:24s;animation-delay:-12s"><span class="bird-s" style="transform:scale(.65)"><span class="wing l" style="animation-duration:.52s"></span><span class="wing r" style="animation-duration:.52s"></span></span></span>
-    <span class="bird" style="top:42%;animation-duration:16s;animation-delay:-4s"><span class="bird-s" style="transform:scale(1)"><span class="wing l" style="animation-duration:.36s"></span><span class="wing r" style="animation-duration:.36s"></span></span></span>
-    <span class="bird" style="top:39%;animation-duration:27s;animation-delay:-16s"><span class="bird-s" style="transform:scale(.5)"><span class="wing l" style="animation-duration:.58s"></span><span class="wing r" style="animation-duration:.58s"></span></span></span>
-    <span class="bird" style="top:46%;animation-duration:20s;animation-delay:-9s"><span class="bird-s" style="transform:scale(.72)"><span class="wing l" style="animation-duration:.44s"></span><span class="wing r" style="animation-duration:.44s"></span></span></span>
+    <span class="bird" style="top:24%;animation-duration:15s;animation-delay:-1s"><span class="bird-s" style="transform:scale(.7)"><span class="wing l" style="animation-duration:.46s"></span><span class="wing r" style="animation-duration:.46s"></span></span></span>
+    <span class="bird" style="top:31%;animation-duration:13s;animation-delay:-6s"><span class="bird-s" style="transform:scale(1)"><span class="wing l" style="animation-duration:.4s"></span><span class="wing r" style="animation-duration:.4s"></span></span></span>
+    <span class="bird" style="top:28%;animation-duration:18s;animation-delay:-10s"><span class="bird-s" style="transform:scale(.8)"><span class="wing l" style="animation-duration:.52s"></span><span class="wing r" style="animation-duration:.52s"></span></span></span>
+    <span class="bird" style="top:37%;animation-duration:12s;animation-delay:-3s"><span class="bird-s" style="transform:scale(1.15)"><span class="wing l" style="animation-duration:.36s"></span><span class="wing r" style="animation-duration:.36s"></span></span></span>
+    <span class="bird" style="top:34%;animation-duration:20s;animation-delay:-14s"><span class="bird-s" style="transform:scale(.62)"><span class="wing l" style="animation-duration:.58s"></span><span class="wing r" style="animation-duration:.58s"></span></span></span>
+    <span class="bird" style="top:43%;animation-duration:16s;animation-delay:-8s"><span class="bird-s" style="transform:scale(.9)"><span class="wing l" style="animation-duration:.44s"></span><span class="wing r" style="animation-duration:.44s"></span></span></span>
+    <span class="bird" style="top:21%;animation-duration:22s;animation-delay:-12s"><span class="bird-s" style="transform:scale(.55)"><span class="wing l" style="animation-duration:.6s"></span><span class="wing r" style="animation-duration:.6s"></span></span></span>
+    <span class="bird" style="top:40%;animation-duration:14s;animation-delay:-17s"><span class="bird-s" style="transform:scale(.85)"><span class="wing l" style="animation-duration:.42s"></span><span class="wing r" style="animation-duration:.42s"></span></span></span>
+    <span class="bird" style="top:47%;animation-duration:19s;animation-delay:-5s"><span class="bird-s" style="transform:scale(.7)"><span class="wing l" style="animation-duration:.5s"></span><span class="wing r" style="animation-duration:.5s"></span></span></span>
   </div>
   <div class="wrap hero-grid">
     <p class="eyebrow hero-anim">Perfumería Árabe · Originales Certificados</p>
