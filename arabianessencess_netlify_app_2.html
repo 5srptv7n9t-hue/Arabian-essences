@@ -321,20 +321,23 @@ nav.solid{background:rgba(12,9,7,.72);backdrop-filter:blur(16px);-webkit-backdro
   -webkit-mask-image:radial-gradient(ellipse 72% 80% at 50% 47%, #000 50%, transparent 86%);
   mask-image:radial-gradient(ellipse 72% 80% at 50% 47%, #000 50%, transparent 86%);}
 /* Fondo estrellado dorado animado detrás del frasco */
-.card-media.stars{background:radial-gradient(ellipse at 50% 62%,#1b150d,#0b0806)}
+.card-media.stars{background:radial-gradient(ellipse at 50% 55%,#231a0f,#0d0a07 72%)}
 .card-media.stars::after{
-  content:"";position:absolute;inset:-25%;z-index:0;pointer-events:none;
+  content:"";position:absolute;inset:-30%;z-index:0;pointer-events:none;background-repeat:no-repeat;
   background-image:
-    radial-gradient(1.6px 1.6px at 15% 25%, rgba(232,204,122,.95), transparent 60%),
-    radial-gradient(1.4px 1.4px at 75% 20%, rgba(250,250,248,.7), transparent 60%),
-    radial-gradient(1.2px 1.2px at 35% 65%, rgba(201,168,76,.85), transparent 60%),
-    radial-gradient(1.8px 1.8px at 85% 70%, rgba(232,204,122,.8), transparent 60%),
-    radial-gradient(1px 1px at 55% 45%, rgba(250,250,248,.6), transparent 60%),
-    radial-gradient(1.3px 1.3px at 25% 84%, rgba(201,168,76,.7), transparent 60%),
-    radial-gradient(1.5px 1.5px at 65% 90%, rgba(232,204,122,.7), transparent 60%),
-    radial-gradient(1px 1px at 90% 42%, rgba(250,250,248,.5), transparent 60%),
-    radial-gradient(1.2px 1.2px at 8% 58%, rgba(232,204,122,.6), transparent 60%);
-  animation:starDrift 22s linear infinite, starTwinkle 5s ease-in-out infinite;
+    radial-gradient(2.6px 2.6px at 12% 18%, #ffe9b0, transparent 55%),
+    radial-gradient(2.2px 2.2px at 28% 42%, #fdf6e3, transparent 55%),
+    radial-gradient(3px 3px at 48% 22%, #e8cc7a, transparent 55%),
+    radial-gradient(2px 2px at 67% 38%, #ffffff, transparent 55%),
+    radial-gradient(3.2px 3.2px at 82% 20%, #ffe9b0, transparent 55%),
+    radial-gradient(2.4px 2.4px at 90% 55%, #e8cc7a, transparent 55%),
+    radial-gradient(2.2px 2.2px at 16% 68%, #fdf6e3, transparent 55%),
+    radial-gradient(2.8px 2.8px at 35% 82%, #ffe9b0, transparent 55%),
+    radial-gradient(2px 2px at 55% 70%, #ffffff, transparent 55%),
+    radial-gradient(2.6px 2.6px at 73% 80%, #e8cc7a, transparent 55%),
+    radial-gradient(2.2px 2.2px at 88% 88%, #ffe9b0, transparent 55%),
+    radial-gradient(1.8px 1.8px at 6% 88%, #fdf6e3, transparent 55%);
+  animation:starDrift 26s linear infinite, starTwinkle 4.5s ease-in-out infinite;
 }
 @keyframes starDrift{from{transform:translateY(0)}to{transform:translateY(-26px)}}
 @keyframes starTwinkle{0%,100%{opacity:1}50%{opacity:.55}}
@@ -696,10 +699,10 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
     <div class="products" id="productGrid">
 
       <article class="card rv" style="--cardglow:#c9a84c99">
-        <div class="card-media">
+        <div class="card-media stars">
           <span class="badge">Más Vendido</span>
           <span class="fam">Ámbar Dulce</span>
-          <img class="pmedia" loading="lazy" src="assets/perfumes/9pm.jpg" alt="Afnan 9 PM — frasco negro con tapa esfera bajo la luna" />
+          <img class="pmedia cut" loading="lazy" src="assets/perfumes/cut-nine.png" alt="Afnan 9 PM — frasco negro con tapa esfera" />
         </div>
         <div class="card-body">
           <span class="casa">Afnan</span>
@@ -763,7 +766,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media stars">
           <span class="badge">Ahumado</span>
           <span class="fam">Gourmand Ahumado</span>
-          <img class="pmedia masked" loading="lazy" src="assets/perfumes/khamrah-bottle.jpg" alt="Lattafa Khamrah Dukhan — frasco ámbar facetado con tapa de cristal" />
+          <img class="pmedia cut" loading="lazy" src="assets/perfumes/cut-khamrah.png" alt="Lattafa Khamrah Dukhan — frasco ámbar facetado con tapa de cristal" />
         </div>
         <div class="card-body">
           <span class="casa">Lattafa</span>
@@ -779,7 +782,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media stars">
           <span class="badge">Para Ella</span>
           <span class="fam">Gourmand Dulce</span>
-          <img class="pmedia masked" loading="lazy" src="assets/perfumes/yum-bottle.jpg" alt="Armaf Yum Yum — frasco rosa con forma de malteada" />
+          <img class="pmedia cut" loading="lazy" src="assets/perfumes/cut-yum.png" alt="Armaf Yum Yum — frasco rosa con forma de malteada" />
         </div>
         <div class="card-body">
           <span class="casa">Armaf</span>
