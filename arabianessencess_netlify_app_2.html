@@ -311,6 +311,9 @@ nav.solid{background:rgba(12,9,7,.72);backdrop-filter:blur(16px);-webkit-backdro
 .card-media{aspect-ratio:1;position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at center 70%,rgba(201,168,76,.16),transparent 72%);overflow:hidden;perspective:900px}
 /* Glow cálido detrás del frasco (estático, no gira) */
 .card-media::before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,var(--cardglow,rgba(201,168,76,.5)),transparent 68%);filter:blur(26px);opacity:.7;z-index:0}
+/* Foto real del producto (reemplaza al frasco dibujado). Lazy-load + zoom al enfocar. */
+.card-media .pmedia{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:1;transition:transform .9s var(--ease);will-change:transform}
+.card:hover .pmedia,.card.touch-active .pmedia{transform:scale(1.06)}
 /* Frasco 3D que gira: caja en perspectiva con 4 caras (preserve-3d) */
 .bottle3d{
   width:84px;height:170px;position:relative;z-index:1;transform-style:preserve-3d;
@@ -338,7 +341,7 @@ nav.solid{background:rgba(12,9,7,.72);backdrop-filter:blur(16px);-webkit-backdro
 @keyframes spinBottle{to{transform:rotateY(360deg)}}
 /* El giro es CSS puro y corre en todos los dispositivos (también iPhone),
    sin depender de JS ni de que la card esté centrada. */
-.card-media .fam{position:absolute;top:16px;left:16px;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:6px 12px;background:rgba(12,9,7,.4)}
+.card-media .fam{position:absolute;top:16px;left:16px;z-index:2;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:6px 12px;background:rgba(12,9,7,.55)}
 .card-media .badge{position:absolute;top:16px;right:16px;z-index:2;font-size:.54rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:5px 10px}
 .card-body{padding:24px;display:flex;flex-direction:column;gap:6px;flex:1}
 .card-body .casa{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--white-muted)}
@@ -671,7 +674,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media">
           <span class="badge">Más Vendido</span>
           <span class="fam">Ámbar Dulce</span>
-          <div class="bottle3d" style="--b1:#2b3346ee;--b2:#161c28ee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:.64rem;letter-spacing:.22em">9 PM</span><span class="b-cap sphere"></span></div>
+          <img class="pmedia" loading="lazy" src="assets/perfumes/9pm.jpg" alt="Afnan 9 PM — frasco negro con tapa esfera bajo la luna" />
         </div>
         <div class="card-body">
           <span class="casa">Afnan</span>
@@ -683,18 +686,19 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         </div>
       </article>
 
-      <article class="card rv" style="--cardglow:#e8cc7a99">
+      <article class="card rv" style="--cardglow:#3fa9c499">
         <div class="card-media">
-          <span class="badge">Por identificar</span>
-          <span class="fam">100 ml · A confirmar</span>
-          <div class="bottle3d" style="--b1:#f1ede3ee;--b2:#d4ccbaee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:2.4rem;font-style:italic">X</span><span class="b-cap"></span></div>
+          <span class="badge">Frutal</span>
+          <span class="fam">Cítrico Ambarino</span>
+          <img class="pmedia" loading="lazy" src="assets/perfumes/erba-pura.jpg" alt="Xerjoff Erba Pura — frasco turquesa con tapa dorada" />
         </div>
         <div class="card-body">
-          <span class="casa">Marca por confirmar</span>
-          <h3>Edición «X»</h3>
-          <p class="desc">La caja blanca con la “X” dorada de la foto. El frente no muestra el nombre, solo la “X” y 100 ml. Pasame la marca y el nombre que figuran en el dorso de la caja y le cargo sus notas reales.</p>
-          <div class="dur">Duración: <span>—</span></div>
-          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="1" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20el%20perfume%20de%20la%20edici%C3%B3n%20X%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+          <span class="casa">Xerjoff</span>
+          <h3>Erba Pura</h3>
+          <p class="desc">Estallido cítrico-frutal sobre ámbar. Naranja de Sicilia y frutos jugosos que caen en un fondo dulce de ámbar, almizcle y vainilla. Luminoso, alegre y para todo el año.</p>
+          <div class="notes"><span class="note">Naranja</span><span class="note">Bergamota</span><span class="note">Frutos Rojos</span><span class="note">Ámbar</span><span class="note">Vainilla</span></div>
+          <div class="dur">Duración: <span>8–10 hs</span></div>
+          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="1" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Xerjoff%20Erba%20Pura%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -702,7 +706,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media">
           <span class="badge">Intenso</span>
           <span class="fam">Frutal Ahumado</span>
-          <div class="bottle3d" style="--b1:#27406bee;--b2:#142340ee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:1.3rem">أسد</span><span class="b-cap"></span></div>
+          <img class="pmedia" loading="lazy" src="assets/perfumes/asad-elixir.jpg" alt="Lattafa Asad Elixir — frasco negro mate con medallón" />
         </div>
         <div class="card-body">
           <span class="casa">Lattafa</span>
@@ -714,19 +718,19 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         </div>
       </article>
 
-      <article class="card rv" style="--cardglow:#e8d2a099">
+      <article class="card rv" style="--cardglow:#7a3a8a99">
         <div class="card-media">
-          <span class="badge">Oud</span>
-          <span class="fam">Oud Ambarino</span>
-          <div class="bottle3d" style="--b1:#efe8d6ee;--b2:#cabd98ee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:1.05rem">بديع</span><span class="b-cap ornate"></span></div>
+          <span class="badge">Oud Frutal</span>
+          <span class="fam">Frutal Amaderado</span>
+          <img class="pmedia" loading="lazy" src="assets/perfumes/badee-amethyst.jpg" alt="Lattafa Bade'e Al Oud Amethyst — frasco violeta con filigrana dorada" />
         </div>
         <div class="card-body">
           <span class="casa">Lattafa</span>
-          <h3>Bade'e Al Oud · Honor &amp; Glory</h3>
-          <p class="desc">Oud noble y luminoso. Azafrán y rosa sobre un corazón de agarwood, con ámbar, cuero suave y maderas que lo vuelven majestuoso y de larguísima duración.</p>
-          <div class="notes"><span class="note">Azafrán</span><span class="note">Rosa</span><span class="note">Oud</span><span class="note">Ámbar</span><span class="note">Cuero</span></div>
+          <h3>Bade'e Al Oud · Amethyst</h3>
+          <p class="desc">Oud envuelto en frutos rojos. Frambuesa y azafrán sobre un corazón de agarwood, con ámbar y vainilla que lo vuelven dulce, jugoso y de larguísima duración.</p>
+          <div class="notes"><span class="note">Frambuesa</span><span class="note">Azafrán</span><span class="note">Oud</span><span class="note">Ámbar</span><span class="note">Vainilla</span></div>
           <div class="dur">Duración: <span>10–14 hs</span></div>
-          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="3" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Lattafa%20Bade%27e%20Al%20Oud%20Honor%20and%20Glory%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="3" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Lattafa%20Bade%27e%20Al%20Oud%20Amethyst%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -734,7 +738,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media">
           <span class="badge">Ahumado</span>
           <span class="fam">Gourmand Ahumado</span>
-          <div class="bottle3d" style="--b1:#3a2a1cee;--b2:#221710ee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:1.2rem">خمرة</span><span class="b-base"></span><span class="b-cap wood"></span></div>
+          <img class="pmedia" loading="lazy" src="assets/perfumes/khamrah-dukhan.jpg" alt="Lattafa Khamrah Dukhan — frasco ámbar facetado con tapa de cristal" />
         </div>
         <div class="card-body">
           <span class="casa">Lattafa</span>
@@ -746,19 +750,19 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         </div>
       </article>
 
-      <article class="card rv" style="--cardglow:#e89ab099">
+      <article class="card rv" style="--cardglow:#e85a8c99">
         <div class="card-media">
-          <span class="badge">Inspirado</span>
-          <span class="fam">Ambarino Dulce</span>
-          <div class="bottle3d" style="--b1:#c8566acc;--b2:#9a3850cc"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label" style="font-size:.58rem;letter-spacing:.26em">UNTOLD</span><span class="b-cap chrome"></span></div>
+          <span class="badge">Para Ella</span>
+          <span class="fam">Gourmand Dulce</span>
+          <img class="pmedia" loading="lazy" src="assets/perfumes/yum-yum.jpg" alt="Armaf Yum Yum — frasco rosa con forma de malteada" />
         </div>
         <div class="card-body">
-          <span class="casa">Armaf · Club de Nuit</span>
-          <h3>Untold</h3>
-          <p class="desc">El inspirado en Baccarat Rouge 540. Azafrán y jazmín sobre una madera ambarina dulce y resinosa: luminoso, adictivo y con una estela que no pasa desapercibida.</p>
-          <div class="notes"><span class="note">Azafrán</span><span class="note">Jazmín</span><span class="note">Madera Ambarina</span><span class="note">Cedro</span><span class="note">Ámbar Gris</span></div>
-          <div class="dur">Duración: <span>7–9 hs</span></div>
-          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="5" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Armaf%20Club%20de%20Nuit%20Untold%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+          <span class="casa">Armaf</span>
+          <h3>Yum Yum</h3>
+          <p class="desc">Un postre en frasco. Frutos rojos y caramelo sobre crema batida y vainilla, con un fondo almizclado que lo hace dulce, divertido y muy goloso. Femenino y pegajoso en el buen sentido.</p>
+          <div class="notes"><span class="note">Frutilla</span><span class="note">Frambuesa</span><span class="note">Caramelo</span><span class="note">Vainilla</span><span class="note">Almizcle</span></div>
+          <div class="dur">Duración: <span>6–8 hs</span></div>
+          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="5" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Armaf%20Yum%20Yum%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -891,11 +895,11 @@ const MP_ENDPOINT = "/.netlify/functions/crear-preferencia";
 /* Catálogo real (de la foto del cliente) · price:null = "a confirmar" (no afecta el modal) */
 const PRODUCTS = [
   { name:"9 PM",                          casa:"Afnan",   fam:"Ámbar Dulce",        price:null, dur:"8–10 hs" },
-  { name:"Edición «X» (por identificar)", casa:"Marca por confirmar", fam:"A confirmar", price:null, dur:"—" },
+  { name:"Erba Pura",                     casa:"Xerjoff", fam:"Cítrico Ambarino",   price:null, dur:"8–10 hs" },
   { name:"Asad Elixir",                   casa:"Lattafa", fam:"Frutal Ahumado",     price:null, dur:"9–11 hs" },
-  { name:"Bade'e Al Oud · Honor & Glory", casa:"Lattafa", fam:"Oud Ambarino",       price:null, dur:"10–14 hs" },
+  { name:"Bade'e Al Oud · Amethyst",      casa:"Lattafa", fam:"Frutal Amaderado",   price:null, dur:"10–14 hs" },
   { name:"Khamrah Dukhan",                casa:"Lattafa", fam:"Gourmand Ahumado",   price:null, dur:"10–14 hs" },
-  { name:"Club de Nuit Untold",           casa:"Armaf",   fam:"Ambarino Dulce",     price:null, dur:"7–9 hs" },
+  { name:"Yum Yum",                       casa:"Armaf",   fam:"Gourmand Dulce",     price:null, dur:"6–8 hs" },
 ];
 
 const ARS = (n) => "$" + n.toLocaleString("es-AR");
