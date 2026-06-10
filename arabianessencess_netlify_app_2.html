@@ -189,6 +189,17 @@ nav.solid{background:rgba(12,9,7,.72);backdrop-filter:blur(16px);-webkit-backdro
 .scrollcue .l{width:1px;height:46px;background:rgba(201,168,76,.3);position:relative;overflow:hidden}
 .scrollcue .l::after{content:"";position:absolute;inset:0;top:-100%;background:var(--gold);animation:cue 2.2s infinite}
 @keyframes cue{to{top:100%}}
+/* Aves sobrevolando las dunas · siluetas que vuelan y aletean (CSS puro, sin JS) */
+.birds{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.bird{position:absolute;left:0;display:block;animation:birdFly linear infinite}
+.bird-s{position:relative;display:block;width:26px;height:6px}
+.bird .wing{position:absolute;top:0;width:15px;height:3px;border-radius:3px;background:rgba(14,8,3,.86)}
+.bird .wing.l{right:50%;transform-origin:right center;animation:flapL ease-in-out infinite}
+.bird .wing.r{left:50%;transform-origin:left center;animation:flapR ease-in-out infinite}
+@keyframes flapL{0%,100%{transform:rotate(20deg)}50%{transform:rotate(-26deg)}}
+@keyframes flapR{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(26deg)}}
+/* cruzan el cielo de izquierda a derecha, subiendo apenas (deriva del viento) */
+@keyframes birdFly{from{transform:translate(-14vw,0)}to{transform:translate(118vw,-7vh)}}
 
 /* ============================================================
    MARQUEE de marcas
@@ -297,10 +308,29 @@ nav.solid{background:rgba(12,9,7,.72);backdrop-filter:blur(16px);-webkit-backdro
   transition:transform .5s var(--ease),border-color .5s,box-shadow .5s;display:flex;flex-direction:column;
 }
 .card:hover,.card.touch-active{transform:translateY(-10px);border-color:var(--gold);box-shadow:0 30px 70px -30px rgba(201,168,76,.55)}
-.card-media{aspect-ratio:1;position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at center 70%,rgba(201,168,76,.16),transparent 72%);overflow:hidden}
-.card-media .bottle{width:84px;height:170px;border-radius:10px 10px 14px 14px;position:relative;transition:transform .6s var(--ease);box-shadow:0 0 60px -12px var(--cardglow,rgba(201,168,76,.6))}
-.card:hover .bottle,.card.touch-active .bottle{transform:translateY(-6px) scale(1.04)}
-.card-media .bottle::before{content:"";position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:34px;height:26px;background:linear-gradient(160deg,var(--gold-light),var(--gold-dim));border-radius:4px}
+.card-media{aspect-ratio:1;position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at center 70%,rgba(201,168,76,.16),transparent 72%);overflow:hidden;perspective:900px}
+/* Glow cálido detrás del frasco (estático, no gira) */
+.card-media::before{content:"";position:absolute;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,var(--cardglow,rgba(201,168,76,.5)),transparent 68%);filter:blur(26px);opacity:.7;z-index:0}
+/* Frasco 3D que gira: caja en perspectiva con 4 caras (preserve-3d) */
+.bottle3d{
+  width:84px;height:170px;position:relative;z-index:1;transform-style:preserve-3d;
+  animation:spinBottle 9s linear infinite;
+}
+.card:hover .bottle3d,.card.touch-active .bottle3d{animation-duration:4.5s}   /* gira más rápido al enfocar */
+.bottle3d .bf{position:absolute;border:1px solid var(--line)}
+.bottle3d .bf.front,.bottle3d .bf.back{inset:0;border-radius:10px 10px 14px 14px;background:linear-gradient(160deg,var(--b1),var(--b2))}
+.bottle3d .bf.front{transform:translateZ(11px)}
+.bottle3d .bf.back{transform:rotateY(180deg) translateZ(11px);filter:brightness(.78)}
+.bottle3d .bf.left,.bottle3d .bf.right{top:0;height:170px;width:22px;left:50%;margin-left:-11px;border-radius:4px;background:linear-gradient(180deg,var(--b1),var(--b2));filter:brightness(.5)}
+.bottle3d .bf.right{transform:rotateY(90deg) translateZ(42px)}
+.bottle3d .bf.left{transform:rotateY(-90deg) translateZ(42px)}
+.bottle3d .b-cap{position:absolute;top:-22px;left:50%;width:34px;height:26px;margin-left:-17px;border-radius:4px;background:linear-gradient(160deg,var(--gold-light),var(--gold-dim))}
+@keyframes spinBottle{to{transform:rotateY(360deg)}}
+/* Mobile/iOS: solo gira la card que está en pantalla (ahorra batería) */
+@media(max-width:760px){
+  .bottle3d{animation-play-state:paused}
+  .card.touch-active .bottle3d{animation-play-state:running}
+}
 .card-media .fam{position:absolute;top:16px;left:16px;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:6px 12px;background:rgba(12,9,7,.4)}
 .card-media .badge{position:absolute;top:16px;right:16px;z-index:2;font-size:.54rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:5px 10px}
 .card-body{padding:24px;display:flex;flex-direction:column;gap:6px;flex:1}
@@ -402,6 +432,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   .gImg{clip-path:none!important}
   .marquee-track{animation:none!important;flex-wrap:wrap;justify-content:center}
   .scrollcue,.wa-float::before{animation:none!important}
+  .birds{display:none!important}
 }
 
 /* ============================================================
@@ -472,6 +503,15 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
 <header id="hero">
   <canvas id="dune-canvas" aria-hidden="true"></canvas>
   <div id="dune-fallback" aria-hidden="true"></div>
+  <!-- Aves sobrevolando las dunas (vuelan y aletean de verdad, CSS puro) -->
+  <div class="birds" aria-hidden="true">
+    <span class="bird" style="top:30%;animation-duration:21s;animation-delay:-2s"><span class="bird-s" style="transform:scale(.55)"><span class="wing l" style="animation-duration:.46s"></span><span class="wing r" style="animation-duration:.46s"></span></span></span>
+    <span class="bird" style="top:36%;animation-duration:18s;animation-delay:-7s"><span class="bird-s" style="transform:scale(.8)"><span class="wing l" style="animation-duration:.4s"></span><span class="wing r" style="animation-duration:.4s"></span></span></span>
+    <span class="bird" style="top:33%;animation-duration:24s;animation-delay:-12s"><span class="bird-s" style="transform:scale(.65)"><span class="wing l" style="animation-duration:.52s"></span><span class="wing r" style="animation-duration:.52s"></span></span></span>
+    <span class="bird" style="top:42%;animation-duration:16s;animation-delay:-4s"><span class="bird-s" style="transform:scale(1)"><span class="wing l" style="animation-duration:.36s"></span><span class="wing r" style="animation-duration:.36s"></span></span></span>
+    <span class="bird" style="top:39%;animation-duration:27s;animation-delay:-16s"><span class="bird-s" style="transform:scale(.5)"><span class="wing l" style="animation-duration:.58s"></span><span class="wing r" style="animation-duration:.58s"></span></span></span>
+    <span class="bird" style="top:46%;animation-duration:20s;animation-delay:-9s"><span class="bird-s" style="transform:scale(.72)"><span class="wing l" style="animation-duration:.44s"></span><span class="wing r" style="animation-duration:.44s"></span></span></span>
+  </div>
   <div class="wrap hero-grid">
     <p class="eyebrow hero-anim">Perfumería Árabe · Originales Certificados</p>
     <h1 class="hero-anim">La hora <span class="gold-txt italic">dorada</span> del perfume</h1>
@@ -621,7 +661,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media">
           <span class="badge">Más Vendido</span>
           <span class="fam">Amaderado</span>
-          <div class="bottle" style="background:linear-gradient(160deg,#b5731f66,#b5731f22);border:1px solid var(--line)"></div>
+          <div class="bottle3d" style="--b1:#b5731f66;--b2:#b5731f22"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Lattafa</span>
@@ -637,7 +677,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media">
           <span class="badge">Nuevo</span>
           <span class="fam">Floral</span>
-          <div class="bottle" style="background:linear-gradient(160deg,#e8a0c066,#e8a0c022);border:1px solid var(--line)"></div>
+          <div class="bottle3d" style="--b1:#e8a0c066;--b2:#e8a0c022"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Maison Alhambra</span>
@@ -653,7 +693,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media">
           <span class="badge">Unisex</span>
           <span class="fam">Oud</span>
-          <div class="bottle" style="background:linear-gradient(160deg,#c98a3a66,#c98a3a22);border:1px solid var(--line)"></div>
+          <div class="bottle3d" style="--b1:#c98a3a66;--b2:#c98a3a22"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Ard Al Zaafaran</span>
@@ -668,7 +708,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
       <article class="card rv" style="--cardglow:#ffd97a99">
         <div class="card-media">
           <span class="fam">Oriental</span>
-          <div class="bottle" style="background:linear-gradient(160deg,#ffd97a66,#ffd97a22);border:1px solid var(--line)"></div>
+          <div class="bottle3d" style="--b1:#ffd97a66;--b2:#ffd97a22"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Al Haramain</span>
@@ -684,7 +724,7 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
         <div class="card-media">
           <span class="badge">Para Ella</span>
           <span class="fam">Floral</span>
-          <div class="bottle" style="background:linear-gradient(160deg,#ff9ec266,#ff9ec222);border:1px solid var(--line)"></div>
+          <div class="bottle3d" style="--b1:#ff9ec266;--b2:#ff9ec222"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Rasasi</span>
