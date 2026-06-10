@@ -325,6 +325,16 @@ nav.solid{background:rgba(12,9,7,.72);backdrop-filter:blur(16px);-webkit-backdro
 .bottle3d .bf.right{transform:rotateY(90deg) translateZ(42px)}
 .bottle3d .bf.left{transform:rotateY(-90deg) translateZ(42px)}
 .bottle3d .b-cap{position:absolute;top:-22px;left:50%;width:34px;height:26px;margin-left:-17px;border-radius:4px;background:linear-gradient(160deg,var(--gold-light),var(--gold-dim))}
+/* Variantes de tapa según el frasco real */
+.bottle3d .b-cap.sphere{top:-27px;width:30px;height:30px;margin-left:-15px;border-radius:50%;background:radial-gradient(circle at 36% 30%,var(--gold-light),var(--gold-dim) 80%)}
+.bottle3d .b-cap.wood{top:-26px;height:30px;border-radius:3px;background:linear-gradient(160deg,#6e4d2c,#3a2614)}
+.bottle3d .b-cap.chrome{background:linear-gradient(160deg,#f2f2f6,#9aa0a8 72%)}
+.bottle3d .b-cap.ornate::after{content:"";position:absolute;left:50%;top:-11px;width:13px;height:13px;margin-left:-6.5px;border-radius:50%;background:radial-gradient(circle at 36% 30%,var(--gold-light),var(--gold-dim))}
+/* Base de madera (p. ej. Khamrah Dukhan) */
+.bottle3d .b-base{position:absolute;left:50%;bottom:-12px;width:98px;height:20px;margin-left:-49px;border-radius:3px;background:linear-gradient(160deg,#5c3e23,#2c1c0f)}
+/* Emblema / nombre en el frente del frasco (gira con la cara delantera) */
+.bottle3d .b-label{position:absolute;inset:0;display:grid;place-items:center;transform:translateZ(12px);backface-visibility:hidden;font-family:'Cormorant Garamond',serif;color:rgba(250,250,248,.92);line-height:1;text-align:center;pointer-events:none}
+.bottle3d .b-label.gold{color:var(--gold-light)}
 @keyframes spinBottle{to{transform:rotateY(360deg)}}
 /* El giro es CSS puro y corre en todos los dispositivos (también iPhone),
    sin depender de JS ni de que la card esté centrada. */
@@ -657,96 +667,98 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
     <!-- Cards estáticas (siempre visibles). data-order coincide con el array PRODUCTS. -->
     <div class="products" id="productGrid">
 
-      <article class="card rv" style="--cardglow:#b5731f99">
+      <article class="card rv" style="--cardglow:#c9a84c99">
         <div class="card-media">
           <span class="badge">Más Vendido</span>
           <span class="fam">Ámbar Dulce</span>
-          <div class="bottle3d" style="--b1:#b5731f88;--b2:#b5731f22"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
+          <div class="bottle3d" style="--b1:#2b3346ee;--b2:#161c28ee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:.64rem;letter-spacing:.22em">9 PM</span><span class="b-cap sphere"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Afnan</span>
           <h3>9 PM</h3>
-          <p class="desc">Ámbar dulce y nocturno. Manzana y canela abren con un guiño especiado y caen sobre un fondo cremoso de vainilla, haba tonka y ámbar. Versátil, elegante y muy elogiado.</p>
+          <p class="desc">Ámbar dulce y nocturno. Manzana y canela abren con un guiño especiado y caen sobre un fondo cremoso de vainilla, haba tonka y ámbar. Un clásico que vuela en ventas.</p>
           <div class="notes"><span class="note">Manzana</span><span class="note">Canela</span><span class="note">Haba Tonka</span><span class="note">Vainilla</span><span class="note">Ámbar</span></div>
           <div class="dur">Duración: <span>8–10 hs</span></div>
           <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="0" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Afnan%209%20PM%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
-      <article class="card rv" style="--cardglow:#e6d8aa99">
+      <article class="card rv" style="--cardglow:#e8cc7a99">
         <div class="card-media">
-          <span class="badge">Por confirmar</span>
-          <span class="fam">A definir</span>
-          <div class="bottle3d" style="--b1:#ddcb9aaa;--b2:#ddcb9a33"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
+          <span class="badge">100 ml</span>
+          <span class="fam">Eau de Parfum</span>
+          <div class="bottle3d" style="--b1:#f1ede3ee;--b2:#d4ccbaee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:2.4rem;font-style:italic">X</span><span class="b-cap"></span></div>
         </div>
         <div class="card-body">
-          <span class="casa">Por confirmar</span>
-          <h3>“X”</h3>
-          <p class="desc">Es la caja blanca con la “X” grande de la foto. Pasame el nombre exacto que figura en el frente y le cargo sus notas reales (familia, salida, corazón y fondo).</p>
+          <span class="casa">Eau de Parfum · 100 ml</span>
+          <h3>Xclusif</h3>
+          <p class="desc">La caja blanca con la “X” dorada. Si me confirmás su perfil (dulce, amaderado o fresco) afino la descripción con las notas exactas de salida, corazón y fondo.</p>
           <div class="dur">Duración: <span>—</span></div>
-          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="1" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20el%20perfume%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="1" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Xclusif%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
-      <article class="card rv" style="--cardglow:#8f8a5099">
+      <article class="card rv" style="--cardglow:#6a86c099">
         <div class="card-media">
+          <span class="badge">Intenso</span>
           <span class="fam">Frutal Ahumado</span>
-          <div class="bottle3d" style="--b1:#7d7a4aaa;--b2:#7d7a4a22"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
+          <div class="bottle3d" style="--b1:#27406bee;--b2:#142340ee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:1.3rem">أسد</span><span class="b-cap"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Lattafa</span>
-          <h3>Asad</h3>
-          <p class="desc">Frescura frutal sobre humo de abedul. Piña y bergamota chispeantes que se asientan en pachulí y maderas, con un fondo ahumado y ambarino de mucha presencia.</p>
-          <div class="notes"><span class="note">Piña</span><span class="note">Bergamota</span><span class="note">Abedul</span><span class="note">Pachulí</span><span class="note">Almizcle</span></div>
-          <div class="dur">Duración: <span>8–10 hs</span></div>
-          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="2" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Lattafa%20Asad%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+          <h3>Asad Elixir</h3>
+          <p class="desc">La versión más intensa y oscura del Asad. Piña y grosella sobre un humo de abedul más denso, con pachulí, maderas y ámbar gris que potencian la estela. Pura presencia.</p>
+          <div class="notes"><span class="note">Piña</span><span class="note">Grosella</span><span class="note">Abedul</span><span class="note">Pachulí</span><span class="note">Ámbar Gris</span></div>
+          <div class="dur">Duración: <span>9–11 hs</span></div>
+          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="2" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Lattafa%20Asad%20Elixir%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
       <article class="card rv" style="--cardglow:#e8d2a099">
         <div class="card-media">
-          <span class="badge">Clásico</span>
-          <span class="fam">Vainilla Oriental</span>
-          <div class="bottle3d" style="--b1:#d8c08aaa;--b2:#d8c08a2a"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
+          <span class="badge">Oud</span>
+          <span class="fam">Oud Ambarino</span>
+          <div class="bottle3d" style="--b1:#efe8d6ee;--b2:#cabd98ee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:1.05rem">بديع</span><span class="b-cap ornate"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Lattafa</span>
-          <h3>Raghba</h3>
-          <p class="desc">Vainilla cremosa envuelta en oud e incienso. Dulce, resinosa y cálida: un oriental clásico que deja una estela densa y reconfortante por horas.</p>
-          <div class="notes"><span class="note">Vainilla</span><span class="note">Oud</span><span class="note">Incienso</span><span class="note">Maderas</span><span class="note">Almizcle</span></div>
-          <div class="dur">Duración: <span>10–12 hs</span></div>
-          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="3" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Lattafa%20Raghba%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+          <h3>Bade'e Al Oud · Honor &amp; Glory</h3>
+          <p class="desc">Oud noble y luminoso. Azafrán y rosa sobre un corazón de agarwood, con ámbar, cuero suave y maderas que lo vuelven majestuoso y de larguísima duración.</p>
+          <div class="notes"><span class="note">Azafrán</span><span class="note">Rosa</span><span class="note">Oud</span><span class="note">Ámbar</span><span class="note">Cuero</span></div>
+          <div class="dur">Duración: <span>10–14 hs</span></div>
+          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="3" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Lattafa%20Bade%27e%20Al%20Oud%20Honor%20and%20Glory%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
       <article class="card rv" style="--cardglow:#7a4a2299">
         <div class="card-media">
-          <span class="badge">Top Ventas</span>
-          <span class="fam">Gourmand Especiado</span>
-          <div class="bottle3d" style="--b1:#8a5a2aaa;--b2:#8a5a2a22"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
+          <span class="badge">Ahumado</span>
+          <span class="fam">Gourmand Ahumado</span>
+          <div class="bottle3d" style="--b1:#3a2a1cee;--b2:#221710ee"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label gold" style="font-size:1.2rem">خمرة</span><span class="b-base"></span><span class="b-cap wood"></span></div>
         </div>
         <div class="card-body">
           <span class="casa">Lattafa</span>
-          <h3>Khamrah</h3>
-          <p class="desc">Dátiles y canela bañados en vainilla y praliné. Un gourmand especiado, denso y adictivo, con mirra y maderas que lo vuelven elegante para la noche.</p>
-          <div class="notes"><span class="note">Dátiles</span><span class="note">Canela</span><span class="note">Praliné</span><span class="note">Vainilla</span><span class="note">Mirra</span></div>
+          <h3>Khamrah Dukhan</h3>
+          <p class="desc">El Khamrah llevado al humo. Dátiles y canela se envuelven en incienso y maderas ahumadas sobre un fondo de vainilla y mirra. Denso, cálido y envolvente.</p>
+          <div class="notes"><span class="note">Dátiles</span><span class="note">Canela</span><span class="note">Incienso</span><span class="note">Vainilla</span><span class="note">Maderas</span></div>
           <div class="dur">Duración: <span>10–14 hs</span></div>
-          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="4" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Lattafa%20Khamrah%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="4" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Lattafa%20Khamrah%20Dukhan%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
       <article class="card rv" style="--cardglow:#e89ab099">
         <div class="card-media">
-          <span class="badge">Por confirmar</span>
-          <span class="fam">A definir</span>
-          <div class="bottle3d" style="--b1:#e89ab0aa;--b2:#e89ab033"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-cap"></span></div>
+          <span class="badge">Inspirado</span>
+          <span class="fam">Ambarino Dulce</span>
+          <div class="bottle3d" style="--b1:#c8566acc;--b2:#9a3850cc"><span class="bf front"></span><span class="bf back"></span><span class="bf left"></span><span class="bf right"></span><span class="b-label" style="font-size:.58rem;letter-spacing:.26em">UNTOLD</span><span class="b-cap chrome"></span></div>
         </div>
         <div class="card-body">
-          <span class="casa">Armaf</span>
-          <h3>Armaf (rosa)</h3>
-          <p class="desc">Es el de la caja rosa de Armaf de la foto. Decime el nombre exacto del modelo y le cargo sus notas reales.</p>
-          <div class="dur">Duración: <span>—</span></div>
-          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="5" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20el%20perfume%20Armaf%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+          <span class="casa">Armaf · Club de Nuit</span>
+          <h3>Untold</h3>
+          <p class="desc">El inspirado en Baccarat Rouge 540. Azafrán y jazmín sobre una madera ambarina dulce y resinosa: luminoso, adictivo y con una estela que no pasa desapercibida.</p>
+          <div class="notes"><span class="note">Azafrán</span><span class="note">Jazmín</span><span class="note">Madera Ambarina</span><span class="note">Cedro</span><span class="note">Ámbar Gris</span></div>
+          <div class="dur">Duración: <span>7–9 hs</span></div>
+          <div class="card-foot"><span class="precio">Consultar</span><a class="buybtn" data-order="5" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20consultar%20por%20Armaf%20Club%20de%20Nuit%20Untold%20de%20Arabian%20Essence">Comprar Ahora</a></div>
         </div>
       </article>
 
@@ -878,12 +890,12 @@ const MP_ENDPOINT = "/.netlify/functions/crear-preferencia";
 
 /* Catálogo real (de la foto del cliente) · price:null = "a confirmar" (no afecta el modal) */
 const PRODUCTS = [
-  { name:"9 PM",          casa:"Afnan",        fam:"Ámbar Dulce",        price:null, dur:"8–10 hs" },
-  { name:"“X” (por confirmar)", casa:"Por confirmar", fam:"A definir",   price:null, dur:"—" },
-  { name:"Asad",          casa:"Lattafa",      fam:"Frutal Ahumado",     price:null, dur:"8–10 hs" },
-  { name:"Raghba",        casa:"Lattafa",      fam:"Vainilla Oriental",  price:null, dur:"10–12 hs" },
-  { name:"Khamrah",       casa:"Lattafa",      fam:"Gourmand Especiado", price:null, dur:"10–14 hs" },
-  { name:"Armaf (por confirmar)", casa:"Armaf", fam:"A definir",         price:null, dur:"—" },
+  { name:"9 PM",                          casa:"Afnan",   fam:"Ámbar Dulce",        price:null, dur:"8–10 hs" },
+  { name:"Xclusif",                       casa:"Eau de Parfum · 100 ml", fam:"A confirmar", price:null, dur:"—" },
+  { name:"Asad Elixir",                   casa:"Lattafa", fam:"Frutal Ahumado",     price:null, dur:"9–11 hs" },
+  { name:"Bade'e Al Oud · Honor & Glory", casa:"Lattafa", fam:"Oud Ambarino",       price:null, dur:"10–14 hs" },
+  { name:"Khamrah Dukhan",                casa:"Lattafa", fam:"Gourmand Ahumado",   price:null, dur:"10–14 hs" },
+  { name:"Club de Nuit Untold",           casa:"Armaf",   fam:"Ambarino Dulce",     price:null, dur:"7–9 hs" },
 ];
 
 const ARS = (n) => "$" + n.toLocaleString("es-AR");
