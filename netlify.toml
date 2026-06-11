@@ -11,5 +11,14 @@
 [functions]
   node_bundler = "esbuild"
 
-# La landing es index.html → Netlify la sirve en la raíz automáticamente,
-# no hace falta ninguna redirección.
+# ============================================================
+#  La home (/) sirve la versión nueva (rediseño SOLANO).
+#  force=true → la muestra en la raíz aunque exista index.html,
+#  sin tocar ni borrar el archivo original. Solo afecta a "/",
+#  los assets y la función serverless siguen funcionando normal.
+# ============================================================
+[[redirects]]
+  from = "/"
+  to = "/arabianessencess_netlify_app_2.html"
+  status = 200
+  force = true
