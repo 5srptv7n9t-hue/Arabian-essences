@@ -1128,9 +1128,12 @@ else {
   window.addEventListener("load", () => { try { ST.refresh(); } catch (_) {} });
 }
 
-/* --- Lenis + GSAP · patrón oficial de sincronización --- */
-if (animate && window.Lenis) {
-  const lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });   // smoothTouch off → iOS usa scroll nativo (nunca se traba)
+/* --- Lenis + GSAP · patrón oficial de sincronización ---
+   IMPORTANTE: Lenis SOLO en escritorio. En celular (sobre todo Safari iOS)
+   el scroll suave de Lenis traba el deslizamiento táctil → usamos scroll
+   nativo, que nunca se rompe. */
+if (animate && window.Lenis && !isMobile) {
+  const lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
   window.lenis = lenis;
   lenis.on("scroll", ST.update);
   lenis.on("scroll", onScrollNav);
