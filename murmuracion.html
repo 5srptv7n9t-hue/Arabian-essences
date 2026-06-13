@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="es" class="no-js">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Murmuración — un estudio de movimiento colectivo</title>
+<meta name="description" content="Pieza generativa interactiva: miles de partículas que se comportan como una bandada de estorninos, se reúnen en palabras al scrollear y se dispersan. Un poema cinético sobre lo efímero." />
+<meta name="theme-color" content="#060709" />
+<meta property="og:title" content="Murmuración" />
+<meta property="og:description" content="Un organismo hecho de mil cuerpos. Mové el cursor, scrolleá, tocá la bandada." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet" />
+
+<style>
+/* ════════════════════════════════════════════════════════════
+   MURMURACIÓN · pieza generativa en un solo archivo
+   ──────────────────────────────────────────────────────────
+   Concepto: una bandada de estorninos. Las partículas vuelan
+   en flujo libre (flow field) y, al scrollear, se reúnen para
+   deletrear cada verso. Reaccionan al cursor / al dedo.
+   Stack: canvas 2D + GSAP + CustomEase + Lenis. Sin frameworks.
+══════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#060709;
+  --ink:#EDEAE3;
+  --dim:#8C8A86;
+  --line:rgba(237,234,227,.14);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto !important}
+
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Space Grotesk','Syne',ui-sans-serif,sans-serif;
+  font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.serif{font-family:'Fraunces',Georgia,serif}
+::selection{background:var(--ink);color:var(--bg)}
+
+/* Lienzo fijo: la bandada vive acá detrás de todo */
+#flock{position:fixed;inset:0;z-index:1;display:block;touch-action:pan-y}
+
+/* Telón: viñeta + grano para dar textura de cielo nocturno */
+.veil{position:fixed;inset:0;z-index:2;pointer-events:none;box-shadow:inset 0 0 280px 90px rgba(6,7,9,.9)}
+.grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:.05;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ── UI fija (encuadre tipo instalación) ── */
+.ui{position:fixed;inset:0;z-index:5;pointer-events:none}
+.ui .corner{position:absolute;font-family:'Syne';font-weight:700;font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink)}
+.ui .tl{top:26px;left:28px}
+.ui .tr{top:26px;right:28px;color:var(--dim);font-weight:600;text-align:right}
+.ui .bl{bottom:26px;left:28px;color:var(--dim);font-weight:600;display:flex;align-items:center;gap:10px}
+.ui .bl .dot{width:6px;height:6px;border-radius:50%;background:#E8CC7A;box-shadow:0 0 12px 2px rgba(232,204,122,.8);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.3)}}
+
+/* Rail de progreso (derecha): una marca por verso */
+.rail{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;gap:14px;pointer-events:none}
+.rail .tick{width:18px;height:1px;background:var(--line);transition:width .5s var(--ease-out),background .5s}
+.rail .tick.on{width:34px;background:var(--ink)}
+
+/* Caption del verso (debajo de la palabra que forma la bandada) */
+.caption{position:fixed;left:0;right:0;bottom:16vh;z-index:5;text-align:center;pointer-events:none;padding:0 24px}
+.caption .line{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(1.05rem,2.6vw,1.6rem);color:var(--ink);opacity:0;transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);transform:translateY(14px)}
+.caption .line.show{opacity:.92;transform:none}
+
+/* Pista de scroll (solo al inicio) */
+.scrollcue{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:9px;font-family:'Syne';font-weight:600;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);transition:opacity .6s;pointer-events:none}
+.scrollcue .l{width:1px;height:38px;background:var(--line);position:relative;overflow:hidden}
+.scrollcue .l::after{content:"";position:absolute;inset:0;top:-100%;background:var(--ink);animation:cue 2.4s infinite}
+@keyframes cue{to{top:100%}}
+
+/* Botón de información / interacción (clickable) */
+.hint{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;text-align:center;pointer-events:none;opacity:0;transition:opacity .8s var(--ease-out)}
+.hint.show{opacity:1}
+.hint .mk{font-family:'Syne';font-weight:800;font-size:clamp(2.6rem,9vw,6rem);letter-spacing:-.02em;line-height:1}
+.hint .sub{font-family:'Fraunces';font-style:italic;color:var(--dim);margin-top:14px;font-size:clamp(.95rem,2.4vw,1.25rem)}
+
+/* Secciones invisibles que dan altura al scroll (una por verso) */
+.scroller{position:relative;z-index:4}
+.phase{height:100svh;display:flex;align-items:flex-end;justify-content:center}
+/* Texto accesible: el poema completo, legible por lectores de pantalla */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Cierre: crédito al final */
+.outro{position:relative;z-index:4;min-height:60svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:60px 24px}
+.outro .star{font-family:'Syne';color:#E8CC7A;font-size:1.4rem}
+.outro h2{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(1.4rem,4vw,2.4rem);max-width:22ch;line-height:1.3}
+.outro p{color:var(--dim);font-size:.82rem;letter-spacing:.04em;max-width:46ch}
+.outro a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line);transition:border-color .3s}
+.outro a:hover{border-color:var(--ink)}
+
+/* ── Cursor custom (desktop, puntero fino) ── */
+.cur{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(237,234,227,.6);border-radius:50%;z-index:6;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:difference;display:none;transition:width .3s,height .3s}
+@media(hover:hover) and (pointer:fine){.has-cur .cur{display:block}.has-cur,.has-cur *{cursor:none}}
+
+/* ── Reduced motion / sin JS: mostramos el poema como pieza tipográfica ── */
+.rm{display:none;position:relative;z-index:5;min-height:100svh;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:80px 24px}
+.rm .mk{font-family:'Syne';font-weight:800;font-size:clamp(2.4rem,10vw,5rem);letter-spacing:-.02em;margin-bottom:24px}
+.rm p{font-family:'Fraunces';font-style:italic;font-weight:300;font-size:clamp(1.2rem,3.4vw,2rem);line-height:1.5;color:var(--ink);max-width:24ch}
+.rm .sub{font-style:normal;font-family:'Space Grotesk';font-size:.8rem;letter-spacing:.06em;color:var(--dim);margin-top:30px;max-width:40ch}
+@media(prefers-reduced-motion:reduce){
+  #flock,.scroller,.outro,.caption,.rail,.scrollcue,.hint{display:none !important}
+  .rm{display:flex}
+  *{animation:none !important}
+}
+</style>
+
+<noscript><style>
+  #flock,.scroller,.outro,.caption,.rail,.scrollcue,.hint,.ui{display:none !important}
+  .rm{display:flex !important}
+</style></noscript>
+
+<script>document.documentElement.classList.remove('no-js')</script>
+</head>
+<body>
+
+<!-- La bandada -->
+<canvas id="flock" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cur" aria-hidden="true"></div>
+
+<!-- Encuadre -->
+<div class="ui" aria-hidden="true">
+  <div class="corner tl">Murmuración</div>
+  <div class="corner tr">un estudio de<br>movimiento colectivo</div>
+  <div class="corner bl"><span class="dot"></span><span id="meta">mové · scrolleá · tocá</span></div>
+</div>
+<div class="rail" id="rail" aria-hidden="true"></div>
+
+<!-- Título de entrada (se desvanece al scrollear) -->
+<div class="hint" id="hint" aria-hidden="true">
+  <div class="mk">MURMURACIÓN</div>
+  <div class="sub">un cuerpo hecho de mil cuerpos</div>
+</div>
+
+<!-- Caption del verso actual -->
+<div class="caption" aria-hidden="true"><div class="line" id="caption"></div></div>
+
+<div class="scrollcue" id="cue" aria-hidden="true"><span>scroll</span><span class="l"></span></div>
+
+<!-- Estructura de scroll (da altura). El poema vive acá para accesibilidad. -->
+<main class="scroller" id="scroller">
+  <section class="phase" aria-label="Murmuración, un poema visual">
+    <p class="sr">Murmuración. Un organismo hecho de mil cuerpos.</p>
+  </section>
+  <section class="phase"><p class="sr">Sin líder: nadie manda, todos siguen.</p></section>
+  <section class="phase"><p class="sr">Vecindad: cada ave mira solo a siete.</p></section>
+  <section class="phase"><p class="sr">Una mente, y el cielo entero respira.</p></section>
+  <section class="phase"><p class="sr">Efímera: al anochecer, la bandada se deshace.</p></section>
+</main>
+
+<div class="outro">
+  <div class="star">✦</div>
+  <h2 class="serif">Nada de esto existe quieto. Solo el movimiento lo sostiene.</h2>
+  <p>Pieza generativa · canvas 2D + flow field. Mové el cursor o arrastrá el dedo para empujar la bandada; tocá para dispersarla.</p>
+  <p style="margin-top:6px">Hecho de luz y movimiento — 2026</p>
+</div>
+
+<!-- Fallback estático (reduced-motion / sin JS): el poema como tipografía -->
+<div class="rm" aria-hidden="false">
+  <div class="mk">MURMURACIÓN</div>
+  <p class="serif">
+    Un cuerpo hecho de mil cuerpos.<br>
+    Sin líder: nadie manda, todos siguen.<br>
+    Cada ave mira solo a siete.<br>
+    Una mente, y el cielo respira.<br>
+    Al anochecer, se deshace.
+  </p>
+  <div class="sub">Una pieza sobre el movimiento colectivo. Activá las animaciones para ver volar la bandada.</div>
+</div>
+
+<!-- Librerías -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   0 · Contexto y guardas
+══════════════════════════════════════════════════════════════ */
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isTouch = matchMedia("(hover: none),(pointer: coarse)").matches;
+if (reduceMotion) { /* el CSS ya muestra el fallback tipográfico */ }
+else init();
+
+function init(){
+  const gsap = window.gsap, CE = window.CustomEase;
+  if (gsap && CE) {
+    gsap.registerPlugin(CE);
+    CE.create("flock", "M0,0 C0.2,1 0.3,1 1,1"); // entrada serena de los captions
+  }
+  const EASE = (gsap && CE) ? "flock" : "power2.out";
+
+  /* ── Los versos: cada uno = palabra que forma la bandada + caption + color ── */
+  const PHASES = [
+    { word:"MURMURACIÓN", cap:"un organismo hecho de mil cuerpos",       color:[232,204,122] }, // oro
+    { word:"SIN LÍDER",   cap:"nadie manda; todos siguen",               color:[255,150,92]  }, // ámbar
+    { word:"VECINDAD",    cap:"cada ave mira solo a sus siete vecinos",  color:[150,210,255] }, // hielo
+    { word:"UNA MENTE",   cap:"y el cielo entero respira a la vez",      color:[176,243,214] }, // menta
+    { word:"EFÍMERA",     cap:"al anochecer, la bandada se deshace",     color:[233,170,205] }, // rosa-malva
+  ];
+
+  /* ════════════════════════════════════════════════════════════
+     1 · Canvas + dimensiones
+  ══════════════════════════════════════════════════════════════ */
+  const cv = document.getElementById("flock");
+  const ctx = cv.getContext("2d", { alpha: true });
+  let W, H, dpr, cxC, cyC;
+
+  // Densidad adaptada: menos partículas en mobile = 60fps en Safari iOS
+  const COUNT = Math.round(Math.min(4200, Math.max(900, (innerWidth*innerHeight)/(isTouch?620:330))));
+
+  function resize(){
+    dpr = Math.min(devicePixelRatio||1, 2);
+    W = cv.width = Math.floor(innerWidth*dpr);
+    H = cv.height = Math.floor(innerHeight*dpr);
+    cv.style.width = innerWidth+"px"; cv.style.height = innerHeight+"px";
+    cxC = W/2; cyC = H/2;
+    sampleWord(PHASES[current].word, true); // re-formar al cambiar tamaño
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     2 · Partículas (la bandada)
+  ══════════════════════════════════════════════════════════════ */
+  const P = new Array(COUNT);
+  for (let i=0;i<COUNT;i++){
+    P[i] = {
+      x: Math.random()*W, y: Math.random()*H,
+      vx:0, vy:0,
+      tx:null, ty:null,            // objetivo (cuando forma palabra)
+      seed: Math.random()*1000,    // fase de ruido individual
+      sz: (Math.random()*1.3+0.7), // tamaño
+      formed:false,
+    };
+  }
+  // color actual (se interpola entre versos)
+  const col = { r:232, g:204, b:122 };
+
+  /* ════════════════════════════════════════════════════════════
+     3 · Muestreo de texto → puntos objetivo
+     Renderizamos la palabra en un canvas offscreen y tomamos un
+     punto cada "gap" píxeles donde hay tinta. Esos son los lugares
+     a los que vuela la bandada para "deletrear" el verso.
+  ══════════════════════════════════════════════════════════════ */
+  const off = document.createElement("canvas");
+  const offc = off.getContext("2d");
+  let targets = [];
+
+  function sampleWord(word, immediate){
+    off.width = W; off.height = H;
+    offc.clearRect(0,0,W,H);
+    offc.fillStyle = "#fff";
+    offc.textAlign = "center"; offc.textBaseline = "middle";
+    // tamaño de fuente que entra en pantalla, con aire a los lados
+    let fs = Math.min(W*0.82/Math.max(word.length*0.52,3), H*0.26);
+    fs = Math.max(fs, 40*dpr);
+    offc.font = `800 ${fs}px Syne, sans-serif`;
+    offc.fillText(word, cxC, cyC*0.92);
+
+    const gap = Math.max(4, Math.round(5*dpr));
+    const data = offc.getImageData(0,0,W,H).data;
+    const pts = [];
+    for (let y=0;y<H;y+=gap){
+      for (let x=0;x<W;x+=gap){
+        if (data[(y*W+x)*4+3] > 128){
+          // jitter leve para que el texto no se vea de molde
+          pts.push([x + (Math.random()-0.5)*gap, y + (Math.random()-0.5)*gap]);
+        }
+      }
+    }
+    // mezclamos para que la asignación sea orgánica
+    for (let i=pts.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [pts[i],pts[j]]=[pts[j],pts[i]]; }
+    targets = pts;
+    assignTargets(immediate);
+  }
+
+  function assignTargets(immediate){
+    const n = targets.length;
+    for (let i=0;i<COUNT;i++){
+      const p = P[i];
+      if (i < n){ p.tx = targets[i][0]; p.ty = targets[i][1]; p.formed = true; }
+      else { p.tx = null; p.ty = null; p.formed = false; } // sobrantes: vuelan libres
+      if (immediate && p.tx!=null){ /* sin teletransporte: dejamos que vuelen hacia el objetivo */ }
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     4 · Puntero (repulsión) + click (dispersión)
+  ══════════════════════════════════════════════════════════════ */
+  const pointer = { x:-9999, y:-9999, active:false };
+  let burst = 0;
+  function setPointer(cx,cy){ pointer.x=cx*dpr; pointer.y=cy*dpr; pointer.active=true; }
+  addEventListener("mousemove", e=>setPointer(e.clientX,e.clientY));
+  addEventListener("mouseleave", ()=>pointer.active=false);
+  addEventListener("touchmove", e=>{ const t=e.touches[0]; if(t) setPointer(t.clientX,t.clientY); }, {passive:true});
+  addEventListener("touchend", ()=>pointer.active=false);
+  addEventListener("pointerdown", ()=>{ burst = 1; });   // golpe que dispersa la bandada
+
+  /* ════════════════════════════════════════════════════════════
+     5 · Flow field barato (ruido pseudo-trigonométrico)
+  ══════════════════════════════════════════════════════════════ */
+  function flowAngle(x,y,t){
+    return Math.sin(x*0.0016 + t*0.3) * 2 + Math.cos(y*0.0018 - t*0.25) * 2;
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     6 · Loop de render (con estela = cielo nocturno)
+  ══════════════════════════════════════════════════════════════ */
+  let t = 0, raf;
+  function frame(){
+    raf = requestAnimationFrame(frame);
+    t += 0.016;
+
+    // estela: en vez de borrar, pintamos un velo translúcido → motion blur
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "rgba(6,7,9,0.18)";
+    ctx.fillRect(0,0,W,H);
+
+    // las partículas brillan (additive)
+    ctx.globalCompositeOperation = "lighter";
+
+    const repelR = 120*dpr, repelR2 = repelR*repelR;
+    burst *= 0.92; // el golpe se disipa
+
+    for (let i=0;i<COUNT;i++){
+      const p = P[i];
+
+      if (p.formed && burst < 0.2){
+        // resorte hacia el objetivo + micro-ruido (la bandada nunca está quieta)
+        const ax = (p.tx - p.x)*0.012 + Math.cos(p.seed + t*1.4)*0.18*dpr;
+        const ay = (p.ty - p.y)*0.012 + Math.sin(p.seed + t*1.2)*0.18*dpr;
+        p.vx += ax; p.vy += ay;
+        p.vx *= 0.86; p.vy *= 0.86;
+      } else {
+        // vuelo libre por el flow field
+        const a = flowAngle(p.x, p.y, t);
+        p.vx += Math.cos(a)*0.16*dpr + (burst>0.2?(Math.random()-0.5)*burst*8*dpr:0);
+        p.vy += Math.sin(a)*0.16*dpr + (burst>0.2?(Math.random()-0.5)*burst*8*dpr:0);
+        p.vx *= 0.94; p.vy *= 0.94;
+      }
+
+      // repulsión del puntero
+      if (pointer.active){
+        const dx = p.x-pointer.x, dy = p.y-pointer.y, d2 = dx*dx+dy*dy;
+        if (d2 < repelR2){
+          const d = Math.sqrt(d2)||1, f = (1 - d/repelR)*4*dpr;
+          p.vx += dx/d*f; p.vy += dy/d*f;
+        }
+      }
+
+      p.x += p.vx; p.y += p.vy;
+      // envoltura en pantalla para los que vuelan libres
+      if (!p.formed){
+        if (p.x<-20) p.x=W+20; else if (p.x>W+20) p.x=-20;
+        if (p.y<-20) p.y=H+20; else if (p.y>H+20) p.y=-20;
+      }
+
+      // dibujo: cuerpo de color + núcleo blanco para chispa
+      const speed = Math.min(1, (Math.abs(p.vx)+Math.abs(p.vy))/(6*dpr));
+      const s = p.sz*dpr*(1+speed*0.6);
+      ctx.fillStyle = `rgba(${col.r|0},${col.g|0},${col.b|0},0.85)`;
+      ctx.fillRect(p.x, p.y, s, s);
+      if (p.formed){
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.fillRect(p.x+s*0.25, p.y+s*0.25, s*0.5, s*0.5);
+      }
+    }
+    ctx.globalCompositeOperation = "source-over";
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     7 · Scroll → verso actual (Lenis en desktop, nativo en mobile)
+  ══════════════════════════════════════════════════════════════ */
+  let current = 0;
+  const capEl = document.getElementById("caption");
+  const hintEl = document.getElementById("hint");
+  const cueEl = document.getElementById("cue");
+  const railEl = document.getElementById("rail");
+
+  // rail: una marca por verso
+  PHASES.forEach((_,i)=>{ const d=document.createElement("div"); d.className="tick"+(i===0?" on":""); railEl.appendChild(d); });
+  const ticks = [...railEl.children];
+
+  function goPhase(i){
+    if (i===current) return;
+    current = i;
+    const ph = PHASES[i];
+    // color: lo interpolamos suave con GSAP (o salto si no hay GSAP)
+    if (window.gsap) gsap.to(col, { r:ph.color[0], g:ph.color[1], b:ph.color[2], duration:1.3, ease:"power2.inOut" });
+    else { col.r=ph.color[0]; col.g=ph.color[1]; col.b=ph.color[2]; }
+    sampleWord(ph.word, false);
+    // caption
+    capEl.classList.remove("show");
+    setTimeout(()=>{ capEl.textContent = ph.cap; capEl.classList.add("show"); }, 260);
+    ticks.forEach((tk,k)=>tk.classList.toggle("on", k===i));
+  }
+
+  // mostramos el título de entrada al cargar; se va con el primer scroll
+  setTimeout(()=>hintEl.classList.add("show"), 400);
+  setTimeout(()=>{ capEl.textContent = PHASES[0].cap; capEl.classList.add("show"); }, 1200);
+
+  function onScroll(y){
+    const docH = document.documentElement.scrollHeight - innerHeight;
+    const prog = docH>0 ? y/docH : 0;
+    // las 5 fases ocupan ~el 85% del scroll; el resto es el outro
+    const idx = Math.min(PHASES.length-1, Math.floor(prog/0.86 * PHASES.length));
+    goPhase(Math.max(0, idx));
+    // el título y la pista se desvanecen apenas arrancás
+    const fade = Math.min(1, y/300);
+    hintEl.style.opacity = String(1-fade);
+    cueEl.style.opacity = String(1-fade);
+    capEl.parentElement.style.opacity = String(Math.min(1, y/200)); // aparece tras el hero
+  }
+
+  let lenis=null;
+  if (window.Lenis && !isTouch){
+    lenis = new window.Lenis({ duration:1.2, smoothWheel:true });
+    lenis.on("scroll", (e)=>onScroll(e.scroll));
+    const tick=(time)=>{ lenis.raf(time*1000); };
+    if (window.gsap){ gsap.ticker.add((time)=>lenis.raf(time*1000)); gsap.ticker.lagSmoothing(0); }
+    else { function rl(time){ lenis.raf(time); requestAnimationFrame(rl);} requestAnimationFrame(rl); }
+  } else {
+    addEventListener("scroll", ()=>onScroll(scrollY), { passive:true });
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     8 · Cursor custom (desktop)
+  ══════════════════════════════════════════════════════════════ */
+  if (!isTouch && matchMedia("(pointer:fine)").matches){
+    document.documentElement.classList.add("has-cur");
+    const cur = document.querySelector(".cur");
+    addEventListener("mousemove", e=>{ cur.style.transform=`translate(${e.clientX}px,${e.clientY}px) translate(-50%,-50%)`; });
+    addEventListener("pointerdown", ()=>{ cur.style.width="56px"; cur.style.height="56px"; setTimeout(()=>{cur.style.width="30px";cur.style.height="30px";},220); });
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     9 · Arranque
+  ══════════════════════════════════════════════════════════════ */
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve())
+    .then(()=>{ resize(); });
+  resize();           // primer muestreo inmediato (por si las fuentes tardan)
+  frame();
+  addEventListener("resize", resize);
+  // pausa el render si la pestaña no está visible (batería)
+  document.addEventListener("visibilitychange", ()=>{
+    if (document.hidden){ cancelAnimationFrame(raf); raf=null; }
+    else if (!raf) frame();
+  });
+}
+</script>
+</body>
+</html>
