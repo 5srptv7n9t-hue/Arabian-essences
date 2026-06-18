@@ -1,120 +1,73 @@
-/* ============================================================
- *  Netlify Function · Mercado Pago Checkout Pro
- *  ------------------------------------------------------------
- *  Crea una "preferencia" de pago en el servidor para que el
- *  Access Token NUNCA viaje al frontend.
- *
- *  Configurá en Netlify (Site settings → Environment variables):
- *    MP_ACCESS_TOKEN   = APP_USR-xxxxxxxx...   (tu token productivo o de prueba)
- *    SITE_URL          = https://tu-dominio.netlify.app   (opcional, para back_urls)
- *
- *  El front llama a:  POST /.netlify/functions/crear-preferencia
- *  con body JSON: { items:[{title, quantity, unit_price}], payer, nota }
- *  y recibe: { init_point, id }  →  redirige al usuario a init_point.
- * ============================================================ */
-
-const MP_API = "https://api.mercadopago.com/checkout/preferences";
-
-// Cabeceras CORS (por si el front se sirve desde otro origen / preview).
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Content-Type": "application/json",
-};
-
 exports.handler = async (event) => {
-  // Preflight CORS
-  if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 204, headers: cors, body: "" };
-  }
-
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: cors, body: JSON.stringify({ error: "Método no permitido" }) };
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  const token = process.env.MP_ACCESS_TOKEN;
-  if (!token) {
-    // Mientras no cargues el token, el front cae elegantemente a WhatsApp.
-    return {
-      statusCode: 500,
-      headers: cors,
-      body: JSON.stringify({ error: "MP_ACCESS_TOKEN no configurado en Netlify." }),
-    };
+  const ACCESS_TOKEN = process.env.MP_ACCESS_TOKEN;
+  if (!ACCESS_TOKEN) {
+    return { statusCode: 500, body: JSON.stringify({ error: "Falta MP_ACCESS_TOKEN" }) };
   }
 
-  let data;
+  let body;
   try {
-    data = JSON.parse(event.body || "{}");
+    body = JSON.parse(event.body || "{}");
   } catch {
-    return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "JSON inválido" }) };
+    return { statusCode: 400, body: JSON.stringify({ error: "JSON invalido" }) };
   }
 
-  // Validación mínima de los ítems.
-  const items = Array.isArray(data.items) ? data.items : [];
-  if (!items.length) {
-    return { statusCode: 400, headers: cors, body: JSON.stringify({ error: "Carrito vacío" }) };
+  const title      = String(body.title || "Producto Arabian Essence").slice(0, 250);
+  const quantity   = Math.max(1, Math.min(99, parseInt(body.quantity, 10) || 1));
+  const unit_price = Number(body.unit_price);
+  const buyer_name = String(body.buyer_name || "").slice(0, 120);
+  const note       = String(body.note || "").slice(0, 500);
+
+  if (!Number.isFinite(unit_price) || unit_price <= 0) {
+    return { statusCode: 400, body: JSON.stringify({ error: "Precio invalido" }) };
   }
 
-  const site = process.env.SITE_URL || "";
+  const SITE_URL = process.env.URL || `https://${event.headers.host}`;
 
-  // Cuerpo de la preferencia (Checkout Pro).
   const preference = {
-    items: items.map((it) => ({
-      title: String(it.title || "Perfume Arabian Essence").slice(0, 250),
-      quantity: Math.max(1, parseInt(it.quantity, 10) || 1),
-      unit_price: Number(it.unit_price) || 0,
-      currency_id: "ARS",
-    })),
-    payer: data.payer && data.payer.name ? { name: String(data.payer.name).slice(0, 80) } : undefined,
-    metadata: { nota: (data.nota || "").slice(0, 500) },
+    items: [
+      { title, quantity, unit_price, currency_id: "ARS" },
+    ],
+    back_urls: {
+      success: `${SITE_URL}/?pago=ok`,
+      pending: `${SITE_URL}/?pago=pendiente`,
+      failure: `${SITE_URL}/?pago=error`,
+    },
+    auto_return: "approved",
     statement_descriptor: "ARABIAN ESSENCE",
-    binary_mode: true,
-    back_urls: site
-      ? {
-          success: `${site}/?pago=ok`,
-          failure: `${site}/?pago=error`,
-          pending: `${site}/?pago=pendiente`,
-        }
-      : undefined,
-    auto_return: site ? "approved" : undefined,
+    external_reference: `AE-${Date.now()}`,
+    metadata: { buyer_name, note },
   };
 
   try {
-    const res = await fetch(MP_API, {
+    const mpRes = await fetch("https://api.mercadopago.com/checkout/preferences", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${ACCESS_TOKEN}`,
       },
       body: JSON.stringify(preference),
     });
 
-    const json = await res.json();
+    const data = await mpRes.json();
 
-    if (!res.ok) {
-      return {
-        statusCode: res.status,
-        headers: cors,
-        body: JSON.stringify({ error: json.message || "Error creando la preferencia", detail: json }),
-      };
+    if (!mpRes.ok) {
+      return { statusCode: 502, body: JSON.stringify({ error: "Error de Mercado Pago", detail: data }) };
     }
 
-    // init_point = checkout productivo · sandbox_init_point = pruebas
     return {
       statusCode: 200,
-      headers: cors,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id: json.id,
-        init_point: json.init_point,
-        sandbox_init_point: json.sandbox_init_point,
+        init_point: data.init_point,
+        sandbox_init_point: data.sandbox_init_point,
+        id: data.id,
       }),
     };
   } catch (err) {
-    return {
-      statusCode: 502,
-      headers: cors,
-      body: JSON.stringify({ error: "No se pudo contactar a Mercado Pago", detail: String(err) }),
-    };
+    return { statusCode: 500, body: JSON.stringify({ error: "Fallo al crear la preferencia", detail: String(err) }) };
   }
 };
