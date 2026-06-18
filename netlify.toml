@@ -1,15 +1,3 @@
-# ============================================================
-#  Configuración de Netlify para Arabian Essence
-#  - Sirve el sitio estático desde la raíz del repo
-#  - Habilita las funciones serverless en netlify/functions
-# ============================================================
-
 [build]
-  publish   = "."
   functions = "netlify/functions"
-
-[functions]
-  node_bundler = "esbuild"
-
-# La landing es index.html → Netlify la sirve en la raíz automáticamente,
-# no hace falta ninguna redirección.
+  publish = "."
