@@ -1,0 +1,1401 @@
+doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Arabian Essence — Perfumería Árabe · La hora dorada | Lattafa, Maison Alhambra, Afnan</title>
+
+<!-- ===== SEO ===== -->
+<meta name="description" content="Fragancias árabes originales de alta concentración: Lattafa, Maison Alhambra, Al Haramain, Afnan, Rasasi y Fragrance World. Intensas, duraderas y con envío a toda la Argentina." />
+<meta name="theme-color" content="#080808" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Arabian Essence — Perfumería Árabe" />
+<meta property="og:description" content="La hora dorada del perfume. Fragancias árabes originales, intensas y duraderas. Envíos a todo el país." />
+<meta property="og:locale" content="es_AR" />
+
+<!-- ===== Tipografías: Cormorant Garamond (display) + Josefin Sans (UI/cuerpo) · font-display:swap ===== -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Josefin+Sans:wght@300;400;500;600&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+/* ============================================================
+   DIRECCIÓN DE ARTE · "SOLANO" — luz de desierto, hora dorada
+   ------------------------------------------------------------
+   Concepto: el perfume árabe como la última hora de luz sobre la
+   arena. Atmósfera cálida, parallax de dunas, sol bajo. El oro del
+   brief es la luz; el negro es la noche que avanza desde arriba.
+   Sistema fijo del brief: --gold #C9A84C · --black #080808 · --white #FAFAF8
+============================================================ */
+:root{
+  --gold:#C9A84C;        --gold-light:#E8CC7A;  --gold-dim:#8B6914;
+  --black:#080808;       --white:#FAFAF8;
+  /* Sub-tonos SOLANO: arena y penumbra cálida (derivan de la hora dorada) */
+  --sand-900:#0c0907;    --sand-800:#14100a;    --sand-700:#1c1610;
+  --sand-card:#171109;   --sand-border:#2a2014;
+  --white-dim:#D9D2C2;   --white-muted:#8C8270;
+  --line:rgba(201,168,76,.18);
+  --ease:cubic-bezier(.16,1,.3,1);          /* reveals (fallback CSS) */
+  --ease-io:cubic-bezier(.76,0,.24,1);      /* fills / clip-path */
+}
+
+/* ============================================================
+   BASE
+============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Josefin Sans',ui-sans-serif,system-ui,sans-serif;
+  background:var(--sand-900);color:var(--white);
+  font-weight:300;line-height:1.7;letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+/* Lenis: con smooth scroll activo evitamos el scroll nativo encima */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+
+h1,h2,h3,h4,.serif{font-family:'Cormorant Garamond',serif;font-weight:400;line-height:1.08;letter-spacing:.005em}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::selection{background:var(--gold);color:var(--black)}
+
+/* Texto con relleno dorado (la luz que recorre el titular) */
+.gold-txt{
+  background:linear-gradient(115deg,var(--gold-dim),var(--gold-light) 42%,var(--gold) 60%,var(--gold-light));
+  background-size:240% auto;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  padding-bottom:.04em;animation:goldShimmer 7s linear infinite;
+}
+@keyframes goldShimmer{to{background-position:240% center}}
+.italic{font-style:italic}
+
+/* Eyebrow: label en mayúscula con línea (un rayo de luz horizontal) */
+.eyebrow{
+  font-size:.66rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);
+  font-weight:400;display:inline-flex;align-items:center;gap:14px;
+}
+.eyebrow::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.eyebrow.cen{justify-content:center}
+.eyebrow.cen::after{content:"";width:34px;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(22px,5vw,40px)}
+section{position:relative;z-index:2}
+
+/* Atmósfera: grano de film + viñeta cálida (polvo de arena en la luz) */
+.grain{
+  position:fixed;inset:0;z-index:60;pointer-events:none;opacity:.34;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+.vignette{position:fixed;inset:0;z-index:59;pointer-events:none;box-shadow:inset 0 0 240px 80px rgba(10,7,4,.9)}
+
+/* ============================================================
+   INTRO · cortina cálida que revela la página (sale sola con CSS)
+============================================================ */
+#intro{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 50% 120%,#3a2410,var(--sand-900) 60%);display:flex;align-items:center;justify-content:center;pointer-events:none;animation:introOut 1s var(--ease-io) 2s forwards}
+#intro .intro-mk{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,9vw,5rem);line-height:1;display:flex;gap:.28em;opacity:0;animation:introIn 1.1s var(--ease) .15s forwards}
+#intro .intro-mk .it{font-style:italic}
+#intro::after{content:"";position:absolute;left:50%;bottom:24%;transform:translateX(-50%);width:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:introLine 1s var(--ease) .6s forwards}
+@keyframes introIn{from{opacity:0;letter-spacing:.55em;filter:blur(10px)}to{opacity:1;letter-spacing:.04em;filter:blur(0)}}
+@keyframes introLine{to{width:min(280px,60vw)}}
+@keyframes introOut{to{transform:translateY(-100%);visibility:hidden;pointer-events:none}}
+@media(prefers-reduced-motion:reduce){#intro{display:none}}
+
+/* ============================================================
+   BOTONES · microinteracción de fill que sube (como la luz al amanecer)
+============================================================ */
+.btn{
+  font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;font-weight:400;
+  padding:17px 40px;position:relative;display:inline-flex;align-items:center;gap:12px;
+  border:1px solid var(--gold);color:var(--gold-light);overflow:hidden;z-index:1;
+  transition:color .5s var(--ease),border-color .5s;background:transparent;
+}
+.btn::after{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(120deg,var(--gold-dim),var(--gold));
+  transform:translateY(101%);transition:transform .5s var(--ease-io);
+}
+.btn:hover{color:var(--black)}
+.btn:hover::after{transform:translateY(0)}
+.btn-solid{background:linear-gradient(120deg,var(--gold-dim),var(--gold));color:var(--black);border-color:transparent}
+.btn-solid::after{background:var(--white)}
+.btn-solid:hover{color:var(--gold-dim)}
+.btn svg{transition:transform .4s var(--ease)}
+.btn:hover svg{transform:translateX(4px)}
+
+/* ============================================================
+   NAV · fija, con blur cálido al hacer scroll
+============================================================ */
+nav{position:fixed;inset:0 0 auto;z-index:50;padding:24px 0;transition:.5s var(--ease)}
+nav.solid{background:rgba(12,9,7,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:14px 0;box-shadow:0 1px 0 var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:13px;font-family:'Cormorant Garamond',serif;font-size:1.5rem;letter-spacing:.02em}
+.logo .mk{
+  width:38px;height:38px;border:1px solid var(--gold);display:grid;place-items:center;
+  color:var(--gold-light);font-style:italic;font-size:1.15rem;position:relative;flex:none;
+}
+.logo .mk::after{content:"";position:absolute;inset:4px;border:1px solid var(--line)}
+.menu{display:flex;gap:38px;align-items:center}
+.menu a{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--white-dim);transition:.3s;position:relative}
+.menu a::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:1px;background:var(--gold);transition:.35s var(--ease)}
+.menu a:hover{color:var(--gold-light)}
+.menu a:hover::after{width:100%}
+.menu .btn{padding:12px 26px}
+.burger{display:none;flex-direction:column;gap:6px;padding:8px;z-index:120}
+.burger span{width:26px;height:1.5px;background:var(--gold);transition:.4s var(--ease-io)}
+.burger.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg)}
+.drawer{
+  position:fixed;inset:0;background:var(--sand-800);z-index:110;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:26px;clip-path:circle(0% at 100% 0);
+  transition:clip-path .7s var(--ease-io);
+}
+.drawer.open{clip-path:circle(150% at 100% 0)}
+.drawer a{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-style:italic;color:var(--white);opacity:.85;transition:.4s}
+.drawer a:hover{color:var(--gold-light)}
+
+/* ============================================================
+   HERO · paisaje de dunas (Three.js shader) + texto blur-to-focus
+============================================================ */
+#hero{min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;padding:120px 0 92px;position:relative}
+/* Canvas del shader de dunas: el fondo vivo */
+#dune-canvas{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block}
+/* Fallback estático (sin WebGL / reduced-motion / equipo lento): dunas en CSS */
+#dune-fallback{
+  position:absolute;inset:0;z-index:0;display:none;
+  background:
+    radial-gradient(circle at 50% 70%,rgba(255,210,140,.55),transparent 42%),
+    linear-gradient(180deg,#171008 0%,#3a2410 38%,#8a5b22 60%,#caa14c 74%,#5a3a16 86%,#0c0907 100%);
+}
+#dune-fallback::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:42%;
+  background:linear-gradient(180deg,transparent,#0c0907 88%);
+}
+/* Degradado inferior que funde el hero con la página y asienta el texto */
+#hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:55%;z-index:1;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(12,9,7,.55) 55%,var(--sand-900))}
+.hero-grid{position:relative;z-index:3;width:100%;display:grid;grid-template-columns:1fr;gap:26px;justify-items:start;text-align:left;max-width:18ch}
+.hero-grid .lead,.hero-grid .hero-meta{max-width:46ch}
+#hero .eyebrow{color:var(--gold-light)}
+#hero h1{font-size:clamp(3.2rem,11vw,8.6rem);font-weight:300;letter-spacing:-.01em;max-width:none}
+#hero .lead{font-size:1.12rem;color:var(--white-dim);font-weight:300}
+.hero-acts{display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}
+.hero-meta{margin-top:14px;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--white-muted)}
+.scrollcue{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:5;display:flex;flex-direction:column;align-items:center;gap:12px;font-size:.58rem;letter-spacing:.34em;text-transform:uppercase;color:var(--white-muted)}
+.scrollcue .l{width:1px;height:46px;background:rgba(201,168,76,.3);position:relative;overflow:hidden}
+.scrollcue .l::after{content:"";position:absolute;inset:0;top:-100%;background:var(--gold);animation:cue 2.2s infinite}
+@keyframes cue{to{top:100%}}
+
+/* ============================================================
+   MARQUEE de marcas
+============================================================ */
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--sand-800);padding:26px 0;overflow:hidden;position:relative}
+.marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+.marquee::before{left:0;background:linear-gradient(90deg,var(--sand-800),transparent)}
+.marquee::after{right:0;background:linear-gradient(270deg,var(--sand-800),transparent)}
+.marquee-track{display:flex;gap:64px;width:max-content;animation:scroll-x 34s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-item{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1.5rem,3vw,2.2rem);color:var(--white-dim);white-space:nowrap;display:flex;align-items:center;gap:64px}
+.marquee-item::after{content:"✦";font-style:normal;font-size:.7em;color:var(--gold)}
+@keyframes scroll-x{to{transform:translateX(-50%)}}
+
+/* ============================================================
+   REVEALS · solo se ocultan cuando el JS está activo (.js-ready)
+   Sin JS / preview estático → el contenido queda visible.
+   El estado inicial real lo randomiza GSAP (posición/rotación leves).
+============================================================ */
+.js-ready .rv,.js-ready .hero-anim{opacity:0}
+/* Fallback CSS por si GSAP no carga pero sí corre algo de JS */
+.rv.in{opacity:1;transform:none;filter:blur(0);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease),filter 1.1s var(--ease)}
+
+/* ============================================================
+   SECCIONES genéricas
+============================================================ */
+.section-head{text-align:center;max-width:640px;margin:0 auto clamp(48px,7vw,76px)}
+.section-head h2{font-size:clamp(2.4rem,5vw,4rem);font-weight:300;margin-top:20px}
+.section-head p{color:var(--white-dim);font-weight:300;margin-top:16px}
+.pad{padding:clamp(90px,12vw,150px) 0}
+
+/* ============================================================
+   BENEFICIOS · grid de 4
+============================================================ */
+.benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.benefit{
+  padding:38px 28px;border:1px solid var(--sand-border);background:var(--sand-card);
+  transition:transform .5s var(--ease),border-color .5s,box-shadow .5s;position:relative;overflow:hidden;
+}
+.benefit::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(201,168,76,.1),transparent 60%);opacity:0;transition:opacity .5s}
+.benefit:hover,.benefit.touch-active{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 24px 60px -28px rgba(201,168,76,.5)}
+.benefit:hover::before,.benefit.touch-active::before{opacity:1}
+.benefit .ic{width:56px;height:56px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;color:var(--gold-light);margin-bottom:24px;transition:.5s var(--ease)}
+.benefit:hover .ic,.benefit.touch-active .ic{background:var(--gold);color:var(--black);box-shadow:0 0 36px -6px var(--gold)}
+.benefit h3{font-size:1.5rem;font-style:italic;margin-bottom:10px}
+.benefit p{color:var(--white-dim);font-size:.92rem;font-weight:300;line-height:1.6}
+
+/* ============================================================
+   POR QUÉ ÁRABE · 2 columnas + cifras que cuentan
+============================================================ */
+#why{background:var(--sand-800);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.why-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center}
+.why-grid h2{font-size:clamp(2.4rem,5vw,4.2rem);font-weight:300;margin-bottom:26px}
+.why-grid p{color:var(--white-dim);font-weight:300;font-size:1.05rem;margin-bottom:18px;max-width:50ch}
+.cifras{display:flex;gap:clamp(28px,5vw,54px);margin-top:42px;flex-wrap:wrap}
+.cifra .n{font-family:'Cormorant Garamond',serif;font-size:clamp(2.6rem,5vw,3.4rem);line-height:1}
+.cifra .l{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--white-muted);margin-top:8px}
+.why-visual{aspect-ratio:4/5;border:1px solid var(--line);position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 80%,rgba(201,168,76,.18),transparent 70%)}
+.why-visual .ringline{position:absolute;border:1px solid var(--line);border-radius:50%;inset:0;margin:auto}
+.why-visual .ar{position:absolute;inset:0;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:clamp(5rem,16vw,11rem);color:var(--gold-light);opacity:.92}
+
+/* ============================================================
+   CATEGORÍAS · grid de 4
+============================================================ */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.cat{
+  position:relative;aspect-ratio:3/4;border:1px solid var(--sand-border);overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:28px;
+  background:linear-gradient(180deg,rgba(28,22,16,.2),var(--sand-card));
+  transition:transform .5s var(--ease),border-color .5s;
+}
+.cat::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 100%,rgba(201,168,76,.18),transparent 65%);opacity:.5;transition:opacity .5s}
+.cat:hover,.cat.touch-active{transform:translateY(-8px);border-color:var(--gold)}
+.cat:hover::before,.cat.touch-active::before{opacity:1}
+.cat .cnum{position:absolute;top:24px;left:28px;font-size:.62rem;letter-spacing:.2em;color:var(--white-muted)}
+.cat h3{font-size:1.9rem;font-style:italic;position:relative}
+.cat p{position:relative;color:var(--white-dim);font-size:.84rem;font-weight:300;margin-top:6px}
+.cat .arrow{position:relative;margin-top:18px;color:var(--gold);display:inline-flex;align-items:center;gap:8px;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;opacity:0;transform:translateY(8px);transition:.4s var(--ease)}
+.cat:hover .arrow,.cat.touch-active .arrow{opacity:1;transform:none}
+
+/* ============================================================
+   GALERÍA · "Atlas del desierto" — paneles con wipe vertical al entrar
+   (cada panel es una escena renderizada en CSS para funcionar offline)
+============================================================ */
+#atlas{background:var(--sand-900);border-top:1px solid var(--line)}
+.atlas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.gItem{position:relative}
+.gFrame{position:relative;aspect-ratio:3/4;overflow:hidden;border:1px solid var(--sand-border)}
+.gImg{position:absolute;inset:0}
+/* Cada escena: un horizonte de duna distinto con su sol */
+.gImg.s1{background:radial-gradient(circle at 30% 78%,rgba(255,214,140,.85),transparent 38%),linear-gradient(180deg,#1a120a,#5a3a18 52%,#caa14c 72%,#2a1c0e)}
+.gImg.s2{background:radial-gradient(circle at 70% 70%,rgba(255,196,120,.8),transparent 40%),linear-gradient(180deg,#120d08,#3e2712 50%,#a9742c 70%,#1c1308)}
+.gImg.s3{background:radial-gradient(circle at 50% 82%,rgba(255,224,160,.85),transparent 36%),linear-gradient(180deg,#1c140b,#6a431b 55%,#e8cc7a 76%,#251a0d)}
+.gImg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(8,6,4,.78))}
+.gArab{position:absolute;left:24px;bottom:84px;z-index:2;font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,4.6rem);color:var(--gold-light);opacity:.92;line-height:1}
+.gCap{position:absolute;left:24px;right:24px;bottom:24px;z-index:2}
+.gCap .gk{font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.gCap h3{font-size:1.5rem;font-style:italic;margin-top:6px}
+
+/* ============================================================
+   PRODUCTOS · cards + modal de pedido
+============================================================ */
+.products{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{
+  border:1px solid var(--sand-border);background:var(--sand-card);overflow:hidden;position:relative;
+  transition:transform .5s var(--ease),border-color .5s,box-shadow .5s;display:flex;flex-direction:column;
+}
+.card:hover,.card.touch-active{transform:translateY(-10px);border-color:var(--gold);box-shadow:0 30px 70px -30px rgba(201,168,76,.55)}
+.card-media{aspect-ratio:1;position:relative;display:grid;place-items:center;background:radial-gradient(ellipse at center 70%,rgba(201,168,76,.16),transparent 72%);overflow:hidden}
+.card-media .bottle{width:84px;height:170px;border-radius:10px 10px 14px 14px;position:relative;transition:transform .6s var(--ease);box-shadow:0 0 60px -12px var(--cardglow,rgba(201,168,76,.6))}
+.card:hover .bottle,.card.touch-active .bottle{transform:translateY(-6px) scale(1.04)}
+.card-media .bottle::before{content:"";position:absolute;top:-22px;left:50%;transform:translateX(-50%);width:34px;height:26px;background:linear-gradient(160deg,var(--gold-light),var(--gold-dim));border-radius:4px}
+.card-media .pimg{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.card:hover .pimg,.card.touch-active .pimg{transform:scale(1.05)}
+.card-media .fam{position:absolute;top:16px;left:16px;z-index:2;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:6px 12px;background:rgba(12,9,7,.4)}
+.card-media .badge{position:absolute;top:16px;right:16px;z-index:2;font-size:.54rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--black);background:var(--gold);padding:5px 10px}
+.card-body{padding:24px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card-body .casa{font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--white-muted)}
+.card-body h3{font-size:1.7rem;font-weight:500}
+.card-body .desc{color:var(--white-dim);font-size:.88rem;font-weight:300;line-height:1.55;flex:1}
+.card-body .notes{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.card-body .note{font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--white-muted);border:1px solid var(--sand-border);padding:4px 9px}
+.card-body .dur{font-size:.68rem;letter-spacing:.06em;color:var(--white-muted);margin-top:10px}
+.card-body .dur span{color:var(--gold)}
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:12px}
+.card-foot .precio{font-family:'Cormorant Garamond',serif;font-size:1.7rem;color:var(--gold-light)}
+.card-foot .buybtn{display:inline-block;text-decoration:none;cursor:pointer;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);border:1px solid var(--gold);padding:11px 20px;position:relative;overflow:hidden;z-index:1;transition:color .45s var(--ease)}
+.card-foot .buybtn::after{content:"";position:absolute;inset:0;z-index:-1;background:var(--gold);transform:translateY(101%);transition:transform .45s var(--ease-io)}
+.card-foot .buybtn:hover{color:var(--black)}
+.card-foot .buybtn:hover::after{transform:translateY(0)}
+
+/* ==== Precios por medio de pago (transferencia vs tarjeta 3 cuotas) ==== */
+.precios{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+.p-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px}
+.p-label{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--white-muted)}
+.p-val{font-family:'Cormorant Garamond',serif;color:var(--gold-light);line-height:1}
+.p-row .precio{font-size:1.7rem}
+.p-tarjeta .p-label{color:var(--gold)}
+.p-tarjeta .p-val{font-size:1.15rem;color:var(--white-dim)}
+.p-cuota{font-size:.64rem;letter-spacing:.04em;color:var(--white-muted)}
+.p-cuota span{color:var(--gold-light)}
+.card-foot{margin-top:16px}
+.card-foot .buybtn{width:100%;text-align:center;display:block}
+/* ==== Selector de medio de pago en el modal ==== */
+.m-pay{display:flex;flex-direction:column;gap:10px}
+.pay-opt{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;border:1px solid var(--sand-border);background:var(--sand-800);padding:13px 15px;transition:border-color .3s,background .3s}
+.pay-opt .po-t{font-size:.8rem;letter-spacing:.02em;color:var(--white-dim);font-weight:300}
+.pay-opt .po-p{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--gold-light);white-space:nowrap}
+.pay-opt.active{border-color:var(--gold);background:rgba(201,168,76,.08)}
+.pay-opt.active .po-t{color:var(--white)}
+
+/* ============================================================
+   CTA + FOOTER
+============================================================ */
+#cta{text-align:center;background:radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.14),transparent 60%)}
+#cta h2{font-size:clamp(2.6rem,6vw,5.4rem);font-weight:300;max-width:16ch;margin:22px auto 24px}
+#cta p{color:var(--white-dim);font-weight:300;max-width:46ch;margin:0 auto 40px;font-size:1.08rem}
+footer{background:var(--sand-800);border-top:1px solid var(--line);padding:clamp(70px,9vw,110px) 0 40px}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1.2fr;gap:46px}
+footer .logo{margin-bottom:20px}
+footer .desc{color:var(--white-muted);font-weight:300;max-width:30ch;font-size:.94rem}
+footer h4{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.fcol a{display:block;color:var(--white-dim);font-weight:300;margin-bottom:12px;transition:.3s;font-size:.92rem}
+.fcol a:hover{color:var(--gold-light);padding-left:6px}
+.citem{display:flex;gap:12px;align-items:center;margin-bottom:14px;font-size:.92rem;color:var(--white-dim);font-weight:300}
+.citem svg{flex:none;color:var(--gold)}
+.fbot{margin-top:56px;padding-top:26px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:.74rem;color:var(--white-muted);letter-spacing:.06em}
+
+/* Botón flotante de WhatsApp */
+.wa-float{position:fixed;bottom:26px;right:26px;width:60px;height:60px;background:linear-gradient(120deg,var(--gold-dim),var(--gold));color:var(--black);border-radius:50%;display:grid;place-items:center;z-index:55;transition:.4s var(--ease);box-shadow:0 14px 36px -10px rgba(201,168,76,.6)}
+.wa-float:hover{transform:scale(1.1) rotate(8deg)}
+.wa-float::before{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid var(--gold);animation:halo 2.6s infinite}
+@keyframes halo{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.7);opacity:0}}
+
+/* ============================================================
+   MODAL DE PEDIDO
+============================================================ */
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+.modal.open{display:flex}
+.modal-bg{position:absolute;inset:0;background:rgba(6,4,2,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transition:opacity .4s}
+.modal.open .modal-bg{opacity:1}
+.modal-box{
+  position:relative;width:min(520px,100%);max-height:90svh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  background:var(--sand-card);border:1px solid var(--gold);padding:clamp(26px,4vw,40px);
+  transform:translateY(24px) scale(.98);opacity:0;transition:transform .5s var(--ease),opacity .5s;
+}
+.modal.open .modal-box{transform:none;opacity:1}
+.modal-close{position:absolute;top:16px;right:16px;width:38px;height:38px;border:1px solid var(--line);display:grid;place-items:center;color:var(--white-dim);transition:.3s}
+.modal-close:hover{border-color:var(--gold);color:var(--gold-light);transform:rotate(90deg)}
+.modal .eyebrow{margin-bottom:14px}
+.modal h3{font-size:2rem;font-weight:500}
+.modal .m-casa{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--white-muted);margin-bottom:4px}
+.modal .m-price{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold-light);margin-top:6px}
+.m-field{margin-top:22px}
+.m-field label{display:block;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--white-muted);margin-bottom:10px}
+.m-field input,.m-field textarea{
+  width:100%;background:var(--sand-800);border:1px solid var(--sand-border);color:var(--white);
+  padding:13px 15px;font-family:inherit;font-size:.95rem;font-weight:300;transition:border-color .3s;
+}
+.m-field input:focus,.m-field textarea:focus{outline:none;border-color:var(--gold)}
+.m-field textarea{resize:vertical;min-height:70px}
+.qty{display:flex;align-items:center;gap:0;width:max-content;border:1px solid var(--sand-border)}
+.qty button{width:46px;height:46px;font-size:1.3rem;color:var(--gold-light);display:grid;place-items:center;transition:.3s}
+.qty button:hover{background:var(--gold);color:var(--black)}
+.qty .val{width:54px;text-align:center;font-size:1.1rem;font-variant-numeric:tabular-nums}
+.m-total{display:flex;align-items:center;justify-content:space-between;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.m-total .tl{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--white-muted)}
+.m-total .tv{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold-light)}
+.m-go{width:100%;margin-top:20px;justify-content:center}
+.m-note{margin-top:14px;font-size:.7rem;color:var(--white-muted);text-align:center;font-weight:300}
+
+/* Toast */
+.toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%) translateY(140px);background:var(--sand-card);border:1px solid var(--gold);color:var(--gold-light);padding:15px 30px;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;z-index:300;transition:.5s cubic-bezier(.18,.89,.32,1.28)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ============================================================
+   ACCESIBILIDAD · foco visible + prefers-reduced-motion
+============================================================ */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,.cat:focus-visible{outline:2px solid var(--gold-light);outline-offset:3px}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.15s!important}
+  .rv,.hero-anim{opacity:1!important;transform:none!important;filter:none!important}
+  .gImg{clip-path:none!important}
+  .marquee-track{animation:none!important;flex-wrap:wrap;justify-content:center}
+  .scrollcue,.wa-float::before{animation:none!important}
+}
+
+/* ============================================================
+   RESPONSIVE · mobile-first (testeo: iPhone / Safari iOS)
+============================================================ */
+@media(max-width:1000px){
+  .menu{display:none}.burger{display:flex}
+  .benefits{grid-template-columns:repeat(2,1fr)}
+  .cats{grid-template-columns:repeat(2,1fr)}
+  .products{grid-template-columns:repeat(2,1fr)}
+  .atlas-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr;gap:44px}
+  .why-visual{max-width:460px}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+  .benefits,.cats,.products{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+  .hero-acts{flex-direction:column;width:100%}
+  .hero-acts .btn{justify-content:center}
+  .fbot{flex-direction:column}
+}
+</style>
+
+<!-- Failsafe: si el JS no corre, el contenido igual se ve (sin animaciones) -->
+<noscript><style>.rv,.hero-anim{opacity:1!important;transform:none!important;filter:none!important}.gImg{clip-path:none!important}#dune-canvas{display:none}#dune-fallback{display:block}</style></noscript>
+<!-- Patrón .js-ready: solo con JS activo ocultamos para animar; nunca deja contenido invisible si algo falla -->
+<script>document.documentElement.classList.add('js-ready')</script>
+</head>
+<body>
+
+<!-- ===== Intro / cortina de entrada (hora dorada) ===== -->
+<div id="intro" aria-hidden="true">
+  <div class="intro-mk"><span>Arabian</span><span class="it gold-txt">Essence</span></div>
+</div>
+<script>/* respaldo: la intro se va sí o sí, nunca debe bloquear la página */
+setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3300);</script>
+
+<!-- ===== Atmósfera global ===== -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ===== NAV ===== -->
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="logo"><span class="mk">AE</span>Arabian Essence</a>
+    <div class="menu">
+      <a href="#benefits">Por qué nosotros</a>
+      <a href="#why">Perfumería árabe</a>
+      <a href="#cats">Categorías</a>
+      <a href="#products">Colección</a>
+      <a href="#products" class="btn">Comprar</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menú"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="drawer" id="drawer">
+  <a href="#benefits" class="dl">Por qué nosotros</a>
+  <a href="#why" class="dl">Perfumería árabe</a>
+  <a href="#cats" class="dl">Categorías</a>
+  <a href="#products" class="dl">Colección</a>
+</div>
+
+<span id="top"></span>
+
+<!-- ===== HERO · dunas (Three.js shader) ===== -->
+<header id="hero">
+  <canvas id="dune-canvas" aria-hidden="true"></canvas>
+  <div id="dune-fallback" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <p class="eyebrow hero-anim">Perfumería Árabe · Originales Certificados</p>
+    <h1 class="hero-anim">La hora <span class="gold-txt italic">dorada</span> del perfume</h1>
+    <p class="lead hero-anim">Fragancias árabes de alta concentración —Lattafa, Maison Alhambra, Afnan— intensas, duraderas y con envío a toda la Argentina. Una estela que dura hasta el último rayo de luz.</p>
+    <div class="hero-acts hero-anim">
+      <a href="#products" class="btn btn-solid">Descubrir la colección
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#why" class="btn">Por qué árabe</a>
+    </div>
+    <p class="hero-meta hero-anim">✦ +2.000 clientes · Originales 100% · Envíos a todo el país</p>
+  </div>
+  <div class="scrollcue" aria-hidden="true"><span>Descubrí</span><span class="l"></span></div>
+</header>
+
+<!-- ===== MARQUEE DE MARCAS ===== -->
+<div class="marquee" aria-label="Marcas">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="marquee-item">Lattafa</span>
+    <span class="marquee-item">Maison Alhambra</span>
+    <span class="marquee-item">Al Haramain</span>
+    <span class="marquee-item">Afnan</span>
+    <span class="marquee-item">Rasasi</span>
+    <span class="marquee-item">Fragrance World</span>
+    <span class="marquee-item">Ard Al Zaafaran</span>
+  </div>
+</div>
+
+<!-- ===== BENEFICIOS ===== -->
+<section class="pad" id="benefits">
+  <div class="wrap">
+    <div class="section-head rv">
+      <p class="eyebrow cen">Por qué Arabian Essence</p>
+      <h2>La experiencia que un gran <span class="gold-txt italic">perfume</span> merece</h2>
+    </div>
+    <div class="benefits">
+      <div class="benefit rv">
+        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 2l8 4v5c0 5-3.5 9-8 11-4.5-2-8-6-8-11V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Originales certificados</h3>
+        <p>Cada frasco llega sellado y con código verificable. 100% originales, importados de las casas árabes.</p>
+      </div>
+      <div class="benefit rv">
+        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 7h13v8H3zM16 10h3l2 3v2h-5"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg></div>
+        <h3>Envíos en 24–72 h</h3>
+        <p>A todo el país, con empaque premium listo para regalar. Seguís tu pedido en todo momento.</p>
+      </div>
+      <div class="benefit rv">
+        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 3c-1 3-4 4.5-4 8a4 4 0 008 0c0-3.5-3-5-4-8z"/></svg></div>
+        <h3>Asesoría olfativa</h3>
+        <p>Te ayudamos a encontrar tu firma según tu estilo, la ocasión y la estación. Por WhatsApp, sin compromiso.</p>
+      </div>
+      <div class="benefit rv">
+        <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg></div>
+        <h3>Pago simple</h3>
+        <p>Coordinás todo por WhatsApp con un asesor: elegís el medio de pago que más te convenga y tu envío.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== POR QUÉ ÁRABE ===== -->
+<section class="pad" id="why">
+  <div class="wrap why-grid">
+    <div class="rv">
+      <p class="eyebrow">La tradición</p>
+      <h2 style="margin-top:18px">Siglos de <span class="gold-txt italic">historia</span>, sobre tu piel.</h2>
+      <p>En Oriente el perfume no se usa: se habita. Cada frasco nace de attars destilados con paciencia, maderas resinosas y notas que perduran horas, contando una historia con cada gesto.</p>
+      <p>La alta concentración de las fragancias árabes significa más intensidad y una estela que permanece todo el día. Por eso una sola nota alcanza para que nadie te olvide.</p>
+      <div class="cifras">
+        <div class="cifra"><div class="n gold-txt" data-count="120" data-suffix="+">+120</div><div class="l">Fragancias</div></div>
+        <div class="cifra"><div class="n gold-txt" data-count="5">5</div><div class="l">Casas de autor</div></div>
+        <div class="cifra"><div class="n gold-txt" data-count="100" data-suffix="%">100%</div><div class="l">Originales</div></div>
+        <div class="cifra"><div class="n gold-txt" data-count="2000" data-suffix="+">+2.000</div><div class="l">Clientes</div></div>
+      </div>
+    </div>
+    <div class="why-visual rv" aria-hidden="true" data-parallax="0.12">
+      <span class="ringline" style="width:78%;height:78%"></span>
+      <span class="ringline" style="width:54%;height:54%"></span>
+      <span class="ringline" style="width:30%;height:30%"></span>
+      <span class="ar">عطر</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CATEGORÍAS ===== -->
+<section class="pad" id="cats">
+  <div class="wrap">
+    <div class="section-head rv">
+      <p class="eyebrow cen">La colección por familias</p>
+      <h2>Encontrá tu <span class="gold-txt italic">carácter</span></h2>
+    </div>
+    <div class="cats">
+      <a href="#products" class="cat rv"><span class="cnum">01</span><h3>Amaderados</h3><p>Oud, sándalo y resinas. Profundos y envolventes.</p><span class="arrow">Ver — <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+      <a href="#products" class="cat rv"><span class="cnum">02</span><h3>Orientales</h3><p>Vainilla, ámbar y especias. Cálidos y adictivos.</p><span class="arrow">Ver — <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+      <a href="#products" class="cat rv"><span class="cnum">03</span><h3>Florales</h3><p>Rosa, jazmín y azafrán. Luminosos y elegantes.</p><span class="arrow">Ver — <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+      <a href="#products" class="cat rv"><span class="cnum">04</span><h3>Frescos</h3><p>Cítricos y acuáticos. Energía pura para el día.</p><span class="arrow">Ver — <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALERÍA · ATLAS DEL DESIERTO (wipe vertical) ===== -->
+<section class="pad" id="atlas">
+  <div class="wrap">
+    <div class="section-head rv">
+      <p class="eyebrow cen">Atlas del desierto</p>
+      <h2>Tres horizontes, una misma <span class="gold-txt italic">luz</span></h2>
+      <p>Cada familia olfativa tiene su propio paisaje. Así suena el desierto sobre la piel.</p>
+    </div>
+    <div class="atlas-grid">
+      <div class="gItem rv">
+        <div class="gFrame">
+          <div class="gImg s1" aria-hidden="true"></div>
+          <span class="gArab" aria-hidden="true">عود</span>
+          <div class="gCap"><span class="gk">Oud · Amaderados</span><h3>El alma de la madera</h3></div>
+        </div>
+      </div>
+      <div class="gItem rv">
+        <div class="gFrame">
+          <div class="gImg s2" aria-hidden="true"></div>
+          <span class="gArab" aria-hidden="true">عنبر</span>
+          <div class="gCap"><span class="gk">Ámbar · Orientales</span><h3>Calor que permanece</h3></div>
+        </div>
+      </div>
+      <div class="gItem rv">
+        <div class="gFrame">
+          <div class="gImg s3" aria-hidden="true"></div>
+          <span class="gArab" aria-hidden="true">ورد</span>
+          <div class="gCap"><span class="gk">Rosa · Florales</span><h3>La luz hecha flor</h3></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRODUCTOS ===== -->
+<section class="pad" id="products">
+  <div class="wrap">
+    <div class="section-head rv">
+      <p class="eyebrow cen">La colección</p>
+      <h2>Fragancias que <span class="gold-txt italic">hablan</span> por vos</h2>
+      <p>Originales certificados · Eau de Parfum de alta concentración y larga duración</p>
+    </div>
+    <!-- Cards estáticas (siempre visibles). data-order coincide con el array PRODUCTS. -->
+    <div class="products" id="productGrid">
+
+      <article class="card rv" style="--cardglow:#9a8fd699">
+        <div class="card-media">
+          <span class="badge">Premium</span>
+          <span class="fam">Frutal</span>
+          <img class="pimg" src="IMG_2836.png" alt="Xerjoff Erba Pura" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="casa">Xerjoff</span>
+          <h3>Erba Pura</h3>
+          <p class="desc">Una explosión frutal envuelta en ámbar y almizcle. Vibrante, dulce y de una elegancia adictiva.</p>
+          <div class="notes"><span class="note">Frutos</span><span class="note">Ámbar</span><span class="note">Almizcle</span><span class="note">Cítricos</span></div>
+          <div class="dur">Duración: <span>10–12 hs</span></div>
+          <div class="precios">
+            <div class="p-row"><span class="p-label">Transferencia</span><span class="p-val precio">$45.990</span></div>
+            <div class="p-row p-tarjeta"><span class="p-label">Tarjeta · 3 cuotas s/interés</span><span class="p-val">$56.990</span></div>
+            <div class="p-cuota">3 sin interés de <span>$18.997</span></div>
+          </div>
+          <div class="card-foot"><a class="buybtn" data-order="0" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Xerjoff%20Erba%20Pura%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+        </div>
+      </article>
+
+      <article class="card rv" style="--cardglow:#e89ab099">
+        <div class="card-media">
+          <span class="badge">Edición Especial</span>
+          <span class="fam">Gourmand</span>
+          <img class="pimg" src="IMG_2835.png" alt="Armaf Island Breeze" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="casa">Armaf · Delights</span>
+          <h3>Island Bliss</h3>
+          <p class="desc">Un postre tropical hecho perfume. Durazno cremoso y notas dulces que transportan al paraíso.</p>
+          <div class="notes"><span class="note">Durazno</span><span class="note">Coco</span><span class="note">Vainilla</span><span class="note">Caramelo</span></div>
+          <div class="dur">Duración: <span>8–10 hs</span></div>
+          <div class="precios">
+            <div class="p-row"><span class="p-label">Transferencia</span><span class="p-val precio">$45.990</span></div>
+            <div class="p-row p-tarjeta"><span class="p-label">Tarjeta · 3 cuotas s/interés</span><span class="p-val">$56.990</span></div>
+            <div class="p-cuota">3 sin interés de <span>$18.997</span></div>
+          </div>
+          <div class="card-foot"><a class="buybtn" data-order="1" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Armaf%20Island%20Bliss%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+        </div>
+      </article>
+
+      <article class="card rv" style="--cardglow:#b5371f99">
+        <div class="card-media">
+          <span class="badge">Más Vendido</span>
+          <span class="fam">Oriental</span>
+          <img class="pimg" src="IMG_2833.png" alt="Lattafa Khamrah Dukhan" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="casa">Lattafa</span>
+          <h3>Khamrah Dukhan</h3>
+          <p class="desc">Versión ahumada del icónico Khamrah. Canela, dátiles y oud envueltos en un humo cálido y embriagante.</p>
+          <div class="notes"><span class="note">Oud</span><span class="note">Canela</span><span class="note">Dátiles</span><span class="note">Humo</span></div>
+          <div class="dur">Duración: <span>12–14 hs</span></div>
+          <div class="precios">
+            <div class="p-row"><span class="p-label">Transferencia</span><span class="p-val precio">$39.990</span></div>
+            <div class="p-row p-tarjeta"><span class="p-label">Tarjeta · 3 cuotas s/interés</span><span class="p-val">$49.990</span></div>
+            <div class="p-cuota">3 sin interés de <span>$16.663</span></div>
+          </div>
+          <div class="card-foot"><a class="buybtn" data-order="2" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Lattafa%20Khamrah%20Dukhan%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+        </div>
+      </article>
+
+      <article class="card rv" style="--cardglow:#c9a84c99">
+        <div class="card-media">
+          <span class="fam">Amaderado</span>
+          <img class="pimg" src="IMG_2838.png" alt="Lattafa Bade'e Al Oud Honor & Glory" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="casa">Lattafa</span>
+          <h3>Honor &amp; Glory</h3>
+          <p class="desc">Bade'e Al Oud en su faceta más luminosa. Oud refinado con piña y azafrán para una estela noble y sofisticada.</p>
+          <div class="notes"><span class="note">Oud</span><span class="note">Piña</span><span class="note">Azafrán</span><span class="note">Madera</span></div>
+          <div class="dur">Duración: <span>11–13 hs</span></div>
+          <div class="precios">
+            <div class="p-row"><span class="p-label">Transferencia</span><span class="p-val precio">$33.990</span></div>
+            <div class="p-row p-tarjeta"><span class="p-label">Tarjeta · 3 cuotas s/interés</span><span class="p-val">$41.990</span></div>
+            <div class="p-cuota">3 sin interés de <span>$13.997</span></div>
+          </div>
+          <div class="card-foot"><a class="buybtn" data-order="3" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Lattafa%20Honor%20%26%20Glory%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+        </div>
+      </article>
+
+      <article class="card rv" style="--cardglow:#6a4fb599">
+        <div class="card-media">
+          <span class="badge">Para Él</span>
+          <span class="fam">Oriental</span>
+          <img class="pimg" src="IMG_2837.png" alt="Afnan 9PM" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="casa">Afnan</span>
+          <h3>9PM</h3>
+          <p class="desc">Dulce, especiado y magnético. Canela, vainilla y ámbar para una presencia nocturna imposible de ignorar.</p>
+          <div class="notes"><span class="note">Vainilla</span><span class="note">Canela</span><span class="note">Ámbar</span><span class="note">Lavanda</span></div>
+          <div class="dur">Duración: <span>9–11 hs</span></div>
+          <div class="precios">
+            <div class="p-row"><span class="p-label">Transferencia</span><span class="p-val precio">$27.990</span></div>
+            <div class="p-row p-tarjeta"><span class="p-label">Tarjeta · 3 cuotas s/interés</span><span class="p-val">$34.990</span></div>
+            <div class="p-cuota">3 sin interés de <span>$11.663</span></div>
+          </div>
+          <div class="card-foot"><a class="buybtn" data-order="4" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Afnan%209PM%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+        </div>
+      </article>
+
+      <article class="card rv" style="--cardglow:#3a3a3a99">
+        <div class="card-media">
+          <span class="fam">Amaderado</span>
+          <img class="pimg" src="IMG_2834.png" alt="Lattafa Asad Elixir" loading="lazy">
+        </div>
+        <div class="card-body">
+          <span class="casa">Lattafa</span>
+          <h3>Asad Elixir</h3>
+          <p class="desc">El león en su versión más intensa. Café, cuero y especias para una firma masculina, audaz y poderosa.</p>
+          <div class="notes"><span class="note">Café</span><span class="note">Cuero</span><span class="note">Especias</span><span class="note">Tabaco</span></div>
+          <div class="dur">Duración: <span>10–12 hs</span></div>
+          <div class="precios">
+            <div class="p-row"><span class="p-label">Transferencia</span><span class="p-val precio">$27.990</span></div>
+            <div class="p-row p-tarjeta"><span class="p-label">Tarjeta · 3 cuotas s/interés</span><span class="p-val">$34.990</span></div>
+            <div class="p-cuota">3 sin interés de <span>$11.663</span></div>
+          </div>
+          <div class="card-foot"><a class="buybtn" data-order="5" target="_blank" rel="noopener" href="https://wa.me/5491170204450?text=Hola!%20Quiero%20comprar%20Lattafa%20Asad%20Elixir%20de%20Arabian%20Essence">Comprar Ahora</a></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="pad" id="cta">
+  <div class="wrap rv">
+    <p class="eyebrow cen">Tu firma te espera</p>
+    <h2>El perfume que <span class="gold-txt italic">habla</span> por vos, existe.</h2>
+    <p>Escribinos por WhatsApp y un asesor te acompaña a elegir, reservar y coordinar tu envío hoy mismo.</p>
+    <a id="ctaWa" class="btn btn-solid" target="_blank" rel="noopener">Hablar con un asesor
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="logo"><span class="mk">AE</span>Arabian Essence</a>
+        <p class="desc">Perfumería árabe de alta concentración. Originales certificados, importados directo de Oriente Medio a tu piel.</p>
+      </div>
+      <div class="fcol"><h4>Colección</h4>
+        <a href="#cats">Amaderados</a><a href="#cats">Orientales</a><a href="#cats">Florales</a><a href="#cats">Frescos</a>
+      </div>
+      <div class="fcol"><h4>La marca</h4>
+        <a href="#benefits">Por qué nosotros</a><a href="#why">Perfumería árabe</a><a href="#products">Colección</a>
+      </div>
+      <div class="fcol"><h4>Contacto</h4>
+        <a id="footWa" target="_blank" rel="noopener" class="citem"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.7-.9-2.9-1.6-4-3.5-.3-.5.3-.5.8-1.6.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.5-.4M12 2a10 10 0 00-8.6 15l-1.3 4.7L7 20.4A10 10 0 1012 2"/></svg>WhatsApp</a>
+        <a href="https://instagram.com/arabian_essencess" target="_blank" rel="noopener" class="citem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>@arabian_essencess</a>
+      </div>
+    </div>
+    <div class="fbot">
+      <span>© 2026 Arabian Essence — Perfumería árabe.</span>
+      <span>Originales certificados · Envíos a todo el país</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Botón flotante de WhatsApp -->
+<a id="waFloat" class="wa-float" target="_blank" rel="noopener" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.7-.9-2.9-1.6-4-3.5-.3-.5.3-.5.8-1.6.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.5-.4M12 2a10 10 0 00-8.6 15l-1.3 4.7L7 20.4A10 10 0 1012 2"/></svg>
+</a>
+
+<!-- ===== MODAL DE PEDIDO ===== -->
+<div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="mName">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-box">
+    <button class="modal-close" data-close aria-label="Cerrar">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <p class="eyebrow">Tu pedido</p>
+    <div class="m-casa" id="mCasa">Xerjoff</div>
+    <h3 id="mName">Erba Pura</h3>
+    <div class="m-price" id="mUnit">$45.990</div>
+
+    <div class="m-field">
+      <label>Cantidad</label>
+      <div class="qty">
+        <button type="button" id="qMinus" aria-label="Menos">−</button>
+        <span class="val" id="qVal">1</span>
+        <button type="button" id="qPlus" aria-label="Más">+</button>
+      </div>
+    </div>
+
+    <div class="m-field">
+      <label>Forma de pago</label>
+      <div class="m-pay">
+        <button type="button" class="pay-opt active" data-method="transferencia">
+          <span class="po-t">Transferencia</span>
+          <span class="po-p" id="payTransfer">$45.990</span>
+        </button>
+        <button type="button" class="pay-opt" data-method="tarjeta">
+          <span class="po-t">Tarjeta · 3 cuotas sin interés</span>
+          <span class="po-p" id="payCard">$56.990</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="m-field">
+      <label for="mNombre">Tu nombre</label>
+      <input id="mNombre" type="text" placeholder="Nombre y apellido" autocomplete="name" />
+    </div>
+
+    <div class="m-field">
+      <label for="mNota">Nota (opcional)</label>
+      <textarea id="mNota" placeholder="Aclaraciones, dirección, horario de entrega…"></textarea>
+    </div>
+
+    <div class="m-total">
+      <span class="tl">Total</span>
+      <span class="tv" id="mTotal">$45.990</span>
+    </div>
+
+    <button class="btn btn-solid m-go" id="mGo">Pagar con Mercado Pago
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn m-wa" id="mWa" style="margin-top:12px;width:100%;justify-content:center">Prefiero consultar por WhatsApp
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.7-.9-2.9-1.6-4-3.5-.3-.5.3-.5.8-1.6.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 1.9-1.3.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.5-.4M12 2a10 10 0 00-8.6 15l-1.3 4.7L7 20.4A10 10 0 1012 2"/></svg>
+    </button>
+    <p class="m-note" id="mNoteHint">Pago seguro con Mercado Pago. Coordinamos el envío después de tu compra.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<!-- ============================================================
+     LIBRERÍAS (CDN) · GSAP + ScrollTrigger + CustomEase + Lenis
+============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN E INTEGRACIONES
+   ------------------------------------------------------------
+   Los pedidos se gestionan por WhatsApp. El asesor coordina
+   el envío y el pago directamente con el cliente.
+============================================================ */
+const WHATSAPP    = "5491170204450";
+const INSTAGRAM   = "https://instagram.com/arabian_essencess";
+
+/* Catálogo · precio numérico para calcular totales (ARS) */
+const PRODUCTS = [
+  { name:"Erba Pura",      casa:"Xerjoff",          fam:"Frutal",    price:45990, tarjeta:56990, dur:"10–12 hs" },
+  { name:"Island Bliss",   casa:"Armaf · Delights", fam:"Gourmand",  price:45990, tarjeta:56990, dur:"8–10 hs" },
+  { name:"Khamrah Dukhan", casa:"Lattafa",          fam:"Oriental",  price:39990, tarjeta:49990, dur:"12–14 hs" },
+  { name:"Honor & Glory",  casa:"Lattafa",          fam:"Amaderado", price:33990, tarjeta:41990, dur:"11–13 hs" },
+  { name:"9PM",            casa:"Afnan",            fam:"Oriental",  price:27990, tarjeta:34990, dur:"9–11 hs" },
+  { name:"Asad Elixir",    casa:"Lattafa",          fam:"Amaderado", price:27990, tarjeta:34990, dur:"10–12 hs" },
+];
+
+const ARS = (n) => "$" + n.toLocaleString("es-AR");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isMobile = window.matchMedia("(max-width: 760px)").matches;
+
+/* Links de WhatsApp generales */
+const waGeneral = (msg) => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+document.getElementById("waFloat").href = waGeneral("Hola! Quiero consultar por la colección de Arabian Essence");
+document.getElementById("ctaWa").href   = waGeneral("Hola! Quiero asesoría para elegir mi fragancia árabe");
+document.getElementById("footWa").href  = waGeneral("Hola! Quiero consultar por Arabian Essence");
+
+/* ============================================================
+   MODAL DE PEDIDO
+============================================================ */
+const grid  = document.getElementById("productGrid");
+const modal = document.getElementById("orderModal");
+const state = { index: 0, qty: 1, method: "transferencia" };
+
+function unitPrice() {
+  const p = PRODUCTS[state.index];
+  return state.method === "tarjeta" ? p.tarjeta : p.price;
+}
+function renderTotal() {
+  document.getElementById("qVal").textContent   = state.qty;
+  document.getElementById("mTotal").textContent = ARS(unitPrice() * state.qty);
+}
+function updateMethodUI() {
+  const isCard = state.method === "tarjeta";
+  document.querySelectorAll(".pay-opt").forEach((b) =>
+    b.classList.toggle("active", b.dataset.method === state.method)
+  );
+  document.getElementById("mNoteHint").textContent = isCard
+    ? "3 cuotas sin interés con tarjeta de crédito. Coordinamos el envío después de tu compra."
+    : "Pago por transferencia vía Mercado Pago. Coordinamos el envío después de tu compra.";
+}
+
+let _scrollY = 0;
+
+function openOrder(index) {
+  state.index = index;
+  state.qty = 1;
+  const p = PRODUCTS[index];
+  document.getElementById("mCasa").textContent = p.casa;
+  document.getElementById("mName").textContent = p.name;
+  document.getElementById("mUnit").textContent = ARS(p.price) + " · Duración " + p.dur;
+  state.method = "transferencia";
+  document.getElementById("payTransfer").textContent = ARS(p.price);
+  document.getElementById("payCard").textContent = ARS(p.tarjeta);
+  renderTotal();
+  updateMethodUI();
+  modal.classList.add("open");
+  // Scroll-lock robusto: guardamos la posición y fijamos el body sin perderla
+  _scrollY = window.scrollY || window.pageYOffset || 0;
+  if (window.lenis) window.lenis.stop();
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${_scrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+  document.getElementById("mNombre").focus({ preventScroll: true });
+}
+
+function closeOrder() {
+  modal.classList.remove("open");
+  // Restauramos el body y volvemos exactamente a donde estaba
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+  document.body.style.overflow = "";
+  window.scrollTo(0, _scrollY);
+  if (window.lenis) window.lenis.start();
+}
+
+/* Mercado Pago: pide a la función serverless de Netlify una preferencia de pago
+   y redirige al checkout real (init_point). El Access Token vive en el servidor,
+   nunca acá en el frontend. */
+async function payWithMP() {
+  const p = PRODUCTS[state.index];
+  const nombre = document.getElementById("mNombre").value.trim();
+  const nota   = document.getElementById("mNota").value.trim();
+  const btn = document.getElementById("mGo");
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.style.opacity = ".7";
+  btn.textContent = "Generando pago…";
+  try {
+    const res = await fetch("/.netlify/functions/create-preference", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: `${p.casa} ${p.name}`,
+        quantity: state.qty,
+        unit_price: unitPrice(),
+        installments: state.method === "tarjeta" ? 3 : 1,
+        payment_method: state.method,
+        buyer_name: nombre,
+        note: nota,
+      }),
+    });
+    if (!res.ok) throw new Error("preference_failed");
+    const data = await res.json();
+    if (!data.init_point) throw new Error("no_init_point");
+    // Redirige al checkout de Mercado Pago
+    window.location.href = data.init_point;
+  } catch (err) {
+    btn.disabled = false;
+    btn.style.opacity = "";
+    btn.innerHTML = original;
+    toast("No se pudo iniciar el pago. Probá por WhatsApp 🙏");
+  }
+}
+
+/* WhatsApp: queda como alternativa de asesoría / consulta */
+function sendOrderWhatsApp() {
+  const p = PRODUCTS[state.index];
+  const nombre = document.getElementById("mNombre").value.trim();
+  const nota   = document.getElementById("mNota").value.trim();
+  let msg = `Hola Arabian Essence! Me interesa el ${p.casa} ${p.name} y quería una asesoría 🙂\n\n`;
+  msg += `• Perfume: ${p.casa} ${p.name}\n`;
+  msg += `• Cantidad: ${state.qty}\n`;
+  msg += `• Forma de pago: ${state.method === "tarjeta" ? "Tarjeta (3 cuotas sin interés)" : "Transferencia"}\n`;
+  msg += `• Total: ${ARS(unitPrice() * state.qty)}\n`;
+  if (nombre) msg += `• Mi nombre: ${nombre}\n`;
+  if (nota)   msg += `• Consulta: ${nota}\n`;
+  window.open(waGeneral(msg), "_blank");
+  closeOrder();
+}
+
+document.getElementById("mGo").addEventListener("click", payWithMP);
+document.getElementById("mWa").addEventListener("click", sendOrderWhatsApp);
+
+document.getElementById("qPlus").onclick  = () => { state.qty = Math.min(99, state.qty + 1); renderTotal(); };
+document.getElementById("qMinus").onclick = () => { state.qty = Math.max(1, state.qty - 1); renderTotal(); };
+
+document.querySelectorAll(".pay-opt").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    state.method = btn.dataset.method;
+    renderTotal();
+    updateMethodUI();
+  });
+});
+
+/* "Comprar Ahora": links reales a WhatsApp (sirven sin JS). Con JS abrimos el modal. */
+grid.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-order]");
+  if (b) { e.preventDefault(); openOrder(+b.dataset.order); }
+});
+
+modal.querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeOrder));
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && modal.classList.contains("open")) closeOrder(); });
+
+/* Salvaguarda: si el usuario vuelve con el botón "atrás" (bfcache) y el body
+   quedó trabado, lo liberamos para que el scroll nunca quede muerto. */
+window.addEventListener("pageshow", () => {
+  if (!modal.classList.contains("open") && document.body.style.position === "fixed") {
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    document.body.style.overflow = "";
+    if (window.lenis) window.lenis.start();
+  }
+});
+
+let toastT;
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove("show"), 3000);
+}
+
+/* ============================================================
+   NAV: blur al scroll · burger · marquee duplicado
+============================================================ */
+const nav = document.getElementById("nav");
+const onScrollNav = () => nav.classList.toggle("solid", window.scrollY > 50);
+onScrollNav();
+
+const burger = document.getElementById("burger");
+const drawer = document.getElementById("drawer");
+const closeDrawer = () => { burger.classList.remove("open"); drawer.classList.remove("open"); };
+burger.onclick = () => { burger.classList.toggle("open"); drawer.classList.toggle("open"); };
+drawer.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeDrawer));
+
+/* Marquee: duplicamos el set para un loop continuo */
+const track = document.getElementById("marqueeTrack");
+track.innerHTML += track.innerHTML;
+
+/* ============================================================
+   MOTION · GSAP + ScrollTrigger + CustomEase + Lenis
+   FAILSAFE: si un CDN no carga, la página NO queda invisible.
+============================================================ */
+const gsap = window.gsap;
+const ST   = window.ScrollTrigger;
+const hasGSAP = !!(gsap && ST);
+const animate = hasGSAP && !reduceMotion;
+
+if (hasGSAP) {
+  gsap.registerPlugin(ST);
+  if (window.CustomEase) gsap.registerPlugin(window.CustomEase);
+}
+
+/* Custom eases · PROHIBIDO power2.out en el brief.
+   "solano": entrada con frenado largo y orgánico.
+   "wipe":  cortina vertical de galería. "sand": cuenta de cifras. */
+let E_REVEAL = "expo.out", E_WIPE = "expo.inOut", E_COUNT = "expo.out";
+if (hasGSAP && window.CustomEase) {
+  window.CustomEase.create("solano", "M0,0 C0.16,1 0.3,1 1,1");
+  window.CustomEase.create("wipe",   "M0,0 C0.7,0 0.2,1 1,1");
+  window.CustomEase.create("sand",   "M0,0 C0.34,0.01 0.18,1 1,1");
+  E_REVEAL = "solano"; E_WIPE = "wipe"; E_COUNT = "sand";
+}
+
+/* Red de seguridad: mostrá TODO pase lo que pase (.js-ready failsafe). */
+function showAll() {
+  document.querySelectorAll(".rv, .hero-anim").forEach((el) => {
+    el.style.opacity = "1"; el.style.transform = "none"; el.style.filter = "none";
+  });
+  document.querySelectorAll(".gImg").forEach((el) => { el.style.clipPath = "none"; });
+}
+if (!animate) showAll();
+else setTimeout(() => {
+  // revela lo que ScrollTrigger no haya alcanzado a disparar (CDN lento, etc.)
+  document.querySelectorAll(".rv, .hero-anim").forEach((el) => {
+    if (parseFloat(getComputedStyle(el).opacity) < 1) {
+      gsap.to(el, { opacity: 1, x: 0, y: 0, rotation: 0, filter: "blur(0px)", scale: 1, duration: .6 });
+    }
+  });
+}, 2800);
+
+/* --- Lenis + GSAP · patrón oficial de sincronización ---
+   Lenis SOLO en desktop. En móvil usamos scroll nativo del navegador,
+   que nunca se traba aunque el CDN cargue lento o falle. */
+if (animate && window.Lenis && !isMobile) {
+  const lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
+  window.lenis = lenis;
+  lenis.on("scroll", ST.update);
+  lenis.on("scroll", onScrollNav);
+  gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+  gsap.ticker.lagSmoothing(0);
+} else {
+  window.addEventListener("scroll", onScrollNav, { passive: true });
+}
+
+/* Anclas internas suaves (vía Lenis si está activo) */
+document.querySelectorAll('a[href^="#"]').forEach((a) => {
+  a.addEventListener("click", (e) => {
+    const id = a.getAttribute("href");
+    if (id.length < 2) return;
+    const target = document.querySelector(id);
+    if (!target) return;
+    e.preventDefault();
+    if (window.lenis) window.lenis.scrollTo(target, { offset: -70 });
+    else target.scrollIntoView({ behavior: "smooth" });
+  });
+});
+
+/* ============================================================
+   REVEALS ORGÁNICOS · stagger por índice + estado inicial randomizado
+   Cada .rv parte de una posición/rotación leve y distinta → el movimiento
+   nunca se siente mecánico ni uniforme.
+============================================================ */
+if (animate) {
+  // Agrupamos por contenedor para escalonar el stagger según el índice real.
+  const groups = new Map();
+  gsap.utils.toArray(".rv").forEach((el) => {
+    const p = el.parentElement;
+    if (!groups.has(p)) groups.set(p, []);
+    groups.get(p).push(el);
+    // Estado inicial randomizado (orgánico)
+    gsap.set(el, {
+      opacity: 0,
+      y: gsap.utils.random(32, 64),
+      x: gsap.utils.random(-14, 14),
+      rotation: gsap.utils.random(-2.2, 2.2),
+      filter: "blur(7px)",
+    });
+  });
+  groups.forEach((arr) => {
+    arr.forEach((el, i) => {
+      ST.create({
+        trigger: el, start: "top 86%", once: true,
+        onEnter: () => gsap.to(el, {
+          opacity: 1, x: 0, y: 0, rotation: 0, filter: "blur(0px)",
+          duration: 1.15, delay: i * 0.07, ease: E_REVEAL,
+        }),
+      });
+    });
+  });
+
+  /* HERO · blur-to-focus + scale sutil al cargar (entrada narrativa) */
+  const heroItems = gsap.utils.toArray("#hero .hero-anim");
+  gsap.set(heroItems, { opacity: 0, y: 34, scale: 0.96, filter: "blur(14px)" });
+  gsap.to(heroItems, {
+    opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
+    duration: 1.4, ease: E_REVEAL, stagger: 0.12, delay: reduceMotion ? 0 : 1.9,
+  });
+
+  /* GALERÍA · wipe vertical al entrar al viewport */
+  gsap.utils.toArray(".gItem").forEach((item, i) => {
+    const img = item.querySelector(".gImg");
+    gsap.set(img, { clipPath: "inset(100% 0% 0% 0%)" });
+    ST.create({
+      trigger: item, start: "top 82%", once: true,
+      onEnter: () => gsap.to(img, { clipPath: "inset(0% 0% 0% 0%)", duration: 1.2, ease: E_WIPE, delay: (i % 3) * 0.08 }),
+    });
+  });
+
+  /* PARALLAX de profundidad: elementos con data-parallax se mueven más lento */
+  gsap.utils.toArray("[data-parallax]").forEach((el) => {
+    const depth = parseFloat(el.dataset.parallax) || 0.15;
+    gsap.to(el, {
+      yPercent: -depth * 100, ease: "none",
+      scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
+    });
+  });
+}
+
+/* Cifras que cuentan al entrar en vista (ease custom, nunca power2) */
+document.querySelectorAll("[data-count]").forEach((el) => {
+  const end = +el.dataset.count;
+  const suffix = el.dataset.suffix || "";
+  const prefix = el.textContent.trim().startsWith("+") ? "+" : "";
+  const fmt = (v) => prefix + Math.round(v).toLocaleString("es-AR") + suffix;
+  if (!animate) { el.textContent = fmt(end); return; }
+  const obj = { v: 0 };
+  ST.create({
+    trigger: el, start: "top 88%", once: true,
+    onEnter: () => gsap.to(obj, { v: end, duration: 1.6, ease: E_COUNT, onUpdate: () => { el.textContent = fmt(obj.v); } }),
+  });
+});
+
+/* ============================================================
+   HOVER TÁCTIL EN MOBILE (equivalente al hover de desktop)
+============================================================ */
+if (isMobile && !reduceMotion) {
+  const touchEls = document.querySelectorAll(".card, .benefit, .cat");
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((en) => en.target.classList.toggle("touch-active", en.isIntersecting)),
+    { rootMargin: "-42% 0px -42% 0px" }
+  );
+  touchEls.forEach((el) => io.observe(el));
+}
+
+/* ============================================================
+   HERO 3D · paisaje de dunas con shader (Three.js)
+   - Un solo quad a pantalla completa → costo GPU mínimo (ideal iOS).
+   - Cielo de hora dorada + sol bajo + 3 capas de dunas con parallax
+     (cada capa a distinta velocidad) + grano + viñeta cálida.
+   - Fallback estático (CSS) si: reduced-motion / sin WebGL / equipo lento.
+============================================================ */
+const duneCanvas   = document.getElementById("dune-canvas");
+const duneFallback = document.getElementById("dune-fallback");
+// Equipo muy limitado: caemos al fallback estático (poco común; el iPhone corre el shader sin problema)
+const lowPower = (navigator.deviceMemory && navigator.deviceMemory < 2);
+
+function showDuneFallback() {
+  if (duneCanvas)   duneCanvas.style.display = "none";
+  if (duneFallback) duneFallback.style.display = "block";
+}
+
+const DUNE_VERT = `
+  varying vec2 vUv;
+  void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }
+`;
+const DUNE_FRAG = `
+  precision mediump float;
+  varying vec2 vUv;
+  uniform float uTime; uniform vec2 uMouse; uniform float uScroll; uniform vec2 uRes;
+  float hash(float n){ return fract(sin(n)*43758.5453123); }
+  float vnoise(float x){ float i=floor(x), f=fract(x); float u=f*f*(3.0-2.0*f); return mix(hash(i),hash(i+1.0),u); }
+  float fbm(float x){ float v=0.0, a=0.5; for(int i=0;i<4;i++){ v+=a*vnoise(x); x=x*2.0+1.3; a*=0.5; } return v; }
+  float hash2(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453); }
+  vec3 dune(vec3 col, vec2 uv, float baseY, float amp, float freq, float off, vec3 dcol){
+    float h = baseY + amp*fbm(uv.x*freq + off);
+    float m = 1.0 - smoothstep(h-0.0025, h+0.0025, uv.y);
+    return mix(col, dcol, m);
+  }
+  void main(){
+    vec2 uv = vUv;
+    float aspect = uRes.x / max(uRes.y, 1.0);
+    // Cielo · hora dorada (horizonte cálido → noche que baja desde arriba)
+    vec3 hor = vec3(0.90,0.66,0.30);
+    vec3 mid = vec3(0.52,0.27,0.11);
+    vec3 top = vec3(0.10,0.07,0.05);
+    vec3 sky = mix(hor, mid, smoothstep(0.18,0.55,uv.y));
+    sky = mix(sky, top, smoothstep(0.5,1.0,uv.y));
+    // Sol bajo, reactivo al mouse y al scroll
+    vec2 sp = vec2(0.5 + uMouse.x*0.05, 0.27 - uScroll*0.12);
+    float dist = length((uv - sp) * vec2(aspect, 1.0));
+    sky += vec3(1.0,0.82,0.5) * smoothstep(0.55, 0.0, dist) * 0.55;
+    sky = mix(sky, vec3(1.0,0.93,0.72), smoothstep(0.115, 0.10, dist));
+    // Dunas · 3 capas, parallax por profundidad (la más cercana se mueve más)
+    float drift = uTime * 0.015;
+    vec3 col = sky;
+    col = dune(col, uv, 0.34, 0.045, 1.4, 4.0 + uMouse.x*0.10 + uScroll*0.20 + drift*0.5, vec3(0.40,0.22,0.09));
+    col = dune(col, uv, 0.26, 0.060, 2.1, 9.0 + uMouse.x*0.25 + uScroll*0.55 + drift*0.8, vec3(0.24,0.12,0.05));
+    col = dune(col, uv, 0.16, 0.085, 3.0, 2.0 + uMouse.x*0.45 + uScroll*1.00 + drift*1.2, vec3(0.07,0.035,0.018));
+    // Grano de film + viñeta cálida
+    float gr = hash2(floor(uv*uRes.xy/2.0) + floor(uTime*8.0));
+    col += (gr - 0.5) * 0.035;
+    col *= 1.0 - 0.25 * pow(length((uv-0.5)*vec2(aspect,1.0)), 2.0);
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+async function initDunes() {
+  if (reduceMotion || lowPower) return showDuneFallback();
+  // Test rápido de WebGL
+  try {
+    const t = document.createElement("canvas").getContext("webgl") ||
+              document.createElement("canvas").getContext("experimental-webgl");
+    if (!t) return showDuneFallback();
+  } catch { return showDuneFallback(); }
+
+  let THREE;
+  try {
+    const load = import("https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js");
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 9000));
+    THREE = await Promise.race([load, timeout]);
+  } catch { return showDuneFallback(); }
+
+  const renderer = new THREE.WebGLRenderer({ canvas: duneCanvas, antialias: false, alpha: false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isMobile ? 1.25 : 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.Camera();
+  const uniforms = {
+    uTime:   { value: 0 },
+    uMouse:  { value: new THREE.Vector2(0, 0) },
+    uScroll: { value: 0 },
+    uRes:    { value: new THREE.Vector2(1, 1) },
+  };
+  const mat = new THREE.ShaderMaterial({ uniforms, vertexShader: DUNE_VERT, fragmentShader: DUNE_FRAG });
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+
+  function resize() {
+    const r = duneCanvas.getBoundingClientRect();
+    renderer.setSize(r.width, r.height, false);
+    uniforms.uRes.value.set(duneCanvas.width, duneCanvas.height);
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  // Parallax con el mouse (solo desktop)
+  let tmx = 0, tmy = 0;
+  if (!isMobile) {
+    window.addEventListener("mousemove", (e) => {
+      tmx = e.clientX / innerWidth - 0.5;
+      tmy = e.clientY / innerHeight - 0.5;
+    });
+  }
+  // El sol/dunas reaccionan al scroll del hero (parallax de salida)
+  if (hasGSAP) {
+    ST.create({ trigger: "#hero", start: "top top", end: "bottom top", scrub: true,
+      onUpdate: (s) => { uniforms.uScroll.value = s.progress; } });
+  }
+
+  const clock = new THREE.Clock();
+  let raf;
+  function loop() {
+    raf = requestAnimationFrame(loop);
+    uniforms.uTime.value = clock.getElapsedTime();
+    uniforms.uMouse.value.x += (tmx - uniforms.uMouse.value.x) * 0.04;
+    uniforms.uMouse.value.y += (tmy - uniforms.uMouse.value.y) * 0.04;
+    renderer.render(scene, camera);
+  }
+  loop();
+
+  // Pausa el render cuando el hero sale de pantalla (ahorra batería)
+  const heroIO = new IntersectionObserver((es) => es.forEach((e) => {
+    if (e.isIntersecting && !raf) loop();
+    else if (!e.isIntersecting && raf) { cancelAnimationFrame(raf); raf = null; }
+  }), { threshold: 0 });
+  heroIO.observe(document.getElementById("hero"));
+}
+
+/* ============================================================
+   FAILSAFE DE SCROLL · garantiza que SIEMPRE se pueda deslizar
+   Si los CDN (GSAP/Lenis) cargan lento o fallan en producción,
+   limpiamos cualquier traba para que el scroll nativo funcione.
+============================================================ */
+(function ensureScroll() {
+  // Si Lenis no quedó activo, no debe haber clases ni estilos que bloqueen
+  if (!window.lenis) {
+    document.documentElement.classList.remove("lenis", "lenis-smooth", "lenis-stopped");
+    if (getComputedStyle(document.body).overflow === "hidden" &&
+        !document.getElementById("orderModal").classList.contains("open")) {
+      document.body.style.overflow = "";
+    }
+  }
+  // Revisión diferida: tras 3.5s (CDN ya debió cargar), si el modal está
+  // cerrado pero el body quedó trabado, lo liberamos sí o sí.
+  setTimeout(() => {
+    const modalOpen = document.getElementById("orderModal").classList.contains("open");
+    if (!modalOpen) {
+      const b = document.body.style;
+      if (b.position === "fixed" || b.overflow === "hidden") {
+        b.position = ""; b.top = ""; b.left = ""; b.right = ""; b.width = ""; b.overflow = "";
+      }
+      document.documentElement.classList.remove("lenis-stopped");
+    }
+  }, 3500);
+})();
+
+initDunes();
+</script>
+</body>
+</html>
