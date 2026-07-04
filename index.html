@@ -879,14 +879,24 @@ setTimeout(function(){var i=document.getElementById('intro');if(i)i.remove();},3
 const WHATSAPP    = "5491170204450";
 const INSTAGRAM   = "https://instagram.com/arabian_essencess";
 
-/* Catálogo · precio numérico para calcular totales (ARS) */
+/* Catálogo · precio numérico para calcular totales (ARS)
+   ------------------------------------------------------------
+   PAGO CON MERCADO PAGO (Links de pago) ·
+   Cada producto tiene dos links de pago que generás en tu cuenta de
+   Mercado Pago (Tu negocio → Cobros → Link de pago):
+     · linkTransfer → link por el precio de TRANSFERENCIA (el más bajo).
+     · linkCard     → link por el precio de TARJETA. Al crearlo, activá
+                      "Cuotas sin interés" hasta 3 en tu cuenta de MP para
+                      que el cliente vea las 3 cuotas sin recargo.
+   Pegá cada URL entre las comillas. Mientras estén vacías, el botón
+   deriva el pedido a WhatsApp automáticamente. */
 const PRODUCTS = [
-  { name:"Erba Pura",      casa:"Xerjoff",          fam:"Frutal",    price:45990, tarjeta:56990, dur:"10–12 hs" },
-  { name:"Island Bliss",   casa:"Armaf · Delights", fam:"Gourmand",  price:45990, tarjeta:56990, dur:"8–10 hs" },
-  { name:"Khamrah Dukhan", casa:"Lattafa",          fam:"Oriental",  price:39990, tarjeta:49990, dur:"12–14 hs" },
-  { name:"Honor & Glory",  casa:"Lattafa",          fam:"Amaderado", price:33990, tarjeta:41990, dur:"11–13 hs" },
-  { name:"9PM",            casa:"Afnan",            fam:"Oriental",  price:27990, tarjeta:34990, dur:"9–11 hs" },
-  { name:"Asad Elixir",    casa:"Lattafa",          fam:"Amaderado", price:27990, tarjeta:34990, dur:"10–12 hs" },
+  { name:"Erba Pura",      casa:"Xerjoff",          fam:"Frutal",    price:45990, tarjeta:56990, dur:"10–12 hs", linkTransfer:"", linkCard:"" },
+  { name:"Island Bliss",   casa:"Armaf · Delights", fam:"Gourmand",  price:45990, tarjeta:56990, dur:"8–10 hs",  linkTransfer:"", linkCard:"" },
+  { name:"Khamrah Dukhan", casa:"Lattafa",          fam:"Oriental",  price:39990, tarjeta:49990, dur:"12–14 hs", linkTransfer:"", linkCard:"" },
+  { name:"Honor & Glory",  casa:"Lattafa",          fam:"Amaderado", price:33990, tarjeta:41990, dur:"11–13 hs", linkTransfer:"", linkCard:"" },
+  { name:"9PM",            casa:"Afnan",            fam:"Oriental",  price:27990, tarjeta:34990, dur:"9–11 hs",  linkTransfer:"", linkCard:"" },
+  { name:"Asad Elixir",    casa:"Lattafa",          fam:"Amaderado", price:27990, tarjeta:34990, dur:"10–12 hs", linkTransfer:"", linkCard:"" },
 ];
 
 const ARS = (n) => "$" + n.toLocaleString("es-AR");
@@ -963,46 +973,33 @@ function closeOrder() {
   if (window.lenis) window.lenis.start();
 }
 
-/* Mercado Pago: pide a la función serverless de Netlify una preferencia de pago
-   y redirige al checkout real (init_point). El Access Token vive en el servidor,
-   nunca acá en el frontend. */
-async function payWithMP() {
+/* Mercado Pago (Links de pago): redirige al link estático que corresponde
+   segun el medio elegido. No necesita servidor ni Access Token, por eso
+   funciona en cualquier hosting estatico (incluido Netlify Drop).
+     · Transferencia → linkTransfer (precio con descuento)
+     · Tarjeta       → linkCard (precio con 3 cuotas sin interes)
+   Si el link todavia no esta cargado, deriva el pedido a WhatsApp para no
+   dejar al cliente sin poder comprar. */
+function payWithMP() {
   const p = PRODUCTS[state.index];
-  const nombre = document.getElementById("mNombre").value.trim();
-  const nota   = document.getElementById("mNota").value.trim();
-  const btn = document.getElementById("mGo");
-  const original = btn.innerHTML;
-  btn.disabled = true;
-  btn.style.opacity = ".7";
-  btn.textContent = "Generando pago…";
-  try {
-    const res = await fetch("/.netlify/functions/create-preference", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: `${p.casa} ${p.name}`,
-        quantity: state.qty,
-        unit_price: unitPrice(),
-        installments: state.method === "tarjeta" ? 3 : 1,
-        payment_method: state.method,
-        buyer_name: nombre,
-        note: nota,
-      }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || !data.init_point) {
-      // Dejamos el detalle real en la consola para poder diagnosticar
-      console.error("Error al crear la preferencia de Mercado Pago:", res.status, data);
-      throw new Error(data.error || `error_${res.status}`);
-    }
-    // Redirige al checkout de Mercado Pago
-    window.location.href = data.init_point;
-  } catch (err) {
-    btn.disabled = false;
-    btn.style.opacity = "";
-    btn.innerHTML = original;
-    toast("No se pudo iniciar el pago (" + (err.message || "error") + "). Probá por WhatsApp 🙏");
+  const link = state.method === "tarjeta" ? p.linkCard : p.linkTransfer;
+
+  // Sin link configurado → derivamos a WhatsApp con el detalle del pedido.
+  if (!link) {
+    toast("Te derivamos a WhatsApp para coordinar el pago 🙏");
+    sendOrderWhatsApp();
+    return;
   }
+
+  // Si pidio mas de una unidad, el link (monto fijo) no multiplica el total:
+  // avisamos y lo coordinamos por WhatsApp para no cobrar de menos.
+  if (state.qty > 1) {
+    toast("Para más de 1 unidad coordinamos por WhatsApp 🙏");
+    sendOrderWhatsApp();
+    return;
+  }
+
+  window.location.href = link;
 }
 
 /* WhatsApp: queda como alternativa de asesoría / consulta */
