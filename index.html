@@ -989,16 +989,19 @@ async function payWithMP() {
         note: nota,
       }),
     });
-    if (!res.ok) throw new Error("preference_failed");
-    const data = await res.json();
-    if (!data.init_point) throw new Error("no_init_point");
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.init_point) {
+      // Dejamos el detalle real en la consola para poder diagnosticar
+      console.error("Error al crear la preferencia de Mercado Pago:", res.status, data);
+      throw new Error(data.error || `error_${res.status}`);
+    }
     // Redirige al checkout de Mercado Pago
     window.location.href = data.init_point;
   } catch (err) {
     btn.disabled = false;
     btn.style.opacity = "";
     btn.innerHTML = original;
-    toast("No se pudo iniciar el pago. Probá por WhatsApp 🙏");
+    toast("No se pudo iniciar el pago (" + (err.message || "error") + "). Probá por WhatsApp 🙏");
   }
 }
 

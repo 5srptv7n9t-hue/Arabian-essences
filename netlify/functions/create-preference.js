@@ -15,11 +15,13 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "JSON invalido" }) };
   }
 
-  const title      = String(body.title || "Producto Arabian Essence").slice(0, 250);
-  const quantity   = Math.max(1, Math.min(99, parseInt(body.quantity, 10) || 1));
-  const unit_price = Number(body.unit_price);
-  const buyer_name = String(body.buyer_name || "").slice(0, 120);
-  const note       = String(body.note || "").slice(0, 500);
+  const title          = String(body.title || "Producto Arabian Essence").slice(0, 250);
+  const quantity       = Math.max(1, Math.min(99, parseInt(body.quantity, 10) || 1));
+  const unit_price     = Number(body.unit_price);
+  const buyer_name     = String(body.buyer_name || "").slice(0, 120);
+  const note           = String(body.note || "").slice(0, 500);
+  const payment_method = String(body.payment_method || "transferencia");
+  const installments   = Math.max(1, Math.min(12, parseInt(body.installments, 10) || 1));
 
   if (!Number.isFinite(unit_price) || unit_price <= 0) {
     return { statusCode: 400, body: JSON.stringify({ error: "Precio invalido" }) };
@@ -27,10 +29,24 @@ exports.handler = async (event) => {
 
   const SITE_URL = process.env.URL || `https://${event.headers.host}`;
 
+  // Configuración de medios de pago / cuotas segun lo que elija el cliente.
+  const payment_methods = {
+    installments,             // maximo de cuotas permitidas
+    default_installments: installments, // cuota preseleccionada en el checkout
+  };
+
+  // El precio por transferencia es mas bajo que el de tarjeta. Si el cliente
+  // eligio "transferencia" excluimos tarjeta de credito para que no pague el
+  // precio con descuento usando una tarjeta.
+  if (payment_method === "transferencia") {
+    payment_methods.excluded_payment_types = [{ id: "credit_card" }];
+  }
+
   const preference = {
     items: [
       { title, quantity, unit_price, currency_id: "ARS" },
     ],
+    payment_methods,
     back_urls: {
       success: `${SITE_URL}/?pago=ok`,
       pending: `${SITE_URL}/?pago=pendiente`,
@@ -39,7 +55,7 @@ exports.handler = async (event) => {
     auto_return: "approved",
     statement_descriptor: "ARABIAN ESSENCE",
     external_reference: `AE-${Date.now()}`,
-    metadata: { buyer_name, note },
+    metadata: { buyer_name, note, payment_method, installments },
   };
 
   try {
