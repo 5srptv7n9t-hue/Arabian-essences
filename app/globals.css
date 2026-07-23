@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: #0a0a0b;
+  color: #ededf0;
+}
+
+body {
+  font-feature-settings: 'ss01';
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(124, 92, 255, 0.35);
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2f;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

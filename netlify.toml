@@ -1,3 +1,8 @@
 [build]
+  command = "npm run build"
   functions = "netlify/functions"
-  publish = "."
+
+# El plugin oficial de Next.js gestiona el publish, las rutas de la App Router
+# y las funciones serverless (incluidas las rutas /api que usan Sharp).
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
