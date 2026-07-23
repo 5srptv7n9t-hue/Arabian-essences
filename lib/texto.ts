@@ -37,17 +37,34 @@ const ANCHOS: Record<string, number> = {
   '@': 0.9,
 };
 
-const ANCHO_POR_DEFECTO = 0.56; // ancho medio de una letra en Poppins
+const ANCHO_POR_DEFECTO = 0.62; // ancho medio de una minúscula en Poppins
+const ANCHO_MAYUSCULA = 0.7; // las mayúsculas son más anchas
+const ANCHO_DIGITO = 0.62;
+
+// Factor de seguridad: preferimos sobreestimar un poco el ancho para que el
+// texto nunca se pase del área disponible (mejor cortar de más que de menos).
+const MARGEN_SEGURIDAD = 1.04;
+
+function anchoCaracter(char: string): number {
+  if (ANCHOS[char] !== undefined) return ANCHOS[char];
+  if (char >= '0' && char <= '9') return ANCHO_DIGITO;
+  // Mayúsculas y letras acentuadas mayúsculas.
+  if (char !== char.toLowerCase() && char === char.toUpperCase()) {
+    return ANCHO_MAYUSCULA;
+  }
+  return ANCHO_POR_DEFECTO;
+}
 
 /**
  * Estima el ancho en píxeles de un texto para un tamaño de fuente dado.
+ * Sobreestima levemente (margen de seguridad) para evitar desbordes.
  */
 export function medirTexto(texto: string, tamañoFuente: number): number {
   let ancho = 0;
   for (const char of texto) {
-    ancho += (ANCHOS[char] ?? ANCHO_POR_DEFECTO) * tamañoFuente;
+    ancho += anchoCaracter(char) * tamañoFuente;
   }
-  return ancho;
+  return ancho * MARGEN_SEGURIDAD;
 }
 
 /**

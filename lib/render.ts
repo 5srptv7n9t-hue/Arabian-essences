@@ -90,7 +90,7 @@ function construirSVG({ slide, paleta, indice, total, sobreImagen }: OpcionesSVG
   const { titulo, subtitulo } = slide;
 
   // --- Layout del texto ---
-  const tituloFit = ajustarYDividir(titulo, ANCHO_TEXTO, 96, 4, 46);
+  const tituloFit = ajustarYDividir(titulo, ANCHO_TEXTO, 88, 4, 44);
   const tituloLineHeight = tituloFit.tamañoFuente * 1.08;
   const tituloAlto = tituloFit.lineas.length * tituloLineHeight;
 
