@@ -1,0 +1,20 @@
+RECURSOS GRÁFICOS — nota de licencias
+=====================================
+
+Este script descarga imágenes desde fuentes públicas para usarlas en el juego
+"El Camino / Potrero". Tené en cuenta:
+
+- BANDERAS (banderas/): de dominio público / uso libre. Sin problema.
+  Fuente: flagcdn.com y/o el repo open source lipis/flag-icons.
+
+- ESCUDOS DE CLUBES (escudos/) y LOGOS DE COMPETENCIAS (competencias/):
+  son MARCAS REGISTRADAS y/o con COPYRIGHT de cada club, liga o entidad
+  organizadora. Fuente: TheSportsDB (base de datos comunitaria).
+
+  Se descargan para USO PERSONAL / DESARROLLO de tu juego. NO están licenciados
+  para redistribución comercial. Si vas a publicar o monetizar el juego con
+  estos logos, necesitás permiso/licencia de cada titular, o usá los escudos
+  GENERADOS que ya trae el juego (ui/06-escudos.js), que no tienen ese problema.
+
+Los nombres de clubes, ligas, países y competencias son datos y no tienen
+restricción; el tema son las imágenes de marca.

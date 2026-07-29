@@ -1,3 +1,10 @@
 node_modules/
 package-lock.json
 dist/
+
+# recursos descargados (imagenes): no versionar. Los escudos/logos son marcas
+# registradas y no deben subirse al repo. Se regeneran con el script.
+recursos_juego/banderas/
+recursos_juego/escudos/
+recursos_juego/competencias/
+recursos_juego/_reporte.json
