@@ -30,7 +30,7 @@ for s in srcs:
         parts.append("/* ===== " + s + " ===== */\n" + f.read())
 bundle_js = "<script>\n" + "\n".join(parts) + "\n</script>"
 # reemplazar el bloque completo de <script src> por el bundle
-html = re.sub(r'(?:\s*<script src="[^"]+"></script>)+', "\n" + bundle_js, html, count=1)
+html = re.sub(r'(?:\s*<script src="[^"]+"></script>)+', lambda m: "\n" + bundle_js, html, count=1)
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 with open(OUT, "w", encoding="utf-8") as f:

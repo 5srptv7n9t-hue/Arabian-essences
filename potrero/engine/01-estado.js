@@ -15,7 +15,7 @@ function initSelects(){
   document.getElementById('in-pos').innerHTML=Object.keys(POSITIONS).map(opt).join('');
   fillClubs(); fillArche();
 }
-function fillClubs(){const lg=document.getElementById('in-league').value;document.getElementById('in-club').innerHTML=LEAGUES[lg].map(opt).join('')}
+function fillClubs(){const lg=document.getElementById('in-league').value;document.getElementById('in-club').innerHTML=LEAGUES[lg].map(opt).join('');if(typeof updateClubPreview==='function')updateClubPreview();}
 function fillArche(){
   const pg=document.getElementById('in-pos').value;
   const arches=Object.keys(POSITIONS[pg].arche);

@@ -30,7 +30,7 @@ function showContractModal(club, role, salary, opts){
   document.getElementById('modal-box').innerHTML=
     '<div class="contract-paper">'+
       '<h3>Contrato profesional</h3>'+
-      '<div class="club-line">'+club+' · '+tierName+'</div>'+
+      '<div class="club-line" style="display:flex;align-items:center;justify-content:center;gap:8px">'+(typeof clubCrest==='function'?clubCrest(club,30):'')+'<span>'+club+' · '+tierName+'</span></div>'+
       '<div class="contract-role-big">'+role.label+'</div>'+
       '<div class="contract-desc">"'+role.desc+'"</div>'+
       '<div class="contract-clause"><span class="lbl">Sueldo</span><span class="val">'+salary+'M€ / temporada</span></div>'+
