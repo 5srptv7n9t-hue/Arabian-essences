@@ -5,7 +5,11 @@ function toast(msg,cls){
   t.textContent=msg;t.className='toast show'+(cls?' '+cls:'');
   clearTimeout(toastT);toastT=setTimeout(()=>t.className='toast',2300);
 }
-window.addEventListener('DOMContentLoaded',()=>{ initSelects(); });
+// Inicializar los selects apenas el DOM esté listo. Si el documento YA
+// terminó de cargar (p.ej. el juego se inyecta en un visor/iframe después del
+// DOMContentLoaded), corremos en el acto para que no queden vacíos.
+if(document.readyState==='loading') window.addEventListener('DOMContentLoaded',initSelects);
+else initSelects();
 
 function starLegacy(){
   const s=P.mediaStar;

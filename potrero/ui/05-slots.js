@@ -86,7 +86,11 @@ function backToMenu(){
 
 /* pantalla inicial: si hay partidas guardadas mostramos el menu de slots;
    si no, dejamos la pantalla de creacion (que ya viene activa). */
-window.addEventListener('DOMContentLoaded', ()=>{
+function bootScreen(){
   if(!currentSlotId) currentSlotId = newSlotId();
   if(storageOK() && listSaves().length > 0){ showSlots(); }
-});
+}
+// igual que initSelects: si el DOM ya cargo (juego inyectado en un visor),
+// arrancamos en el acto en vez de esperar un evento que ya paso.
+if(document.readyState==='loading') window.addEventListener('DOMContentLoaded', bootScreen);
+else bootScreen();
