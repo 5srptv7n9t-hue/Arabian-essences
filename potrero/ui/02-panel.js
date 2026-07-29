@@ -3,7 +3,7 @@ function refreshPanel(){
   document.getElementById('g-age').textContent=P.age+" años";
   document.getElementById('g-club').innerHTML=P.club+" · "+shortPos()+" · <span style='color:var(--gold)'>"+P.money.toFixed(1)+"M€</span>";
   document.getElementById('p-name').textContent=P.name;
-  document.getElementById('p-meta').textContent=P.nat+" · "+P.arche;
+  document.getElementById('p-meta').textContent=flagFor(P.nat)+" "+P.nat+" · "+P.arche;
   document.getElementById('p-badge').textContent=P.name.charAt(0).toUpperCase();
   document.getElementById('p-ovr').textContent=ovr();
   document.getElementById('k-gk').textContent=P.goals;

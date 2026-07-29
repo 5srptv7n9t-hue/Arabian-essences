@@ -9,7 +9,8 @@ let pendingSP={};
 function opt(v){return '<option>'+v+'</option>'}
 function optS(v,sel){return '<option'+(v===sel?' selected':'')+'>'+v+'</option>'}
 function initSelects(){
-  document.getElementById('in-nat').innerHTML=NATIONS.map(opt).join('');
+  // país con bandera en el texto, pero el value queda el nombre limpio
+  document.getElementById('in-nat').innerHTML=NATIONS.map(n=>'<option value="'+n+'">'+flagFor(n)+' '+n+'</option>').join('');
   document.getElementById('in-league').innerHTML=Object.keys(LEAGUES).map(opt).join('');
   document.getElementById('in-pos').innerHTML=Object.keys(POSITIONS).map(opt).join('');
   fillClubs(); fillArche();
