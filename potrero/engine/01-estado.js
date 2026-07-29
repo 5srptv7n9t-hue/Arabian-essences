@@ -1,6 +1,6 @@
 /* ===================== ESTADO ===================== */
 let P=null;
-const BASE_STAT=40, POOL=45;   // rebalanceo: base más baja y menos puntos al inicio
+const BASE_STAT=CONFIG.crear.baseStat, POOL=CONFIG.crear.pool;   // rebalanceo: base más baja y menos puntos al inicio
 let editStats={};
 let usedOnce={};
 let recentEvents=[];

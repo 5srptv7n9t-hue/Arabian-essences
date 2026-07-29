@@ -1,16 +1,18 @@
 /* ===== PROGRESIÓN AUTOMÁTICA (el corazón del rebalanceo) ===== */
 function autoProgress(missed){
-  const t=P.talent;
+  const t=P.talent, PC=CONFIG.progresion;
   // pico de crecimiento entre 17 y 27, decrece después
+  const AF=PC.ageFactor;
   let ageFactor;
-  if(P.age<=20) ageFactor=1.4;
-  else if(P.age<=25) ageFactor=1.0;
-  else if(P.age<=29) ageFactor=0.5;
-  else if(P.age<=32) ageFactor=0.15;
-  else ageFactor=-0.2; // declive
+  if(P.age<=20) ageFactor=AF.hasta20;
+  else if(P.age<=25) ageFactor=AF.hasta25;
+  else if(P.age<=29) ageFactor=AF.hasta29;
+  else if(P.age<=32) ageFactor=AF.hasta32;
+  else ageFactor=AF.declive; // declive
   // puntos de mejora por temporada
-  let eliteBoost = (t.tier==='generacional'?1.35:t.tier==='crack'?1.15:1.0);
-  let growth = (missed? 0.4:1) * t.mult * eliteBoost * ageFactor * (5.5 + Math.random()*2.5);
+  const EB=PC.eliteBoost;
+  let eliteBoost = (EB[t.tier]!=null?EB[t.tier]:EB.otros);
+  let growth = (missed? PC.missedMult:1) * t.mult * eliteBoost * ageFactor * (PC.growthBase + Math.random()*PC.growthRand);
   growth=Math.round(growth);
   const weight=archeData().weight;
   if(growth>0){
@@ -24,16 +26,16 @@ function autoProgress(missed){
       // 70% en stats clave de la posición
       let pick;
       const keyPool=pool.filter(s=>weight.includes(s.k));
-      if(keyPool.length && Math.random()<0.7) pick=keyPool[Math.floor(Math.random()*keyPool.length)];
+      if(keyPool.length && Math.random()<PC.keyStatBias) pick=keyPool[Math.floor(Math.random()*keyPool.length)];
       else pick=pool[Math.floor(Math.random()*pool.length)];
       P.stats[pick.k]++;
     }
   }else if(growth<0){
     // declive físico: baja velocidad/resistencia/fisico
-    const phys=['velocidad','resistencia','fisico'];
+    const phys=PC.declineStats;
     for(let i=0;i<Math.abs(growth);i++){
       const k=phys[Math.floor(Math.random()*phys.length)];
-      if(P.stats[k]>35)P.stats[k]--;
+      if(P.stats[k]>PC.declineFloor)P.stats[k]--;
     }
   }
 }
@@ -41,17 +43,17 @@ function autoProgress(missed){
 function continueAfterSeason(){ nextTurn(); window.scrollTo({top:0,behavior:'smooth'}); }
 
 function awardSeason(simG){
-  const o=ovr(), sim=archeData().sim;
-  if(o>72&&Math.random()<0.35)addTrophy('liga',P.club+' · Temp. '+(P.season-1));
-  if(simG>=18)addTrophy('pichichi',simG+' goles · Temp. '+(P.season-1));
-  if(simG>=25 && !isSudamerican())addTrophy('botaOro',simG+' goles · Temp. '+(P.season-1));
-  if(o>82&&P.fama>18&&Math.random()<0.3)addTrophy('mvpLiga','Temp. '+(P.season-1));
-  if(sim==='arquero'&&o>80&&Math.random()<0.4){addTrophy('yashin','Temp. '+(P.season-1));if(Math.random()<0.5)addTrophy('guante','Temp. '+(P.season-1))}
-  if(P.age<=21&&o>76&&P.fama>12&&!hasTrophy('goldenBoy'))addTrophy('goldenBoy','A los '+(P.age-1)+' · Temp. '+(P.season-1));
-  if(simG>=12&&Math.random()<0.12)addTrophy('puskas','Temp. '+(P.season-1));
-  if(o>87&&P.fama>26&&Math.random()<0.28)addTrophy('balon','Temp. '+(P.season-1));
-  if(o>86&&P.fama>24&&Math.random()<0.24)addTrophy('theBest','Temp. '+(P.season-1));
-  if(o>85&&Math.random()<0.10)addTrophy('mundialClubes','Con '+P.club+' · Temp. '+(P.season-1));
+  const o=ovr(), sim=archeData().sim, PR=CONFIG.premios;
+  if(o>PR.liga.ovr&&Math.random()<PR.liga.prob)addTrophy('liga',P.club+' · Temp. '+(P.season-1));
+  if(simG>=PR.pichichiGoles)addTrophy('pichichi',simG+' goles · Temp. '+(P.season-1));
+  if(simG>=PR.botaGoles && !isSudamerican())addTrophy('botaOro',simG+' goles · Temp. '+(P.season-1));
+  if(o>PR.mvpLiga.ovr&&P.fama>PR.mvpLiga.fama&&Math.random()<PR.mvpLiga.prob)addTrophy('mvpLiga','Temp. '+(P.season-1));
+  if(sim==='arquero'&&o>PR.yashin.ovr&&Math.random()<PR.yashin.prob){addTrophy('yashin','Temp. '+(P.season-1));if(Math.random()<PR.yashin.guanteProb)addTrophy('guante','Temp. '+(P.season-1))}
+  if(P.age<=PR.goldenBoy.edad&&o>PR.goldenBoy.ovr&&P.fama>PR.goldenBoy.fama&&!hasTrophy('goldenBoy'))addTrophy('goldenBoy','A los '+(P.age-1)+' · Temp. '+(P.season-1));
+  if(simG>=PR.puskas.goles&&Math.random()<PR.puskas.prob)addTrophy('puskas','Temp. '+(P.season-1));
+  if(o>PR.balon.ovr&&P.fama>PR.balon.fama&&Math.random()<PR.balon.prob)addTrophy('balon','Temp. '+(P.season-1));
+  if(o>PR.theBest.ovr&&P.fama>PR.theBest.fama&&Math.random()<PR.theBest.prob)addTrophy('theBest','Temp. '+(P.season-1));
+  if(o>PR.mundialClubes.ovr&&Math.random()<PR.mundialClubes.prob)addTrophy('mundialClubes','Con '+P.club+' · Temp. '+(P.season-1));
 }
 function hasTrophy(key){return P.trophies.some(t=>t.key===key)}
 function addTrophy(key,detail){P.trophies.push({key,detail});toast(TROPHIES[key].ic+' '+TROPHIES[key].n+'!')}

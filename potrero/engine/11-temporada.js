@@ -1,24 +1,24 @@
 /* ===================== AVANCE / TEMPORADA / PREMIOS ===================== */
 function advanceTurn(){
   turnCount++;
-  if(turnCount%3===0){ endSeason(); }
+  if(turnCount%CONFIG.temporada.turnosPorTemporada===0){ endSeason(); }
   else { refreshPanel(); nextTurn(); window.scrollTo({top:0,behavior:'smooth'}); }
 }
 
 function simGoals(){
-  const s=P.stats, sim=archeData().sim;
+  const s=P.stats, sim=archeData().sim, G=CONFIG.simRendimiento.goles;
   if(sim==='arquero') return 0;
-  if(sim==='defensivo') return Math.max(0,Math.round((s.definicion+s.tiro)/60 + Math.random()*2));
-  if(sim==='creador')   return Math.max(0,Math.round((s.definicion+s.tiro)/26 + Math.random()*4));
-  if(sim==='goleador')  return Math.max(0,Math.round((s.definicion*1.3+s.tiro)/12 + Math.random()*7));
-  return Math.max(0,Math.round((s.definicion+s.tiro)/20 + Math.random()*5)); // equilibrado
+  if(sim==='defensivo') return Math.max(0,Math.round((s.definicion+s.tiro)/G.defensivo.div + Math.random()*G.defensivo.rand));
+  if(sim==='creador')   return Math.max(0,Math.round((s.definicion+s.tiro)/G.creador.div + Math.random()*G.creador.rand));
+  if(sim==='goleador')  return Math.max(0,Math.round((s.definicion*G.goleador.tiroMult+s.tiro)/G.goleador.div + Math.random()*G.goleador.rand));
+  return Math.max(0,Math.round((s.definicion+s.tiro)/G.equilibrado.div + Math.random()*G.equilibrado.rand)); // equilibrado
 }
 function simAssists(){
-  const s=P.stats, sim=archeData().sim;
+  const s=P.stats, sim=archeData().sim, A=CONFIG.simRendimiento.asist;
   if(sim==='arquero') return 0;
-  if(sim==='creador')   return Math.max(0,Math.round(s.pase/12 + Math.random()*6));
-  if(sim==='goleador')  return Math.max(0,Math.round(s.pase/28 + Math.random()*2));
-  return Math.max(0,Math.round(s.pase/18 + Math.random()*4));
+  if(sim==='creador')   return Math.max(0,Math.round(s.pase/A.creador.div + Math.random()*A.creador.rand));
+  if(sim==='goleador')  return Math.max(0,Math.round(s.pase/A.goleador.div + Math.random()*A.goleador.rand));
+  return Math.max(0,Math.round(s.pase/A.equilibrado.div + Math.random()*A.equilibrado.rand));
 }
 
 function endSeason(){
@@ -34,7 +34,7 @@ function endSeason(){
   if(missedSeason){
     // se perdió la temporada entera
   }else{
-    simG=simGoals();simA=simAssists();simApps=Math.round(20+Math.random()*14);
+    simG=simGoals();simA=simAssists();simApps=Math.round(CONFIG.temporada.apps.base+Math.random()*CONFIG.temporada.apps.rand);
     P.goals+=simG;P.assists+=simA;P.apps+=simApps;
   }
 
@@ -46,8 +46,9 @@ function endSeason(){
   // efectos de upgrades
   const ue=applyUpgradeEffects();
   // SP por rendimiento (más chico que antes) + bonus psicólogo
-  const perf=simG*2+simA+Math.round(ovr()/22);
-  const seasonSP=(missedSeason?1:Math.max(1,Math.round(perf/6)))+ue.spBonus;
+  const SPC=CONFIG.temporada.sp;
+  const perf=simG*SPC.goalMult+simA+Math.round(ovr()/SPC.ovrDiv);
+  const seasonSP=(missedSeason?SPC.missed:Math.max(1,Math.round(perf/SPC.perfDiv)))+ue.spBonus;
   P.sp+=seasonSP;
   // COBRAR SUELDO + ingresos de sponsors
   const income=P.salary+upgradeIncome();
@@ -57,15 +58,15 @@ function endSeason(){
   // idolatría por títulos ganados esta temporada se maneja en addTrophy
 
   // debut selección: ahora depende de media más alta (progresión lenta lo hace más tardío)
-  if(!P.seleccion && ovr()>=74 && P.honor>-45){P.seleccion=true;addTrophy('seleccion',P.nat)}
+  if(!P.seleccion && ovr()>=CONFIG.temporada.seleccionDebut.minOvr && P.honor>CONFIG.temporada.seleccionDebut.minHonor){P.seleccion=true;addTrophy('seleccion',P.nat)}
 
   const trophiesBefore=P.trophies.length;
   awardSeason(simG);
   // subir idolatría por títulos de club ganados
   const newClubTrophies=P.trophies.slice(trophiesBefore).filter(t=>TROPHIES[t.key].grp==='Clubes').length;
-  if(newClubTrophies>0){ P.clubIdol=Math.min(100,P.clubIdol+newClubTrophies*8); }
+  if(newClubTrophies>0){ P.clubIdol=Math.min(100,P.clubIdol+newClubTrophies*CONFIG.temporada.idol.porTituloClub); }
   // permanencia: cada temporada en el club sube un poco la idolatría
-  P.clubIdol=Math.min(100,P.clubIdol+2);
+  P.clubIdol=Math.min(100,P.clubIdol+CONFIG.temporada.idol.permanencia);
 
   const tag=document.getElementById('ev-tag');
   tag.textContent="Fin de temporada "+(P.season-1);tag.className='event-tag';
@@ -77,7 +78,7 @@ function endSeason(){
   document.getElementById('ev-choices').innerHTML='';
 
   let retireBtn='';
-  if(P.age>=34 && Math.random()<0.5){ retireBtn='<button class="btn ghost" onclick="retire()">Retirarme como leyenda</button>'; }
+  if(P.age>=CONFIG.temporada.retiro.minAge && Math.random()<CONFIG.temporada.retiro.prob){ retireBtn='<button class="btn ghost" onclick="retire()">Retirarme como leyenda</button>'; }
   document.getElementById('outcome-box').innerHTML=
     '<div class="outcome"><div class="res">Temporada '+(P.season-1)+' cerrada. Repartí tus puntos en el Panel.</div>'+
     '<button class="btn" onclick="continueAfterSeason()">Seguir la carrera ▸</button>'+retireBtn+'</div>';

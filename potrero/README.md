@@ -21,6 +21,7 @@ potrero/
 ├── index.html                 ← la página; carga el CSS y los módulos en orden
 ├── styles.css                 ← todo el estilo (paleta, fondo del estadio)
 ├── data/                      ← todos los datos del juego
+│   ├── 00-config.js           ← BALANCE en un solo lugar (sueldos, probs, etc.)
 │   ├── 01-naciones.js
 │   ├── 02-ligas.js            ← ligas y clubes reales
 │   ├── 03-posiciones.js       ← posiciones, arquetipos y topes por stat
@@ -85,10 +86,36 @@ Se guarda por dispositivo/navegador. Si el navegador bloquea el
 almacenamiento (modo incógnito muy restrictivo, etc.), el juego igual funciona,
 solo que no guarda.
 
+## Balance en configuración (paso 3)
+
+Todos los números que definen el balance están en **`data/00-config.js`**, en un
+objeto `CONFIG`. Podés cambiarlos para ajustar el juego **sin tocar el motor**:
+sueldos por tier, probabilidades de cada evento por turno, crecimiento por
+talento y edad, umbrales de premios, lesiones, etc. El archivo está comentado
+en criollo, bloque por bloque.
+
+Para asegurar que un cambio de código **no rompe el balance sin querer**, hay
+una prueba de equivalencia:
+
+```bash
+npm run test:balance
+```
+
+Siembra el azar y juega con decisiones fijas; si el recorrido de estado da el
+mismo hash que el baseline guardado (`tests/balance-baseline.json`), el balance
+es idéntico. Si cambiás valores de `CONFIG` a propósito, regenerá el baseline
+con `node tests/equivalence.js` (sin argumentos).
+
+## Un solo archivo para compartir
+
+```bash
+python3 tools/bundle.py       # genera dist/potrero-bundle.html (autocontenido)
+```
+
 ## Qué sigue (roadmap acordado)
 
 1. ✅ **Modularizar** el HTML monolítico.
 2. ✅ **Persistencia / guardado de partida** (localStorage, varios slots).
-3. ⬜ Sacar el balance a un archivo de configuración.
+3. ✅ **Balance en un archivo de configuración** (`data/00-config.js`).
 4. ⬜ Todas las ligas del mundo con clubes reales (dataset offline vía API).
 5. ⬜ Contenido nuevo (historial, estadísticas, eliminatorias, hitos, retiro).

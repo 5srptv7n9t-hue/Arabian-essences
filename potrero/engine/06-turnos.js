@@ -21,19 +21,20 @@ function nextTurn(){
 
   const o=ovr();
   const r=Math.random();
+  const C=CONFIG.turno;
   // ARQUEROS: atajadas decisivas frecuentes (reemplazan goles/asist)
-  if(isGoalkeeper() && r<0.30){ gkSaveTurn(); return; }
+  if(isGoalkeeper() && r<C.gkSaveProb){ gkSaveTurn(); return; }
   // lesión random por mala suerte (baja probabilidad)
-  if(r<0.05){ randomInjuryTurn(); return; }
+  if(r<C.injuryProb){ randomInjuryTurn(); return; }
   // oferta de jeque árabe (si tenés cierto nivel/fama)
-  if(o>=72 && P.fama>=14 && r<0.11 && !P.league.includes("Arabia")){ sheikhOffer(); return; }
+  if(o>=C.jeque.minOvr && P.fama>=C.jeque.minFama && r<C.jeque.prob && !P.league.includes("Arabia")){ sheikhOffer(); return; }
   // rueda de prensa
-  if(r<0.18){ pressTurn(); return; }
+  if(r<C.prensaProb){ pressTurn(); return; }
   // vida mediática (salidas, yate, pareja, farándula)
-  if(r<0.34){ normalEvent(true); return; }
-  if(o>=64 && r<0.34){ finalTurn(); return; }
-  if(o>=68 && r<0.45){ transferTurn(); return; }
-  if(P.seleccion && r<0.55){ if(nationalTournamentTurn()) return; }
+  if(r<C.mediaProb){ normalEvent(true); return; }
+  if(o>=C.final.minOvr && r<C.final.prob){ finalTurn(); return; }
+  if(o>=C.transfer.minOvr && r<C.transfer.prob){ transferTurn(); return; }
+  if(P.seleccion && r<C.seleccionProb){ if(nationalTournamentTurn()) return; }
   normalEvent();
 }
 

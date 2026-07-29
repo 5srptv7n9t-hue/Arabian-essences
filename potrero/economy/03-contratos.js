@@ -2,11 +2,12 @@
 function computeSalary(club, role){
   const tier=clubTier(club);
   // base por tier (millones/temporada)
-  const baseByTier={1:14,2:8,3:4,4:1.6,5:0.6,6:0.2};
-  let base=baseByTier[tier]||2;
+  const baseByTier=CONFIG.sueldo.baseByTier;
+  let base=baseByTier[tier]||CONFIG.sueldo.baseDefault;
   // ajuste por media
   const o=ovr();
-  const ovrMult=Math.max(0.4, (o-40)/40 + 0.5); // media 40=0.5x, 80=1.5x, 99≈1.97x
+  const om=CONFIG.sueldo.ovrMult;
+  const ovrMult=Math.max(om.min, (o-om.ref)/om.div + om.add); // media 40=0.5x, 80=1.5x, 99≈1.97x
   base=base*ovrMult*role.payMult;
   return Math.round(base*10)/10;
 }
@@ -15,8 +16,8 @@ function pickRole(club){
   // clubes grandes te ofrecen roles según tu nivel
   let candidates=CONTRACT_ROLES.filter(r=>o>=r.minOvr);
   // en clubes tier1/2 si no sos crack, sos suplente/promesa
-  if(tier<=2 && o<78){ candidates=CONTRACT_ROLES.filter(r=>['rotacion','suplente','promesa'].includes(r.id)); }
-  if(tier>=4){ candidates=CONTRACT_ROLES.filter(r=>['estrella','titular','rotacion'].includes(r.id) && o>=r.minOvr-10); }
+  if(tier<=2 && o<CONFIG.sueldo.rolClubGrandeOvr){ candidates=CONTRACT_ROLES.filter(r=>['rotacion','suplente','promesa'].includes(r.id)); }
+  if(tier>=4){ candidates=CONTRACT_ROLES.filter(r=>['estrella','titular','rotacion'].includes(r.id) && o>=r.minOvr-CONFIG.sueldo.rolTierBajoSlack); }
   if(candidates.length===0) candidates=[CONTRACT_ROLES[3]];
   return candidates[Math.floor(Math.random()*candidates.length)];
 }

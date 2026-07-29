@@ -2,7 +2,7 @@
 function transferTurn(){
   const suitor=BIG_CLUBS[Math.floor(Math.random()*BIG_CLUBS.length)];
   if(suitor===P.club){normalEvent();return}
-  const fee=Math.round(ovr()*1.4)+Math.floor(Math.random()*40);
+  const fee=Math.round(ovr()*CONFIG.transfer.feeOvrMult)+Math.floor(Math.random()*CONFIG.transfer.feeRand);
   pendingTransfer={suitor,fee};
   const tag=document.getElementById('ev-tag');
   tag.textContent="Transferencia";tag.className='event-tag transfer';

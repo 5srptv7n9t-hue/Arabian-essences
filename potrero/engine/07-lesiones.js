@@ -11,7 +11,7 @@ function applyInjury(len,seasons){
   }
 }
 function randomInjuryTurn(){
-  const long=Math.random()<0.35;
+  const long=Math.random()<CONFIG.lesiones.randomLongProb;
   const tag=document.getElementById('ev-tag');
   tag.textContent="Mala suerte";tag.className='event-tag bad';
   document.getElementById('ev-text').innerHTML= long
@@ -21,7 +21,7 @@ function randomInjuryTurn(){
     '<button class="choice" onclick="acceptInjury(\''+(long?'long':'short')+'\')">Asumir la lesión y arrancar la recuperación.<span class="hint">No hay otra</span></button>';
 }
 function acceptInjury(len){
-  applyInjury(len, len==='long'?(Math.random()<0.4?2:1):0);
+  applyInjury(len, len==='long'?(Math.random()<CONFIG.lesiones.aceptarLargaProbDoble?2:1):0);
   const d=applyEff({honor:1});
   renderOutcome(len==='long'
     ? 'Te operaron. Se te viene una recuperación larga y solitaria. El club te banca, pero el camino de vuelta es duro.'
@@ -39,7 +39,7 @@ function recoveryTurn(){
 function rehab(mode){
   let res,d;
   if(mode==='push'){
-    if(Math.random()<0.4){ // recaída
+    if(Math.random()<CONFIG.lesiones.rehabRecaidaProb){ // recaída
       P.injury.seasons+=1;
       d=applyEff({honor:-2});
       res='Forzaste y recaíste. La lesión se alarga. Bronca pura.';

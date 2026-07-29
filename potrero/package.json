@@ -4,7 +4,8 @@
   "private": true,
   "description": "El Camino / Carrera de Potrero — modo carrera de jugador de futbol (RPG), mobile-first, en espanol rioplatense.",
   "scripts": {
-    "test": "node tests/simulate.js"
+    "test": "node tests/simulate.js",
+    "test:balance": "node tests/equivalence.js tests/balance-baseline.json"
   },
   "devDependencies": {
     "jsdom": "^30.0.1"

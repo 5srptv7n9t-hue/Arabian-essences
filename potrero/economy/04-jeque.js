@@ -1,8 +1,8 @@
 /* ===== OFERTA DE JEQUE ÁRABE ===== */
 function sheikhOffer(){
   const club=["Al-Hilal","Al-Nassr","Al-Ittihad","Al-Ahli"][Math.floor(Math.random()*4)];
-  const money=Math.round((computeSalary(club,CONTRACT_ROLES[0])*2.5)*10)/10;
-  pendingTransfer={suitor:club,fee:Math.round(ovr()*2),sheikh:true,money};
+  const money=Math.round((computeSalary(club,CONTRACT_ROLES[0])*CONFIG.jeque.salaryMult)*10)/10;
+  pendingTransfer={suitor:club,fee:Math.round(ovr()*CONFIG.jeque.feeOvrMult),sheikh:true,money};
   const tag=document.getElementById('ev-tag');
   tag.textContent="💰 Oferta millonaria";tag.className='event-tag transfer';
   document.getElementById('ev-text').innerHTML='🛢️ Un jeque del <b>'+club+'</b> te ofrece <b>'+money+'M€/temporada</b>. Plata que no vas a ver en ningún otro lado, pero lejos de la elite competitiva.';
