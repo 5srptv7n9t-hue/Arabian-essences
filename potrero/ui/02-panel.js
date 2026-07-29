@@ -25,6 +25,7 @@ function refreshPanel(){
   const pt=document.getElementById('partner-tag');
   if(pt)pt.textContent = P.partner ? ('En pareja'+(P.partner==='mediatica'?' (mediática)':' (reservada)')) : '';
   updateSPUI(); renderStatEditor(); renderPalmares();
+  if(typeof autosave === 'function') autosave();
 }
 function shortPos(){
   const map={"Arquero":"ARQ","Defensor central":"DFC","Lateral":"LAT","Volante central":"MC","Enganche":"ENG","Extremo":"EXT","Delantero":"DEL"};

@@ -17,3 +17,10 @@ Regenerar (opcional, solo si querés re-derivar desde el original):
 ```bash
 python3 tools/split-modules.py tools/potrero-original.html .
 ```
+
+> Nota: este script reproduce el estado del **paso 1** (modularización). Las
+> funciones agregadas después —como el guardado de partida
+> (`engine/14-persistencia.js`, `ui/05-slots.js`)— no están en el monolito
+> original, así que a partir del paso 2 la fuente de verdad son los módulos,
+> no este script. No lo corras encima de tu trabajo salvo que quieras volver
+> exactamente al paso 1.

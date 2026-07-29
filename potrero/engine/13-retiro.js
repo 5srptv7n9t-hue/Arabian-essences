@@ -12,7 +12,7 @@ function retire(){
   document.getElementById('ev-choices').innerHTML='';
   document.getElementById('outcome-box').innerHTML=
     '<div class="outcome"><div class="res">Gracias por el viaje. Mirá todo tu palmarés en la pestaña Palmarés.</div>'+
-    '<button class="btn" onclick="location.reload()">Empezar una nueva carrera</button></div>';
+    '<button class="btn" onclick="backToMenu()">Volver al menú de partidas</button></div>';
   refreshPanel();window.scrollTo({top:0,behavior:'smooth'});
 }
 

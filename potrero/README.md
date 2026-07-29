@@ -39,6 +39,8 @@ potrero/
 │   ├── 04-jeque.js  05-finanzas.js  06-representante.js
 ├── ui/                        ← lo que se ve y se toca
 │   ├── 01-hold-repeat.js  02-panel.js  03-toast-init.js  04-modales.js
+│   └── 05-slots.js            ← menú de partidas (continuar / nueva / borrar)
+├── engine/14-persistencia.js  ← guardado en el navegador (localStorage)
 ├── minigames/
 │   └── 01-minijuegos.js       ← timing, potencia, reflejos, suerte y los de arco
 └── tests/
@@ -66,10 +68,27 @@ npm test
 
 Salida esperada: `=== 6/6 carreras sin crashes ===`.
 
+## Guardado de partida (paso 2)
+
+El juego **se guarda solo** en el navegador (localStorage), después de cada
+cambio de estado. No hace falta apretar "guardar".
+
+- Al abrir el juego, si tenés partidas guardadas aparece el **menú de partidas**:
+  cada carrera con su nombre, club, edad, temporada, media, goles y copas.
+- **Continuar ▸**: retomás esa carrera donde la dejaste.
+- **+ Nueva partida**: empezás otra carrera **sin pisar las que ya tenés**
+  (podés tener varias en paralelo).
+- **Borrar**: elimina esa partida (pide confirmación).
+- Cuando te retirás, el botón te lleva de vuelta al menú de partidas.
+
+Se guarda por dispositivo/navegador. Si el navegador bloquea el
+almacenamiento (modo incógnito muy restrictivo, etc.), el juego igual funciona,
+solo que no guarda.
+
 ## Qué sigue (roadmap acordado)
 
-1. ✅ **Modularizar** el HTML monolítico (este paso).
-2. ⬜ Persistencia / guardado de partida (localStorage, varios slots).
+1. ✅ **Modularizar** el HTML monolítico.
+2. ✅ **Persistencia / guardado de partida** (localStorage, varios slots).
 3. ⬜ Sacar el balance a un archivo de configuración.
 4. ⬜ Todas las ligas del mundo con clubes reales (dataset offline vía API).
 5. ⬜ Contenido nuevo (historial, estadísticas, eliminatorias, hitos, retiro).

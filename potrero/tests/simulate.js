@@ -14,7 +14,22 @@ function G(win, expr) {
   try { return win.eval(expr); } catch (e) { return undefined; }
 }
 
-function loadGame() {
+// jsdom no expone localStorage en origenes file:// (opacos): lo poblamos con
+// un polyfill respaldado por un Map. Pasando el MISMO Map a dos loadGame()
+// simulamos "cerrar y reabrir" el navegador conservando lo guardado.
+function makeLocalStorage(store) {
+  return {
+    getItem(k) { return store.has(String(k)) ? store.get(String(k)) : null; },
+    setItem(k, v) { store.set(String(k), String(v)); },
+    removeItem(k) { store.delete(String(k)); },
+    clear() { store.clear(); },
+    key(i) { const ks = Array.from(store.keys()); return i < ks.length ? ks[i] : null; },
+    get length() { return store.size; },
+  };
+}
+
+function loadGame(store) {
+  store = store || new Map();
   return new Promise((resolve, reject) => {
     const html = fs.readFileSync(INDEX, "utf-8");
     const vc = new VirtualConsole();
@@ -30,6 +45,13 @@ function loadGame() {
       resources: "usable",
       pretendToBeVisual: true,
       virtualConsole: vc,
+      beforeParse(window) {
+        Object.defineProperty(window, "localStorage", {
+          value: makeLocalStorage(store),
+          configurable: true,
+          writable: false,
+        });
+      },
     });
     const w = dom.window;
     // capturar errores de runtime
@@ -175,6 +197,94 @@ async function simulate(dom, cfg) {
   };
 }
 
+// configura el formulario de creacion y arranca la carrera
+function configureAndStart(doc, win, cfg) {
+  setVal(doc, "in-name", cfg.name);
+  setVal(doc, "in-pos", cfg.pos);
+  const arche = doc.getElementById("in-arche");
+  if (arche.options.length) setVal(doc, "in-arche", arche.options[Math.min(cfg.archeIdx || 0, arche.options.length - 1)].value);
+  const league = doc.getElementById("in-league");
+  if (cfg.leagueIdx != null && league.options[cfg.leagueIdx]) setVal(doc, "in-league", league.options[cfg.leagueIdx].value);
+  win.randomize();
+  win.startCareer();
+}
+
+async function playTurns(doc, cfg, n) {
+  for (let i = 0; i < n; i++) {
+    if (G(doc.defaultView, "P && P.retired") === true) break;
+    pickAndClick(doc, cfg);
+    await new Promise((r) => setTimeout(r, 0));
+  }
+}
+
+function screenActive(doc, id) {
+  const el = doc.getElementById(id);
+  return !!(el && el.classList.contains("active"));
+}
+
+// Prueba de PERSISTENCIA: crear -> jugar -> "reabrir" (mismo store) ->
+// continuar y verificar que el estado se restauro -> abrir 2da partida sin
+// pisar la 1ra -> borrar.
+async function testPersistence() {
+  const store = new Map();
+  const checks = [];
+  const ok = (name, cond) => { checks.push([name, !!cond]); };
+
+  // --- Sesion 1: crear y jugar unas temporadas ---
+  let dom = await loadGame(store);
+  let win = dom.window, doc = win.document;
+  configureAndStart(doc, win, { name: "Persistencia FC", pos: "Delantero", archeIdx: 0, leagueIdx: 0 });
+  await playTurns(doc, { retireChance: 0 }, 60);
+  const snap = {
+    name: G(win, "P && P.name"),
+    age: G(win, "P && P.age"),
+    goals: G(win, "P && P.goals"),
+    apps: G(win, "P && P.apps"),
+    club: G(win, "P && P.club"),
+  };
+  ok("autosave creo 1 slot", win.eval("listSaves().length") === 1);
+  const slotId = win.eval("listSaves()[0].id");
+  dom.window.close();
+
+  // --- Sesion 2: "reabrir" el navegador con el mismo almacenamiento ---
+  dom = await loadGame(store);
+  win = dom.window; doc = win.document;
+  ok("al reabrir muestra el menu de partidas", screenActive(doc, "s-slots"));
+  ok("el menu ve la partida guardada", win.eval("listSaves().length") === 1);
+
+  // continuar la partida
+  win.eval(`continueSlot(${JSON.stringify(slotId)})`);
+  await new Promise((r) => setTimeout(r, 20));
+  ok("continuar abre la pantalla de juego", screenActive(doc, "s-game"));
+  ok("restauro el nombre", G(win, "P && P.name") === snap.name);
+  ok("restauro la edad", G(win, "P && P.age") === snap.age);
+  ok("restauro los goles", G(win, "P && P.goals") === snap.goals);
+  ok("restauro el club", G(win, "P && P.club") === snap.club);
+  // seguir jugando tras cargar (que no crashee)
+  await playTurns(doc, { retireChance: 0 }, 30);
+  ok("sigue jugable tras cargar (sin crash)", ERRORS.length === 0);
+
+  // --- 2da partida sin pisar la 1ra ---
+  win.eval("showSlots()");
+  win.eval("newGame()");
+  ok("nueva partida abre el editor", screenActive(doc, "s-create"));
+  configureAndStart(doc, win, { name: "Segundo Arquero", pos: "Arquero", archeIdx: 0, leagueIdx: 1 });
+  await playTurns(doc, { retireChance: 0 }, 20);
+  ok("ahora hay 2 partidas guardadas", win.eval("listSaves().length") === 2);
+  ok("la 1ra partida sigue existiendo", win.eval(`listSaves().some(s=>s.id===${JSON.stringify(slotId)})`));
+
+  // --- borrar la 1ra ---
+  win.eval(`deleteSlot(${JSON.stringify(slotId)})`);
+  ok("borrar deja 1 partida", win.eval("listSaves().length") === 1);
+  ok("la partida borrada ya no esta", !win.eval(`listSaves().some(s=>s.id===${JSON.stringify(slotId)})`));
+  dom.window.close();
+
+  const failed = checks.filter(c => !c[1]);
+  console.log("\n--- Persistencia ---");
+  checks.forEach(c => console.log(`   ${c[1] ? "✅" : "❌"} ${c[0]}`));
+  return failed.length === 0 && ERRORS.length === 0;
+}
+
 (async () => {
   const runs = [
     { name: "Campo-Delantero", pos: "Delantero",       archeIdx: 0, leagueIdx: 0, maxSteps: 6000, retireChance: 0.06 },
@@ -205,5 +315,16 @@ async function simulate(dom, cfg) {
     dom.window.close();
   }
   console.log(`\n=== ${totalOK}/${runs.length} carreras sin crashes ===`);
-  process.exit(totalOK === runs.length ? 0 : 1);
+
+  // prueba de persistencia (guardado de partida)
+  ERRORS = [];
+  let persistOK = false;
+  try {
+    persistOK = await testPersistence();
+  } catch (e) {
+    console.log("❌ persistencia lanzo excepcion:", e.stack);
+  }
+  console.log(`=== persistencia: ${persistOK ? "OK" : "FALLO"} ===`);
+
+  process.exit(totalOK === runs.length && persistOK ? 0 : 1);
 })();
