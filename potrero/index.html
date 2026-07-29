@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EL CAMINO — Carrera de Potrero</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div class="kicker">Modo Carrera Jugador</div>
+  <h1>El Camino</h1>
+  <div class="sub">De potrero a leyenda</div>
+</header>
+<div class="wrap">
+  <section id="s-create" class="screen active">
+    <div class="card">
+      <h2>Tu jugador</h2>
+      <label>Nombre</label>
+      <input id="in-name" placeholder="Ej: Tomás Río" maxlength="20">
+      <div class="row">
+        <div><label>Nacionalidad</label><select id="in-nat"></select></div>
+        <div><label>Posición</label><select id="in-pos" onchange="fillArche()"></select></div>
+      </div>
+      <label>Tipo de jugador (define tu carrera y tus topes)</label>
+      <select id="in-arche" onchange="onArcheChange()"></select>
+      <div class="row">
+        <div><label>Liga</label><select id="in-league" onchange="fillClubs()"></select></div>
+        <div><label>Club inicial</label><select id="in-club"></select></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Reparte tus atributos</h2>
+      <div class="pts">Puntos restantes: <b id="pts-left">80</b></div>
+      <div id="stat-editor"></div>
+      <button class="btn" onclick="startCareer()">Empezar la carrera</button>
+      <button class="btn ghost" onclick="randomize()">Aleatorio</button>
+    </div>
+  </section>
+
+  <section id="s-game" class="screen">
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('play',this)">Jugar</div>
+      <div class="tab" id="tab-btn-panel" onclick="showTab('panel',this)">Panel</div>
+      <div class="tab" onclick="showTab('finance',this)">$</div>
+      <div class="tab" onclick="showTab('palmares',this)">Copas</div>
+    </div>
+    <div id="tab-play">
+      <div class="card">
+        <div class="season-bar">
+          <span class="age" id="g-age">18 años</span>
+          <span class="club" id="g-club">—</span>
+        </div>
+        <div id="injury-slot-play"></div>
+        <div id="event-box">
+          <div class="event-tag" id="ev-tag">Decisión</div>
+          <div class="event-text" id="ev-text">...</div>
+          <div id="ev-choices"></div>
+        </div>
+        <div id="outcome-box"></div>
+      </div>
+    </div>
+    <div id="tab-panel" style="display:none">
+      <div id="injury-slot"></div>
+      <div id="sp-banner-slot"></div>
+      <div class="card">
+        <div class="panel-top">
+          <div class="badge" id="p-badge">?</div>
+          <div class="panel-id">
+            <div class="pname" id="p-name">—</div>
+            <div class="pmeta" id="p-meta">—</div>
+          </div>
+          <div class="ovr"><div class="n" id="p-ovr">--</div><div class="l">Media</div></div>
+        </div>
+        <div>
+          <div class="honor-track"><div class="honor-marker" id="honor-mark" style="left:50%"></div></div>
+          <div class="honor-labels"><span>Villano</span><span>Imagen</span><span>Ídolo</span></div>
+          <div style="text-align:center"><span class="rep-tag" id="rep-tag">Desconocido</span></div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="honor-track" style="background:linear-gradient(90deg,#2a2a4e,#8b7bf0,#ffca4b)"><div class="honor-marker" id="star-mark" style="left:0%"></div></div>
+          <div class="honor-labels"><span>Desconocido</span><span>Estrella mediática</span><span>Ícono global</span></div>
+          <div style="text-align:center;margin-top:4px"><span id="partner-tag" style="font-size:11px;color:var(--violet);text-transform:uppercase;letter-spacing:.1em"></span></div>
+        </div>
+        <div class="grid4">
+          <div class="kpi"><div class="n" id="k-gk">0</div><div class="l">Goles</div></div>
+          <div class="kpi"><div class="n" id="k-as">0</div><div class="l">Asist.</div></div>
+          <div class="kpi"><div class="n" id="k-pj">0</div><div class="l">Partidos</div></div>
+          <div class="kpi"><div class="n" id="k-fama">0</div><div class="l">Fama</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Atributos <span id="sp-inline" style="float:right;font-size:13px;color:var(--sp)"></span></h2>
+        <div id="panel-stats"></div>
+        <div id="sp-confirm-slot"></div>
+      </div>
+    </div>
+    <div id="tab-finance" style="display:none">
+      <div class="card">
+        <h2>Contrato y sueldo</h2>
+        <div id="contract-box"></div>
+      </div>
+      <div class="card">
+        <h2>Representante</h2>
+        <div id="agent-slot"></div>
+      </div>
+      <div class="card">
+        <h2>Idolatría del club <span id="idol-pct" style="float:right;color:var(--cyan)"></span></h2>
+        <div class="honor-track" style="background:linear-gradient(90deg,#2a3a6e,var(--cyan))"><div class="honor-marker" id="idol-mark" style="left:0%"></div></div>
+        <div class="honor-labels"><span>Uno más</span><span>Referente</span><span>Ídolo eterno</span></div>
+      </div>
+      <div class="card">
+        <h2>Tu plata <span id="money-amount" style="float:right;color:var(--gold)"></span></h2>
+        <div style="font-size:12px;color:var(--mute);margin-bottom:10px">Cobrás tu sueldo al cerrar cada temporada. Elegí en qué invertirla.</div>
+        <div id="finance-actions"></div>
+      </div>
+    </div>
+    <div id="tab-palmares" style="display:none">
+      <div class="card">
+        <h2>Palmarés</h2>
+        <div id="palmares-list"><div class="empty">Todavía no ganaste nada. Andá a jugar.</div></div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    Prototipo v0.8 · Arquero con carrera propia · Representante · Dramas de pareja<br>
+    Ligas de muestra con clubes reales — el mundo entero entra con Claude Code + API
+  </footer>
+</div>
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+<div class="toast" id="toast"></div>
+  <script src="data/01-naciones.js"></script>
+  <script src="data/02-ligas.js"></script>
+  <script src="data/03-posiciones.js"></script>
+  <script src="economy/01-clubes-sueldos.js"></script>
+  <script src="data/04-eventos.js"></script>
+  <script src="data/05-eventos-random.js"></script>
+  <script src="data/06-prensa.js"></script>
+  <script src="economy/02-gastos-inversiones.js"></script>
+  <script src="engine/01-estado.js"></script>
+  <script src="engine/02-editor.js"></script>
+  <script src="ui/01-hold-repeat.js"></script>
+  <script src="engine/03-talento.js"></script>
+  <script src="engine/04-crear.js"></script>
+  <script src="engine/05-ovr.js"></script>
+  <script src="economy/03-contratos.js"></script>
+  <script src="ui/02-panel.js"></script>
+  <script src="minigames/01-minijuegos.js"></script>
+  <script src="engine/06-turnos.js"></script>
+  <script src="engine/07-lesiones.js"></script>
+  <script src="events/02-eventos.js"></script>
+  <script src="engine/08-transferencias.js"></script>
+  <script src="engine/09-finales-club.js"></script>
+  <script src="engine/10-seleccion.js"></script>
+  <script src="events/03-prensa-turno.js"></script>
+  <script src="economy/04-jeque.js"></script>
+  <script src="events/04-arquero.js"></script>
+  <script src="engine/11-temporada.js"></script>
+  <script src="engine/12-progresion.js"></script>
+  <script src="engine/13-retiro.js"></script>
+  <script src="ui/03-toast-init.js"></script>
+  <script src="economy/05-finanzas.js"></script>
+  <script src="economy/06-representante.js"></script>
+  <script src="ui/04-modales.js"></script>
+</body>
+</html>
