@@ -117,7 +117,11 @@ function renderPalmares(){
     groups[g].forEach(t=>{
       if(seen[t.key])return;seen[t.key]=true;
       const c=counts[t.key];
-      html+='<div class="trophy-row"><span class="ic">'+TROPHIES[t.key].ic+'</span>'+
+      const LOGO_TORNEOS=["libertadores","sudamericana","champions","europaleague","mundialClubes","intercontinental","mundial","copaAmerica","eurocopa","nations","olimpicos"];
+      const icono = (LOGO_TORNEOS.indexOf(t.key)>=0 && typeof compLogoOrEmoji==='function')
+        ? compLogoOrEmoji(TROPHIES[t.key].n, TROPHIES[t.key].ic, 22)
+        : '<span class="ic">'+TROPHIES[t.key].ic+'</span>';
+      html+='<div class="trophy-row"><span class="ic">'+icono+'</span>'+
         '<span><b>'+TROPHIES[t.key].n+(c>1?' ×'+c:'')+'</b><br>'+
         '<span style="color:var(--mute);font-size:12px">'+t.detail+'</span></span></div>';
     });

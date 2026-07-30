@@ -91,8 +91,8 @@ function textOn(color){
   return lum>0.62 ? '#15213f' : '#ffffff';
 }
 
-/* devuelve un <svg> con el escudo del club */
-function clubCrest(club, size){
+/* devuelve un <svg> con el escudo GENERADO del club (fallback) */
+function clubCrestSVG(club, size){
   size=size||34;
   const cols=crestColorsFor(club), c1=cols[0], c2=cols[1];
   const ini=clubInitials(club), tcol=textOn(c1);
@@ -112,7 +112,51 @@ function updateClubPreview(){
   const el=document.getElementById('club-crest-preview');
   if(!el) return;
   const club=document.getElementById('in-club').value;
+  const liga=document.getElementById('in-league')?document.getElementById('in-league').value:'';
   if(!club){ el.innerHTML=''; return; }
   el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;gap:10px">'+
-    clubCrest(club,44)+'<span style="font-family:\'Barlow Condensed\';text-transform:uppercase;letter-spacing:.1em;color:var(--chalk)">'+club+'</span></div>';
+    clubCrest(club,44)+'<span style="font-family:\'Barlow Condensed\';text-transform:uppercase;letter-spacing:.1em;color:var(--chalk)">'+club+'</span>'+
+    (liga?ligaLogoOpcional(liga,26):'')+'</div>';
+}
+
+/* ===== capa "logo REAL si existe, si no el generado" =====
+   Los PNG reales los baja recursos_juego/descargar_recursos.py en la compu.
+   Mientras no existan, cada <img> falla y cae en el fallback (generado/emoji),
+   asi que el juego se ve igual que ahora y no se rompe nada. */
+const RUTA_ESCUDOS='recursos_juego/escudos/';
+const RUTA_COMPETENCIAS='recursos_juego/competencias/';
+
+/* slug identico al del script Python (para que los nombres de archivo coincidan) */
+function slugRecurso(s){
+  s=String(s).normalize('NFKD').replace(/[̀-ͯ]/g,'');
+  s=s.replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'').toLowerCase();
+  return s||'x';
+}
+function _escAttr(s){ return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+
+/* <img> del recurso real; si no existe (onerror), se reemplaza por fallbackHTML */
+function recursoImg(src, fallbackHTML, size, style){
+  return '<img src="'+src+'" width="'+size+'" height="'+size+'" '+
+    'style="object-fit:contain;vertical-align:middle;display:inline-block;'+(style||'')+'" '+
+    'data-fb="'+_escAttr(fallbackHTML)+'" '+
+    "onerror=\"this.onerror=null;this.outerHTML=this.getAttribute('data-fb')\">";
+}
+
+/* ESCUDO de club: logo real si existe, si no el escudo generado */
+function clubCrest(club, size){
+  size=size||34;
+  return recursoImg(RUTA_ESCUDOS+slugRecurso(club)+'.png', clubCrestSVG(club,size), size);
+}
+
+/* LOGO de competencia (o trofeo de torneo): real si existe, si no el emoji */
+function compLogoOrEmoji(nombre, emoji, size){
+  size=size||22;
+  return recursoImg(RUTA_COMPETENCIAS+slugRecurso(nombre)+'.png',
+                    '<span class="ic">'+emoji+'</span>', size, 'border-radius:4px');
+}
+
+/* LOGO de liga (opcional): si no hay archivo, no muestra nada */
+function ligaLogoOpcional(liga, size){
+  return '<img src="'+RUTA_COMPETENCIAS+slugRecurso(liga)+'.png" height="'+size+'" '+
+    'style="object-fit:contain;vertical-align:middle" onerror="this.remove()">';
 }
