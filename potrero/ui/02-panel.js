@@ -117,9 +117,10 @@ function renderPalmares(){
     groups[g].forEach(t=>{
       if(seen[t.key])return;seen[t.key]=true;
       const c=counts[t.key];
-      const LOGO_TORNEOS=["libertadores","sudamericana","champions","europaleague","mundialClubes","intercontinental","mundial","copaAmerica","eurocopa","nations","olimpicos"];
-      const icono = (LOGO_TORNEOS.indexOf(t.key)>=0 && typeof compLogoOrEmoji==='function')
-        ? compLogoOrEmoji(TROPHIES[t.key].n, TROPHIES[t.key].ic, 22)
+      // todo trofeo (competencia o premio individual) muestra su logo:
+      // real si existe el PNG, si no un emblema generado propio.
+      const icono = (typeof compLogoOrEmoji==='function')
+        ? compLogoOrEmoji(TROPHIES[t.key].n, TROPHIES[t.key].ic, 26)
         : '<span class="ic">'+TROPHIES[t.key].ic+'</span>';
       html+='<div class="trophy-row"><span class="ic">'+icono+'</span>'+
         '<span><b>'+TROPHIES[t.key].n+(c>1?' ×'+c:'')+'</b><br>'+

@@ -148,11 +148,29 @@ function clubCrest(club, size){
   return recursoImg(RUTA_ESCUDOS+slugRecurso(club)+'.png', clubCrestSVG(club,size), size);
 }
 
-/* LOGO de competencia (o trofeo de torneo): real si existe, si no el emoji */
+/* Emblema GENERADO para un trofeo/premio/competencia: medalla circular con
+   color propio (por nombre) y el icono en el centro. Es el fallback cuando no
+   hay un logo real, para que cada premio tenga su "logo" y no un emoji pelado. */
+function trofeoEmblema(nombre, emoji, size){
+  size=size||24;
+  let h=0; for(let i=0;i<nombre.length;i++) h=(h*31+nombre.charCodeAt(i))>>>0;
+  const hue=h%360;
+  const c1='hsl('+hue+',60%,42%)', c2='hsl('+((hue+28)%360)+',65%,30%)';
+  return '<svg class="crest" width="'+size+'" height="'+size+'" viewBox="0 0 40 40" '+
+    'style="vertical-align:middle;flex:0 0 auto;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))" aria-hidden="true">'+
+    '<circle cx="20" cy="20" r="19" fill="#e8ad2a"/>'+
+    '<circle cx="20" cy="20" r="18.5" fill="none" stroke="#8a6410" stroke-width="1"/>'+
+    '<circle cx="20" cy="20" r="15" fill="'+c1+'"/>'+
+    '<circle cx="20" cy="20" r="15" fill="none" stroke="rgba(255,255,255,.30)" stroke-width="1"/>'+
+    '<text x="20" y="27" text-anchor="middle" font-size="17">'+emoji+'</text>'+
+    '</svg>';
+}
+
+/* LOGO de competencia/premio: real si existe, si no el emblema generado */
 function compLogoOrEmoji(nombre, emoji, size){
-  size=size||22;
+  size=size||24;
   return recursoImg(RUTA_COMPETENCIAS+slugRecurso(nombre)+'.png',
-                    '<span class="ic">'+emoji+'</span>', size, 'border-radius:4px');
+                    trofeoEmblema(nombre, emoji, size), size, 'border-radius:50%');
 }
 
 /* LOGO de liga (opcional): si no hay archivo, no muestra nada */
