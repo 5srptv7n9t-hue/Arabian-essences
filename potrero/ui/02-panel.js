@@ -105,26 +105,36 @@ function resetSP(){pendingSP={};refreshPanel()}
 function renderPalmares(){
   const pl=document.getElementById('palmares-list');
   if(P.trophies.length===0){pl.innerHTML='<div class="empty">Todavía no ganaste nada. Andá a jugar.</div>';return}
-  const groups={};
-  P.trophies.forEach(t=>{const g=TROPHIES[t.key].grp;(groups[g]=groups[g]||[]).push(t)});
+  // agrupar por competencia específica (comp) o, si no la hay, por el nombre
+  // genérico del trofeo. Así el palmarés muestra "3× Ligue 1", "Copa Argentina",
+  // etc., como la app de referencia.
+  const groups={}; // grupo -> { id -> {key,name,count,dets:[]} }
+  P.trophies.forEach(t=>{
+    const g=TROPHIES[t.key].grp;
+    const name=t.comp || TROPHIES[t.key].n;
+    const id=t.key+'::'+name;
+    groups[g]=groups[g]||{};
+    groups[g][id]=groups[g][id]||{key:t.key,name:name,count:0,dets:[]};
+    groups[g][id].count++;
+    if(t.detail) groups[g][id].dets.push(t.detail);
+  });
   const order=["Individuales","Selección","Clubes"];
   let html='';
   order.forEach(g=>{
     if(!groups[g])return;
     html+='<div class="pgroup-title">'+g+'</div>';
-    const counts={};groups[g].forEach(t=>counts[t.key]=(counts[t.key]||0)+1);
-    const seen={};
-    groups[g].forEach(t=>{
-      if(seen[t.key])return;seen[t.key]=true;
-      const c=counts[t.key];
-      // todo trofeo (competencia o premio individual) muestra su logo:
-      // real si existe el PNG, si no un emblema generado propio.
+    Object.keys(groups[g]).forEach(id=>{
+      const it=groups[g][id];
+      // ícono real (PNG) si existe para esa competencia, si no el emoji
       const icono = (typeof compLogoOrEmoji==='function')
-        ? compLogoOrEmoji(TROPHIES[t.key].n, TROPHIES[t.key].ic, 26)
-        : '<span class="ic">'+TROPHIES[t.key].ic+'</span>';
+        ? compLogoOrEmoji(it.name, TROPHIES[it.key].ic, 26)
+        : '<span class="ic">'+TROPHIES[it.key].ic+'</span>';
+      // subtítulo: temporadas ganadas (o el detalle si no hay número)
+      const temps=it.dets.map(d=>{const m=/Temp\.?\s*(\d+)/.exec(d||'');return m?m[1]:null}).filter(Boolean);
+      const sub = temps.length ? 'Temp. '+temps.join(' · ') : (it.dets[0]||'');
       html+='<div class="trophy-row"><span class="ic">'+icono+'</span>'+
-        '<span><b>'+TROPHIES[t.key].n+(c>1?' ×'+c:'')+'</b><br>'+
-        '<span style="color:var(--mute);font-size:12px">'+t.detail+'</span></span></div>';
+        '<span><b>'+it.name+(it.count>1?' ×'+it.count:'')+'</b><br>'+
+        '<span style="color:var(--mute);font-size:12px">'+sub+'</span></span></div>';
     });
   });
   pl.innerHTML=html;

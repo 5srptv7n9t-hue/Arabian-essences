@@ -2,9 +2,9 @@
 function finalTurn(){
   let comp;
   if(isSudamerican()){
-    comp=[["Copa Libertadores","libertadores"],["Copa Sudamericana","sudamericana"],["Copa Argentina","copaNac"]][Math.floor(Math.random()*3)];
+    comp=[["Copa Libertadores","libertadores"],["Copa Sudamericana","sudamericana"],[nationalCupName(P.league),"copaNac"]][Math.floor(Math.random()*3)];
   }else{
-    comp=[["Champions League","champions"],["Europa League","europaleague"],["Copa Nacional","copaNac"]][Math.floor(Math.random()*3)];
+    comp=[["Champions League","champions"],["Europa League","europaleague"],[nationalCupName(P.league),"copaNac"]][Math.floor(Math.random()*3)];
   }
   const rival=BIG_CLUBS[Math.floor(Math.random()*BIG_CLUBS.length)];
   const tag=document.getElementById('ev-tag');
@@ -17,7 +17,7 @@ function finalTurn(){
 function skipFinal(key,name){
   const won=Math.random()<0.5;
   if(won){
-    addTrophy(key,'Con '+P.club+' · Temp. '+P.season);
+    addTrophy(key,'Con '+P.club+' · Temp. '+P.season,name);
     const d=applyEff({apps:1,honor:1,fama:1});
     renderOutcome('Un compañero definió y salieron campeones de la '+name+'. Ganaste el título pero la gloria fue de otro.',d);
   }else{
@@ -31,12 +31,12 @@ function playFinal(key,name){
     const mg=GK_MINIGAMES[Math.floor(Math.random()*GK_MINIGAMES.length)];
     mg('Final al rojo vivo','La final se define y todo depende de tu atajada.',(q)=>{
       if(q==='perfect'){
-        addTrophy(key,'Con '+P.club+' · Temp. '+P.season);
+        addTrophy(key,'Con '+P.club+' · Temp. '+P.season,name);
         addTrophy('mvpFinal','Final de la '+name+' · Temp. '+P.season);
         const d=applyEff({apps:1,honor:9,fama:7,sp:3,idol:8});
         renderOutcome('🧤 ¡ATAJASTE LO INATAJABLE! Definiste la final de la '+name+' con una atajada de leyenda. Campeón y figura. Sos ídolo eterno.',d);
       }else if(q==='good'){
-        addTrophy(key,'Con '+P.club+' · Temp. '+P.season);
+        addTrophy(key,'Con '+P.club+' · Temp. '+P.season,name);
         const d=applyEff({apps:1,honor:6,fama:5,sp:2,idol:5});
         renderOutcome('🧤 ¡La sacaste en el momento clave! Campeón de la '+name+'. El arco fue tuyo.',d);
       }else{
@@ -55,12 +55,12 @@ function playFinal(key,name){
   const sc=scenarios[Math.floor(Math.random()*scenarios.length)];
   mg(sc[0],sc[1],(q)=>{
     if(q==='perfect'){
-      addTrophy(key,'Con '+P.club+' · Temp. '+P.season);
+      addTrophy(key,'Con '+P.club+' · Temp. '+P.season,name);
       addTrophy('mvpFinal','Final de la '+name+' · Temp. '+P.season);
       const d=applyEff({goals:1,apps:1,honor:8,fama:6,sp:2});
       renderOutcome('¡GOLAZO! Definiste la final de la '+name+' con frialdad de leyenda. Campeón y MVP. El estadio grita tu nombre.',d);
     }else if(q==='good'){
-      addTrophy(key,'Con '+P.club+' · Temp. '+P.season);
+      addTrophy(key,'Con '+P.club+' · Temp. '+P.season,name);
       const d=applyEff({goals:1,apps:1,honor:5,fama:4,sp:1});
       renderOutcome('¡La metiste! Campeón de la '+name+'. Sos el héroe.',d);
     }else{

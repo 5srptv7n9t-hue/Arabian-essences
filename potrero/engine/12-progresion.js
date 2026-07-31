@@ -44,7 +44,7 @@ function continueAfterSeason(){ nextTurn(); window.scrollTo({top:0,behavior:'smo
 
 function awardSeason(simG){
   const o=ovr(), sim=archeData().sim, PR=CONFIG.premios;
-  if(o>PR.liga.ovr&&Math.random()<PR.liga.prob)addTrophy('liga',P.club+' · Temp. '+(P.season-1));
+  if(o>PR.liga.ovr&&Math.random()<PR.liga.prob)addTrophy('liga',P.club+' · Temp. '+(P.season-1),leagueTitleName(P.league));
   if(simG>=PR.pichichiGoles)addTrophy('pichichi',simG+' goles · Temp. '+(P.season-1));
   if(simG>=PR.botaGoles && !isSudamerican())addTrophy('botaOro',simG+' goles · Temp. '+(P.season-1));
   if(o>PR.mvpLiga.ovr&&P.fama>PR.mvpLiga.fama&&Math.random()<PR.mvpLiga.prob)addTrophy('mvpLiga','Temp. '+(P.season-1));
@@ -56,5 +56,5 @@ function awardSeason(simG){
   if(o>PR.mundialClubes.ovr&&Math.random()<PR.mundialClubes.prob)addTrophy('mundialClubes','Con '+P.club+' · Temp. '+(P.season-1));
 }
 function hasTrophy(key){return P.trophies.some(t=>t.key===key)}
-function addTrophy(key,detail){P.trophies.push({key,detail});toast(TROPHIES[key].ic+' '+TROPHIES[key].n+'!')}
+function addTrophy(key,detail,comp){P.trophies.push({key,detail,comp:comp||null});toast(TROPHIES[key].ic+' '+(comp||TROPHIES[key].n)+'!')}
 
