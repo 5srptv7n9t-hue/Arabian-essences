@@ -166,12 +166,11 @@ function trofeoEmblema(nombre, emoji, size){
     '</svg>';
 }
 
-/* LOGO de competencia/premio: real si existe (ícono/logo tal cual), si no el
-   emblema generado. El logo real NO se recorta en círculo. */
+/* LOGO de competencia/premio: usa el ícono real (PNG) si existe; si no, el
+   EMOJI tal cual (estilo simple, sin problema de copyright, como la referencia). */
 function compLogoOrEmoji(nombre, emoji, size){
   size=size||24;
-  return recursoImg(RUTA_COMPETENCIAS+slugRecurso(nombre)+'.png',
-                    trofeoEmblema(nombre, emoji, size), size, '');
+  return recursoImg(RUTA_COMPETENCIAS+slugRecurso(nombre)+'.png', emoji, size, '');
 }
 
 /* LOGO de liga (opcional): si no hay archivo, no muestra nada */
